@@ -19,8 +19,6 @@ public interface RentalInstanceRepo extends JpaRepository<RentalInstance, UUID> 
     @Query("SELECT r FROM RentalInstance r LEFT JOIN FETCH r.adjustments LEFT JOIN FETCH r.notes WHERE r.id = :id")
     Optional<RentalInstance> findByIdWithDetails(@Param("id") UUID id);
 
-    // Find rentals for a specific agent within a date range (for payslips)
-    List<RentalInstance> findByAgentIdAndPaymentDateBetween(UUID agentId, LocalDate start, LocalDate end);
 
     // Find if an instance already exists
     // may need to normalize billing date to first of the month

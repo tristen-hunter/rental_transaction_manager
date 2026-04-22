@@ -87,6 +87,9 @@ public class RentalInstance {
     @OneToMany(mappedBy = "rentalInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Adjustment> adjustments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "rentalInstance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Note> notes = new ArrayList<>();
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -100,10 +103,22 @@ public class RentalInstance {
     // -------------------------------
 
     @AssertTrue(message = "Commission values inconsistent for this instance")
-    public Boolean isCommissionValid() {
+    public boolean isCommissionValid() {
         if (agentGrossComm == null || payeAmount == null || agentNettComm == null) {
             return true;
         }
         return agentGrossComm.subtract(payeAmount).compareTo(agentNettComm) == 0;
+    }
+
+
+    // Helper methods
+    public void addAdjustment(Adjustment adj) {
+        adjustments.add(adj);
+        adj.setRentalInstance(this);
+    }
+
+    public void addNote(Note note) {
+        notes.add(note);
+        note.setRentalInstance(this);
     }
 }

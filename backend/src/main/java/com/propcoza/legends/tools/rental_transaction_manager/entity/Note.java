@@ -20,8 +20,8 @@ public class Note {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rental_id", nullable = false)
-    private Rental rental;
+    @JoinColumn(name = "rental_instance_id", nullable = false)
+    private RentalInstance rentalInstance;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;

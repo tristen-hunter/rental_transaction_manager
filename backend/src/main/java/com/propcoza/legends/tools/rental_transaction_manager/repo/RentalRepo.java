@@ -14,10 +14,6 @@ import java.util.UUID;
 @Repository
 public interface RentalRepo extends JpaRepository<Rental, UUID> {
 
-    // Returns a rental with all adjustments and notes initialized
-    @Query("SELECT r FROM Rental r LEFT JOIN FETCH r.adjustments LEFT JOIN FETCH r.notes WHERE r.id = :id")
-    Optional<Rental> findByIdWithDetails(@Param("id") UUID id);
-
     // Find rentals for a specific agent within a date range (for payslips)
     List<Rental> findByAgentIdAndPaymentDateBetween(UUID agentId, LocalDate start, LocalDate end);
 }

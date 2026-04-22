@@ -142,7 +142,7 @@ public class Rental {
 //    }
     // validates if *Gross Comm = nett + paye*
     @AssertTrue(message = "Commission values inconsistent")
-    public Boolean isCommissionValid(){
+    public boolean isCommissionValid(){
         if (agentGrossComm == null || payeAmount == null || agentNettComm == null) {
             return true; // handled by @NotNull
         }
