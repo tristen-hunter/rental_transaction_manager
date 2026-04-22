@@ -33,6 +33,7 @@ public class RentalReturnDto {
     private BigDecimal payeAmount;
     private BigDecimal agentNettComm;
     private BigDecimal landlordPayAmount;
+    private BigDecimal vat;
 
     // Audit/Logging Data
     private String createdBy;

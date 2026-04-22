@@ -117,6 +117,10 @@ public class RentalCreateDto {
     @DecimalMin(value = "0.00", message = "Landlord pay amount cannot be negative")
     private BigDecimal landlordPayAmount;
 
+    @NotNull(message = "VAT amount is required")
+    @DecimalMin(value = "0.00", message = "VAT amount cannot be negative")
+    private BigDecimal vat;
+
     // ------------------------------------------------------------------
     //  Cross-field validation — mirrors the entity constraint
     // ------------------------------------------------------------------
@@ -129,13 +133,16 @@ public class RentalCreateDto {
      * it is derived (companyComm + agentNettComm). The service layer should
      * compute and set it before persisting the entity.
      */
-    @AssertTrue(message = "Commission values are inconsistent: companyComm + agentNettComm − payeAmount must equal agentNettComm (i.e. payeAmount must equal companyComm)")
+    @AssertTrue(message = "Commission values are invalid: PAYE cannot exceed gross commission")
     public boolean isCommissionValid() {
-        if (companyComm == null || payeAmount == null || agentNettComm == null) {
-            return true; // individual @NotNull constraints handle the null case
+
+        if (companyComm == null || agentNettComm == null || payeAmount == null) {
+            return true; // handled by @NotNull
         }
-        // gross = companyComm + agentNettComm
-        BigDecimal gross = companyComm.add(agentNettComm);
-        return gross.subtract(payeAmount).compareTo(agentNettComm) == 0;
+
+        BigDecimal gross = payeAmount.add(agentNettComm);
+
+        // PAYE must not exceed gross
+        return payeAmount.compareTo(gross) <= 0;
     }
 }

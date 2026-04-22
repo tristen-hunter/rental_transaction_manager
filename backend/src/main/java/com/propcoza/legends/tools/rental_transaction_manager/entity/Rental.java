@@ -90,6 +90,9 @@ public class Rental {
     @Column(name = "landlord_pay_amount", precision = 19, scale = 2)
     private BigDecimal landlordPayAmount;
 
+    @Column(name = "vat", precision = 19, scale = 2)
+    private BigDecimal vat;
+
     // -------------------------------
     //     Logging Data
     // -------------------------------

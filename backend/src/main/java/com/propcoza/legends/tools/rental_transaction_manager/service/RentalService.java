@@ -59,6 +59,7 @@ public class RentalService {
         newRental.setPayeAmount(normalizedDto.getPayeAmount());
         newRental.setAgentNettComm(normalizedDto.getAgentNettComm());
         newRental.setLandlordPayAmount(normalizedDto.getLandlordPayAmount());
+        newRental.setVat(normalizedDto.getVat());
 
         // Save to the repo
         Rental savedRental = rentalRepo.save(newRental);
@@ -80,6 +81,7 @@ public class RentalService {
                 .payeAmount(savedRental.getPayeAmount())
                 .agentNettComm(savedRental.getAgentNettComm())
                 .landlordPayAmount(savedRental.getLandlordPayAmount())
+                .vat(savedRental.getVat())
 
                 .createdBy(savedRental.getCreatedBy())
                 .createdAt(savedRental.getCreatedAt())
