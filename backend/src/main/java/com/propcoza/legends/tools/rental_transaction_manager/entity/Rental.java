@@ -125,6 +125,9 @@ public class Rental {
         }
     }
 
+    // Inside Rental.java
+    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RentalInstance> instances = new ArrayList<>();
 
     // When a rental is deleted all data that was related to it must be deleted as well (notes and adjustments)
     @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)

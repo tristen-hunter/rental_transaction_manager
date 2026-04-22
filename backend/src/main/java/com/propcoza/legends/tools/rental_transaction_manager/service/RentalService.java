@@ -4,10 +4,9 @@ import com.propcoza.legends.tools.rental_transaction_manager.common.utils.Normal
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
-import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
-import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
-import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.*;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.AgentRepo;
+import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalInstanceRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,6 +24,7 @@ public class RentalService {
 
     private final RentalRepo rentalRepo;
     private final AgentRepo agentRepo;
+    private final RentalInstanceRepo instanceRepo;
 
     @Transactional
     public RentalReturnDto createRental(RentalCreateDto dto){
@@ -87,5 +87,28 @@ public class RentalService {
                 .createdAt(savedRental.getCreatedAt())
                 .updatedAt(savedRental.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public void generateMonthlyInstance(Rental rental, LocalDate billingPeriod){
+        if(instanceRepo.existsByRentalAndBillingPeriod(rental, billingPeriod)){
+            return;
+        }
+
+        RentalInstance instance = new RentalInstance();
+        instance.setRental(rental);
+        instance.setBillingPeriod(billingPeriod);
+        instance.setStatus(InstanceStatus.DRAFT);
+
+        // SNAPSHOT: Copying current master values to the instance
+        instance.setTotalRentReceived(rental.getTotalRentReceived());
+        instance.setCompanyComm(rental.getCompanyComm());
+        instance.setAgentGrossComm(rental.getAgentGrossComm());
+        instance.setPayeAmount(rental.getPayeAmount());
+        instance.setAgentNettComm(rental.getAgentNettComm());
+        instance.setLandlordPayAmount(rental.getLandlordPayAmount());
+        instance.setVat(rental.getVat());
+
+        instanceRepo.save(instance);
     }
 }
