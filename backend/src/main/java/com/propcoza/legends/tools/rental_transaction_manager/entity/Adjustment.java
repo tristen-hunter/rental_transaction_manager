@@ -22,8 +22,8 @@ public class Adjustment {
 
     // Link back to the specific Rental transaction
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "rental_id", nullable = false)
-    private Rental rental;
+    @JoinColumn(name = "rental_instance_id", nullable = false)
+    private RentalInstance rentalInstance;
 
     @Column(nullable = false)
     private String type;

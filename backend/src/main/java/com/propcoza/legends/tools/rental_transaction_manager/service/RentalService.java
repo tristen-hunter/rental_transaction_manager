@@ -5,6 +5,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.*;
+import com.propcoza.legends.tools.rental_transaction_manager.mapper.RentalMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.AgentRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalInstanceRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +27,7 @@ public class RentalService {
     private final RentalRepo rentalRepo;
     private final AgentRepo agentRepo;
     private final RentalInstanceRepo instanceRepo;
+    private final RentalMapper rentalMapper;
 
     @Transactional
     public RentalReturnDto createRental(RentalCreateDto dto){
@@ -110,5 +113,9 @@ public class RentalService {
         instance.setVat(rental.getVat());
 
         instanceRepo.save(instance);
+    }
+
+    public List<RentalReturnDto> getAllRentals(){
+        return rentalMapper.toDtoList(rentalRepo.findAll());
     }
 }

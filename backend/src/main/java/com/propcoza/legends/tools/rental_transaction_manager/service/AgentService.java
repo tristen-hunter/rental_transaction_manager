@@ -3,17 +3,22 @@ package com.propcoza.legends.tools.rental_transaction_manager.service;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
+import com.propcoza.legends.tools.rental_transaction_manager.mapper.AgentMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.AgentRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AgentService {
 
     private final AgentRepo agentRepo;
+    private final AgentMapper agentMapper;
 
     // [ADMIN]
     @Transactional
@@ -64,6 +69,10 @@ public class AgentService {
                 .updatedAt(savedAgent.getUpdatedAt())
                 .totalRentals(0) // Initialize to 0 for a brand-new agent
                 .build();
+    }
+
+    public List<AgentReturnDto> getAllAgents(){
+        return agentMapper.toDtoList(agentRepo.findAll());
     }
 
 

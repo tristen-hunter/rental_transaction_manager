@@ -130,16 +130,16 @@ public class Rental {
     private List<RentalInstance> instances = new ArrayList<>();
 
     // When a rental is deleted all data that was related to it must be deleted as well (notes and adjustments)
-    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Adjustment> adjustments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Note> notes = new ArrayList<>();
-
-    public void addAdjustment(Adjustment adjustment) {
-        adjustments.add(adjustment);
-        adjustment.setRental(this);
-    }
+//    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Adjustment> adjustments = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Note> notes = new ArrayList<>();
+//
+//    public void addAdjustment(Adjustment adjustment) {
+//        adjustments.add(adjustment);
+//        adjustment.setRental(this);
+//    }
     // validates if *Gross Comm = nett + paye*
     @AssertTrue(message = "Commission values inconsistent")
     public Boolean isCommissionValid(){
