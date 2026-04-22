@@ -115,7 +115,13 @@ public class RentalService {
         instanceRepo.save(instance);
     }
 
+    @Transactional
     public List<RentalReturnDto> getAllRentals(){
         return rentalMapper.toDtoList(rentalRepo.findAll());
+    }
+
+    @Transactional
+    public List<RentalReturnDto> getRentalsByAgentId(UUID agentId){
+        return rentalMapper.toDtoList(rentalRepo.getRentalsByAgentId(agentId));
     }
 }

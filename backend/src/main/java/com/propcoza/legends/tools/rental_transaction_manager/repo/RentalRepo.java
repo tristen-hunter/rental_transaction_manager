@@ -16,4 +16,9 @@ public interface RentalRepo extends JpaRepository<Rental, UUID> {
 
     // Find rentals for a specific agent within a date range (for payslips)
     List<Rental> findByAgentIdAndPaymentDateBetween(UUID agentId, LocalDate start, LocalDate end);
+
+    // Get all an agents rentals
+    List<Rental> getRentalsByAgentId(UUID agentId);
+
+
 }
