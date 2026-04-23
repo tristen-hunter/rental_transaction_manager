@@ -102,14 +102,6 @@ public class Rental {
     @Column(name = "agent_split")
     private double agentSplit; // 100 - officeSplit
 
-    /// run when values are entered to ensure they add up to 100
-    @AssertTrue(message = "Agent split and office split must add up to 100%")
-    public boolean isSplitValid() {
-        // Check if the sum equals 1.0 (or 100)
-        // Note: Using a small epsilon for double comparison is safer
-        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
-    }
-
     @Column(name = "agent_paye")
     private double agentPaye;
 
@@ -132,4 +124,13 @@ public class Rental {
     // Inside Rental.java
     @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RentalInstance> instances = new ArrayList<>();
+
+
+    /// run when values are entered to ensure they add up to 100
+    @AssertTrue(message = "Agent split and office split must add up to 100%")
+    public boolean isSplitValid() {
+        // Check if the sum equals 1.0 (or 100)
+        // Note: Using a small epsilon for double comparison is safer
+        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
+    }
 }
