@@ -11,6 +11,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,7 +27,6 @@ public class RentalService {
     private final RentalRepo rentalRepo;
     private final AgentRepo agentRepo;
     private final RentalInstanceRepo instanceRepo;
-    private final RentalMapper rentalMapper;
 
     /**
      * @param dto
@@ -36,72 +36,33 @@ public class RentalService {
      * This also allows usage
      */
     @Transactional
-    public RentalReturnDto createRental(RentalCreateDto dto){
-        // 1. Instantiate the new object and normalize all variables
-        RentalCreateDto normalizedDto = NormalizationUtils.normalizeRentalCreateDto(dto);
-
-        Rental newRental = new Rental();
-        Agent agent = agentRepo.findById(normalizedDto.getAgentId())
+    public RentalReturnDto createRental(@NonNull RentalCreateDto dto){
+        // 1. Fetch Agent first (Fail fast)
+        Agent agent = agentRepo.findById(dto.agentId())
                 .orElseThrow(() -> new EntityNotFoundException("Agent not found"));
 
-        // Property
-        newRental.setAgent(agent);
-        // Property
-        newRental.setAddress(normalizedDto.getAddress());
-        newRental.setTenantName(normalizedDto.getTenantName());
-        // Scheduling
-        newRental.setPaymentDate(normalizedDto.getPaymentDate());
-        newRental.setStatus(RentalStatus.ACTIVE);
-        // Financial
-        newRental.setTotalRentReceived(normalizedDto.getTotalRentReceived());
-        newRental.setLandlordName(normalizedDto.getLandlordName());
-        newRental.setLandlordBankName(normalizedDto.getLandlordBankName());
-        newRental.setLandlordAccNo(normalizedDto.getLandlordAccNo());
-        newRental.setLandlordBranch(normalizedDto.getLandlordBranch());
-        newRental.setCompanyComm(normalizedDto.getCompanyComm());
-        // Calculate gross comm
-        BigDecimal agent_gross_comm =
-                Optional.ofNullable(normalizedDto.getAgentNettComm()).orElse(BigDecimal.ZERO)
-                        .add(Optional.ofNullable(normalizedDto.getPayeAmount()).orElse(BigDecimal.ZERO));
-        newRental.setAgentGrossComm(agent_gross_comm);
+        if (rentalRepo.existsByAgentAndTenantNameAndStartDate(
+                agent,
+                dto.tenantName(),
+                dto.paymentDate())) {
+            throw new RuntimeException("A rental record already exists for this tenant/agent on this date.");
+        }
 
-        newRental.setPayeAmount(normalizedDto.getPayeAmount());
-        newRental.setAgentNettComm(normalizedDto.getAgentNettComm());
-        newRental.setLandlordPayAmount(normalizedDto.getLandlordPayAmount());
-        newRental.setVat(normalizedDto.getVat());
+        // 2. Map to Entity
+        RentalCreateDto normalizedDto = NormalizationUtils.normalizeRentalCreateDto(dto);
+        Rental rental = RentalMapper.toEntity(normalizedDto, agent);
 
-        // Save to the repo
-        Rental savedRental = rentalRepo.save(newRental);
+        // 3. Persist to get the UUID and managed state
+        Rental savedRental = rentalRepo.save(rental);
 
-        /// this generates a new instance (billingPeriod = yyyy-mm-01)
-        LocalDate firstBillingPeriod =
-                savedRental.getPaymentDate().withDayOfMonth(1);
+        // 4. Generate the initial instance
+        // Since this is @Transactional, just adding to the list is enough
+        LocalDate firstBillingPeriod = savedRental.getPaymentDate().withDayOfMonth(1);
+        /// generateMonthlyInstance(savedRental, firstBillingPeriod);
 
-        generateMonthlyInstance(savedRental, firstBillingPeriod);
-
-        return RentalReturnDto.builder()
-                .agentName(agent.getFullName())
-                .address(savedRental.getAddress())
-                .tenantName(savedRental.getTenantName())
-                .paymentDate(savedRental.getPaymentDate())
-                .status(savedRental.getStatus())
-
-                .totalRentReceived(savedRental.getTotalRentReceived())
-                .landlordName(savedRental.getLandlordName())
-                .landlordBankName(savedRental.getLandlordBankName())
-                .landlordAccNo(savedRental.getLandlordAccNo())
-                .landlordBranch(savedRental.getLandlordBranch())
-                .companyComm(savedRental.getCompanyComm())
-                .agentGrossComm(savedRental.getAgentGrossComm())
-                .payeAmount(savedRental.getPayeAmount())
-                .agentNettComm(savedRental.getAgentNettComm())
-                .landlordPayAmount(savedRental.getLandlordPayAmount())
-                .vat(savedRental.getVat())
-
-                .createdBy(savedRental.getCreatedBy())
-                .createdAt(savedRental.getCreatedAt())
-                .updatedAt(savedRental.getUpdatedAt())
-                .build();
+        // 5. Final save is often unnecessary due to Dirty Checking,
+        // but return the mapped DTO
+        return RentalMapper.toReturnDto(savedRental);
     }
 
     /**
@@ -109,7 +70,7 @@ public class RentalService {
      * @param rental
      * This passes the actual rental MASTER object created by the admin
      * @param billingPeriod
-     * here we take the paymentDate and normalise it to the first day of the month for simplified lookups
+     * here we take the paymentDate and normalize it to the first day of the month for simplified lookups
      */
     @Transactional
     public void generateMonthlyInstance(Rental rental, LocalDate billingPeriod){
@@ -117,41 +78,27 @@ public class RentalService {
             return;
         }
 
-        RentalInstance instance = new RentalInstance();
-        instance.setRental(rental);
-        instance.setBillingPeriod(billingPeriod);
-        instance.setStatus(InstanceStatus.DRAFT);
 
-        // SNAPSHOT: Copying current master values to the instance
-        instance.setTotalRentReceived(rental.getTotalRentReceived());
-        instance.setCompanyComm(rental.getCompanyComm());
-        instance.setAgentGrossComm(rental.getAgentGrossComm());
-        instance.setPayeAmount(rental.getPayeAmount());
-        instance.setAgentNettComm(rental.getAgentNettComm());
-        instance.setLandlordPayAmount(rental.getLandlordPayAmount());
-        instance.setVat(rental.getVat());
-
-        instanceRepo.save(instance);
     }
 
     /**
      * this returns a list of all MASTER rentals with no filters
      */
-    @Transactional
-    public List<RentalReturnDto> getAllRentals(){
-        return rentalMapper.toDtoList(rentalRepo.findAll());
-    }
-
-    /**
-     * @param agentId
-     * Here we flatten the Agent object to extract the Id, then that is passed to a repo call
-     * @return
-     * We return the Dto after using the mapper to map the list of rentslsd returned by the DB
-     */
-    @Transactional
-    public List<RentalReturnDto> getRentalsByAgentId(UUID agentId){
-        return rentalMapper.toDtoList(rentalRepo.getRentalsByAgent_Id(agentId));
-    }
+//    @Transactional
+//    public List<RentalReturnDto> getAllRentals(){
+//        return rentalMapper.toDtoList(rentalRepo.findAll());
+//    }
+//
+//    /**
+//     * @param agentId
+//     * Here we flatten the Agent object to extract the Id, then that is passed to a repo call
+//     * @return
+//     * We return the Dto after using the mapper to map the list of rentslsd returned by the DB
+//     */
+//    @Transactional
+//    public List<RentalReturnDto> getRentalsByAgentId(UUID agentId){
+//        return rentalMapper.toDtoList(rentalRepo.getRentalsByAgent_Id(agentId));
+//    }
 
     /**
      * @param rentalId

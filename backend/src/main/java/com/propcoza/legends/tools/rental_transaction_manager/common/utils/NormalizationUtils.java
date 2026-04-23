@@ -76,14 +76,25 @@ public final class NormalizationUtils {
     public static RentalCreateDto normalizeRentalCreateDto(RentalCreateDto dto) {
         if (dto == null) return null;
 
-        dto.setAddress(toTitleCase(dto.getAddress()));
-        dto.setTenantName(toTitleCase(dto.getTenantName()));
-        dto.setLandlordName(toTitleCase(dto.getLandlordName()));
-        dto.setLandlordBankName(trimSafely(dto.getLandlordBankName()));
-        dto.setLandlordAccNo(trimSafely(dto.getLandlordAccNo()));
-        dto.setLandlordBranch(trimSafely(dto.getLandlordBranch()));
-
-        return dto;
+        // Records are immutable, so we create a new instance with the cleaned values
+        return new RentalCreateDto(
+                dto.agentId(), // UUID doesn't need normalization
+                toTitleCase(dto.address()),
+                toTitleCase(dto.tenantName()),
+                dto.paymentDate(),
+                dto.autoRenew(),
+                dto.endDate(),
+                toTitleCase(dto.landlordName()),
+                trimSafely(dto.landlordBankName()),
+                trimSafely(dto.landlordAccNo()),
+                trimSafely(dto.landlordBranch()),
+                dto.baseRent(),
+                dto.rentalCommissionPercent(),
+                dto.officeSplit(),
+                dto.agentPaye(),
+                dto.vatRegistered(),
+                trimSafely(dto.createdBy())
+        );
     }
 
     // ------------------------------------------------------------------

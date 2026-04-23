@@ -1,7 +1,9 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -65,15 +67,18 @@ public record RentalCreateDto(
         //    Commission Inputs
         // -------------------------------
 
+        /// the rent amount paid every month (used to calculate payouts)
+        @NotNull(message = "Base rent is required")
+        @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0")
+        BigDecimal baseRent, // used to calculate comm and landlord portion
+
         @DecimalMin(value = "0.0", inclusive = false, message = "Commission percent must be greater than 0")
         @DecimalMax(value = "1.0", message = "Commission percent must be expressed as a decimal (e.g. 0.10 for 10%)")
-        @Size(max = 100)
         @NotNull
         Double rentalCommissionPercent,
 
         @DecimalMin(value = "0.0", inclusive = false, message = "Office split must be greater than 0")
         @DecimalMax(value = "1.0", message = "Office split must be expressed as a decimal (e.g. 0.30 for 30%)")
-        @Size(max = 100)
         @NotNull
         Double officeSplit,
 
@@ -84,7 +89,6 @@ public record RentalCreateDto(
          */
         @DecimalMin(value = "0.0", inclusive = false, message = "Agent PAYE must be greater than 0")
         @DecimalMax(value = "1.0", message = "Agent PAYE must be expressed as a decimal (e.g. 0.25 for 25%)")
-        @Size(max = 100)
         @NotNull
         Double agentPaye,
 

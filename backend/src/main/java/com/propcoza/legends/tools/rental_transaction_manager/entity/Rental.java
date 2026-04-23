@@ -65,7 +65,7 @@ public class Rental {
     /**
      * Here we can visually represent the MASTER templates use case
      * ACTIVE - name suggests
-     * CANCELLED - this rental was specifically cancelled due to something (Admin will explain)
+     * CANCELLED - this rental was specifically canceled due to something (Admin will explain)
      * COMPLETE - this rental reached the end of it's contract
      */
     @Enumerated(EnumType.STRING)
@@ -92,6 +92,10 @@ public class Rental {
     // -------------------------------
     // NOTE: this data is entered by Fatima and used to calculate the financials.
     //       warnings must be given if they don't meet certain criteria
+
+    /// the rent amount paid every month (used to calculate payouts)
+    @Column(name = "base_rent", precision = 19, scale = 2)
+    private BigDecimal baseRent; // used to calculate comm and landlord portion
 
     @Column(name = "rental_commision_percent")
     private double rentalCommissionPercent; // for example 10%

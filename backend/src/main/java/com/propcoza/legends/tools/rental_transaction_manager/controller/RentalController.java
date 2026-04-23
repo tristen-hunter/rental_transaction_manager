@@ -22,21 +22,21 @@ public class RentalController {
     private final RentalService rentalService;
 
     @PostMapping
-    public ResponseEntity<RentalReturnDto> createAgent(@Valid @RequestBody RentalCreateDto rentalCreateDto){
+    public ResponseEntity<RentalReturnDto> createRental(@Valid @RequestBody RentalCreateDto rentalCreateDto){
         RentalReturnDto createdRental = rentalService.createRental(rentalCreateDto);
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public List<RentalReturnDto> getAllRentals(){
-        return rentalService.getAllRentals();
-    }
-
-    // Gets all MASTER rentals associated with an agent
-    @GetMapping("/agent/{agentId}")
-    public List<RentalReturnDto> getRentalsByAgentId(@PathVariable UUID agentId){
-        return rentalService.getRentalsByAgentId(agentId);
-    }
+//    @GetMapping
+//    public List<RentalReturnDto> getAllRentals(){
+//        return rentalService.getAllRentals();
+//    }
+//
+//    // Gets all MASTER rentals associated with an agent
+//    @GetMapping("/agent/{agentId}")
+//    public List<RentalReturnDto> getRentalsByAgentId(@PathVariable UUID agentId){
+//        return rentalService.getRentalsByAgentId(agentId);
+//    }
 
     @GetMapping("/rental/{rentalId}")
     public List<RentalInstance> findByRental_Id(@PathVariable UUID rentalId){

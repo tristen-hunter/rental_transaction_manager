@@ -2,6 +2,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -57,6 +58,7 @@ public record RentalReturnDto(
         //    (returned so the UI can pre-fill edit forms)
         // -------------------------------
 
+        BigDecimal baseRent,
         double rentalCommissionPercent,
         double officeSplit,
         double agentSplit,   // derived, but returned for display convenience

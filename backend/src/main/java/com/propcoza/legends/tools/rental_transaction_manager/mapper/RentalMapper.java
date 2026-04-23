@@ -5,7 +5,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
-import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
@@ -61,6 +61,7 @@ public class RentalMapper {
         rental.setLandlordBranch(dto.landlordBranch());
 
         // Commission — agentSplit is derived to guarantee splits sum to 1.0
+        rental.setBaseRent(dto.baseRent());
         rental.setRentalCommissionPercent(dto.rentalCommissionPercent());
         rental.setOfficeSplit(dto.officeSplit());
         rental.setAgentSplit(1.0 - dto.officeSplit());
@@ -87,7 +88,7 @@ public class RentalMapper {
      * @param rental the entity to map (agent must be initialised)
      * @return a fully populated {@link RentalReturnDto}
      */
-    public static @NonNull RentalReturnDto toReturnDto(Rental rental) {
+    public static @NonNull RentalReturnDto toReturnDto(@NonNull Rental rental) {
         Agent agent = rental.getAgent();
 
         return new RentalReturnDto(
@@ -116,6 +117,7 @@ public class RentalMapper {
                 rental.getLandlordBranch(),
 
                 // Commission
+                rental.getBaseRent(),
                 rental.getRentalCommissionPercent(),
                 rental.getOfficeSplit(),
                 rental.getAgentSplit(),
@@ -140,7 +142,7 @@ public class RentalMapper {
      * @param rentals list of entities (agent must be initialised on each)
      * @return list of return DTOs in the same order
      */
-    public static List<RentalReturnDto> toReturnDtoList(@NonNull List<Rental> rentals) {
+    public static @NonNull @Unmodifiable List<RentalReturnDto> toReturnDtoList(@NonNull List<Rental> rentals) {
         return rentals.stream()
                 .map(RentalMapper::toReturnDto)
                 .toList();
