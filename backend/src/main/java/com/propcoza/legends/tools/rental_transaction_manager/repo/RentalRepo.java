@@ -16,4 +16,7 @@ public interface RentalRepo extends JpaRepository<Rental, UUID> {
 
     // Get all an agents rentals
     List<Rental> getRentalsByAgent_Id(UUID agentId);
+
+    /// Find if the rental is Vat Registered
+    Boolean isVatRegistered(UUID id);
 }

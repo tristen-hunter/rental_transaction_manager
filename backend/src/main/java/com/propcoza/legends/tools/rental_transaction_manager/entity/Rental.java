@@ -105,6 +105,9 @@ public class Rental {
     @Column(name = "agent_paye")
     private double agentPaye;
 
+    @Column(name = "vat_registered")
+    private Boolean vatRegistered;
+
     // -------------------------------
     //     Logging Data
     // -------------------------------
@@ -133,4 +136,6 @@ public class Rental {
         // Note: Using a small epsilon for double comparison is safer
         return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
     }
+
+
 }
