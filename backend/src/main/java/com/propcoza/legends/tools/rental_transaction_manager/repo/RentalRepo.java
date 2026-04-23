@@ -2,11 +2,13 @@ package com.propcoza.legends.tools.rental_transaction_manager.repo;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,4 +25,6 @@ public interface RentalRepo extends JpaRepository<Rental, UUID> {
 
     // Get all an agents rentals
     List<Rental> getRentalsByAgent_Id(UUID agentId);
+
+    @NonNull Optional<Rental> findById(UUID id);
 }

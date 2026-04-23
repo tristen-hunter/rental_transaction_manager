@@ -1,5 +1,7 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -39,12 +41,12 @@ public class InstanceCreateDto {
     //     Financial Snapshot
     // -------------------------------
 
+    @PositiveOrZero
+    private BigDecimal totalAmountPayed;
+
     @NotNull
     @Positive
     private BigDecimal baseRent;
-
-    @PositiveOrZero
-    private BigDecimal totalAmountPayed;
 
     @PositiveOrZero
     private BigDecimal landlordPayAmount;

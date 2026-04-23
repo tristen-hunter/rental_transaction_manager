@@ -110,7 +110,7 @@ public class Rental {
     private double agentPaye;
 
     @Column(name = "vat_registered")
-    private Boolean vatRegistered;
+    private Boolean vatRegistered = true;
 
     // -------------------------------
     //     Logging Data
