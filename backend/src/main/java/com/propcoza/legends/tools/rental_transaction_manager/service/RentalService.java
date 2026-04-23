@@ -1,7 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.service;
 
 import com.propcoza.legends.tools.rental_transaction_manager.common.utils.NormalizationUtils;
-import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.*;
@@ -29,6 +28,13 @@ public class RentalService {
     private final RentalInstanceRepo instanceRepo;
     private final RentalMapper rentalMapper;
 
+    /**
+     * @param dto
+     * This is the JSON data passed from the Rental Creation form, containing all neccessary fields
+     * @return
+     * A return Dto is given back to display it on the UI after creation.
+     * This also allows usage
+     */
     @Transactional
     public RentalReturnDto createRental(RentalCreateDto dto){
         // 1. Instantiate the new object and normalize all variables
@@ -67,6 +73,12 @@ public class RentalService {
         // Save to the repo
         Rental savedRental = rentalRepo.save(newRental);
 
+        /// this generates a new instance (billingPeriod = yyyy-mm-01)
+        LocalDate firstBillingPeriod =
+                savedRental.getPaymentDate().withDayOfMonth(1);
+
+        generateMonthlyInstance(savedRental, firstBillingPeriod);
+
         return RentalReturnDto.builder()
                 .agentName(agent.getFullName())
                 .address(savedRental.getAddress())
@@ -92,6 +104,13 @@ public class RentalService {
                 .build();
     }
 
+    /**
+     *
+     * @param rental
+     * This passes the actual rental MASTER object created by the admin
+     * @param billingPeriod
+     * here we take the paymentDate and normalise it to the first day of the month for simplified lookups
+     */
     @Transactional
     public void generateMonthlyInstance(Rental rental, LocalDate billingPeriod){
         if(instanceRepo.existsByRentalAndBillingPeriod(rental, billingPeriod)){
@@ -115,13 +134,33 @@ public class RentalService {
         instanceRepo.save(instance);
     }
 
+    /**
+     * this returns a list of all MASTER rentals with no filters
+     */
     @Transactional
     public List<RentalReturnDto> getAllRentals(){
         return rentalMapper.toDtoList(rentalRepo.findAll());
     }
 
+    /**
+     * @param agentId
+     * Here we flatten the Agent object to extract the Id, then that is passed to a repo call
+     * @return
+     * We return the Dto after using the mapper to map the list of rentslsd returned by the DB
+     */
     @Transactional
     public List<RentalReturnDto> getRentalsByAgentId(UUID agentId){
-        return rentalMapper.toDtoList(rentalRepo.getRentalsByAgentId(agentId));
+        return rentalMapper.toDtoList(rentalRepo.getRentalsByAgent_Id(agentId));
+    }
+
+    /**
+     * @param rentalId
+     * Flattened Rental object passed to a DB call
+     * @return
+     * A list of all rental instances is returned with no filters
+     */
+    @Transactional
+    public List<RentalInstance> findByRental_Id(UUID rentalId){
+        return instanceRepo.findByRental_Id(rentalId);
     }
 }

@@ -33,8 +33,13 @@ public class RentalController {
     }
 
     // Gets all MASTER rentals associated with an agent
-    @GetMapping("/{agentId}")
+    @GetMapping("/agent/{agentId}")
     public List<RentalReturnDto> getRentalsByAgentId(@PathVariable UUID agentId){
         return rentalService.getRentalsByAgentId(agentId);
+    }
+
+    @GetMapping("/rental/{rentalId}")
+    public List<RentalInstance> findByRental_Id(@PathVariable UUID rentalId){
+        return rentalService.findByRental_Id(rentalId);
     }
 }

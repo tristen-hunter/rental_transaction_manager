@@ -25,11 +25,17 @@ public class Rental {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    // Establishing the Foreign Key relationship to the Agent entity
+    /**
+     * This establishes the FK relationship with the agents table.
+     * The entity is passed because we are using an ORM
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id", nullable = false)
     private Agent agent;
 
+    // -------------------------------
+    //    Meta Data for the Rental
+    // -------------------------------
     @Column(columnDefinition = "TEXT", nullable = false)
     private String address;
 
@@ -44,25 +50,31 @@ public class Rental {
     // -------------------------------
 
     @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate; // This is set to the initial payment data
 
     @Column(name = "end_date")
     private LocalDate endDate; // This is set to the last RentalInstance payment date
 
+    /**
+     * This bool is to determine which instances must be created by the cron job
+     * Can only be manually deactivated
+     */
     @Column(name = "auto_renew", nullable = false)
     private Boolean autoRenew = true;
 
+    /**
+     * Here we can visually represent the MASTER templates use case
+     * ACTIVE - name suggests
+     * CANCELLED - this rental was specifically cancelled due to something (Admin will explain)
+     * COMPLETE - this rental reached the end of it's contract
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private RentalStatus status = RentalStatus.ACTIVE;
 
     // -------------------------------
-    //     Financial Data
+    //     Landlord Info
     // -------------------------------
-
-    @Column(name = "total_rent_received", precision = 19, scale = 2)
-    private BigDecimal totalRentReceived;
-
     @Column(name = "landlord_name")
     private String landlordName;
 
@@ -75,23 +87,31 @@ public class Rental {
     @Column(name = "landlord_branch")
     private String landlordBranch;
 
-    @Column(name = "company_comm", precision = 19, scale = 2)
-    private BigDecimal companyComm;
+    // -------------------------------
+    //     Commission Data
+    // -------------------------------
+    // NOTE: this data is entered by Fatima and used to calculate the financials.
+    //       warnings must be given if they don't meet certain criteria
 
-    @Column(name = "agent_gross_comm", precision = 19, scale = 2)
-    private BigDecimal agentGrossComm;
+    @Column(name = "rental_commision_percent")
+    private double rentalCommissionPercent; // for example 10%
 
-    @Column(name = "paye_amount", precision = 19, scale = 2)
-    private BigDecimal payeAmount;
+    @Column(name = "office_split")
+    private double officeSplit; // office portion as a percentage (usually 30%)
 
-    @Column(name = "agent_nett_comm", precision = 19, scale = 2)
-    private BigDecimal agentNettComm;
+    @Column(name = "agent_split")
+    private double agentSplit; // 100 - officeSplit
 
-    @Column(name = "landlord_pay_amount", precision = 19, scale = 2)
-    private BigDecimal landlordPayAmount;
+    /// run when values are entered to ensure they add up to 100
+    @AssertTrue(message = "Agent split and office split must add up to 100%")
+    public boolean isSplitValid() {
+        // Check if the sum equals 1.0 (or 100)
+        // Note: Using a small epsilon for double comparison is safer
+        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
+    }
 
-    @Column(name = "vat", precision = 19, scale = 2)
-    private BigDecimal vat;
+    @Column(name = "agent_paye")
+    private double agentPaye;
 
     // -------------------------------
     //     Logging Data
@@ -109,43 +129,7 @@ public class Rental {
     private LocalDateTime updatedAt;
 
 
-    /**
-     * Ensures startDate is always synchronized with paymentDate
-     * before the record is created.
-     */
-    @PrePersist
-    protected void onCreate() {
-        if (this.startDate == null) {
-            this.startDate = this.paymentDate;
-        }
-
-        // Ensure initial financial calculations aren't null if preferred
-        if (this.totalRentReceived == null) {
-            this.totalRentReceived = BigDecimal.ZERO;
-        }
-    }
-
     // Inside Rental.java
     @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RentalInstance> instances = new ArrayList<>();
-
-    // When a rental is deleted all data that was related to it must be deleted as well (notes and adjustments)
-//    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Adjustment> adjustments = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Note> notes = new ArrayList<>();
-//
-//    public void addAdjustment(Adjustment adjustment) {
-//        adjustments.add(adjustment);
-//        adjustment.setRental(this);
-//    }
-    // validates if *Gross Comm = nett + paye*
-    @AssertTrue(message = "Commission values inconsistent")
-    public boolean isCommissionValid(){
-        if (agentGrossComm == null || payeAmount == null || agentNettComm == null) {
-            return true; // handled by @NotNull
-        }
-        return agentGrossComm.subtract(payeAmount).compareTo(agentNettComm) == 0;
-    }
 }
