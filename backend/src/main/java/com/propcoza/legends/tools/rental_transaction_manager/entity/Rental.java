@@ -136,6 +136,4 @@ public class Rental {
         // Note: Using a small epsilon for double comparison is safer
         return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
     }
-
-
 }
