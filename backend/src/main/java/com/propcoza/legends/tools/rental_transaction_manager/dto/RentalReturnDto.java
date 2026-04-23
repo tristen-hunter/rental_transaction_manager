@@ -1,46 +1,74 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
-import lombok.Builder;
-import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.UUID;
 
-@Data
-@Builder
-public class RentalReturnDto {
+/**
+ * DTO returned to the client after fetching a Rental.
+ * Exposes the agent as a flat summary (agentId + name) rather than
+ * the full Agent entity, to avoid over-fetching across lazy boundaries.
+ */
+public record RentalReturnDto(
 
-    // Relational Info
-    private String agentName; // Flattened for admin view
+        // -------------------------------
+        //    Identity
+        // -------------------------------
 
-    // Core Rental Details
-    private String address;
-    private String tenantName;
-    private LocalDate paymentDate;
-    private RentalStatus status;
+        UUID id,
 
-    // Financial Data
-    private BigDecimal totalRentReceived;
-    private String landlordName;
-    private String landlordBankName;
-    private String landlordAccNo;
-    private String landlordBranch;
-    private BigDecimal companyComm;
-    private BigDecimal agentGrossComm;
-    private BigDecimal payeAmount;
-    private BigDecimal agentNettComm;
-    private BigDecimal landlordPayAmount;
-    private BigDecimal vat;
+        // -------------------------------
+        //    Agent Summary (flattened)
+        // -------------------------------
 
-    // Audit/Logging Data
-    private String createdBy;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+        UUID agentId,
+        String agentName, // resolved from Agent entity in mapper
 
-    // Related Data Summaries
-//    private List<AdjustmentDto> adjustments;
-//    private List<NoteDto> notes;
-}
+        // -------------------------------
+        //    Meta Data
+        // -------------------------------
+
+        String address,
+        String tenantName,
+        LocalDate paymentDate,
+
+        // -------------------------------
+        //    Recurring Rental Fields
+        // -------------------------------
+
+        LocalDate startDate,
+        LocalDate endDate,
+        Boolean autoRenew,
+        RentalStatus status,
+
+        // -------------------------------
+        //    Landlord Info
+        // -------------------------------
+
+        String landlordName,
+        String landlordBankName,
+        String landlordAccNo,
+        String landlordBranch,
+
+        // -------------------------------
+        //    Commission Inputs
+        //    (returned so the UI can pre-fill edit forms)
+        // -------------------------------
+
+        double rentalCommissionPercent,
+        double officeSplit,
+        double agentSplit,   // derived, but returned for display convenience
+        double agentPaye,
+        boolean vatRegistered,
+
+        // -------------------------------
+        //    Audit
+        // -------------------------------
+
+        String createdBy,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
+
+) {}

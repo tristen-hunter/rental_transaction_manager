@@ -17,29 +17,7 @@ public class RentalMapper {
             return null;
         }
 
-        return RentalReturnDto.builder()
-                .agentName(rental.getAgent() != null ? rental.getAgent().getFullName() : "N/A")
-                .address(rental.getAddress())
-                .tenantName(rental.getTenantName())
-                .paymentDate(rental.getPaymentDate())
-                .status(rental.getStatus())
-
-                .totalRentReceived(rental.getTotalRentReceived())
-                .landlordName(rental.getLandlordName())
-                .landlordBankName(rental.getLandlordBankName())
-                .landlordAccNo(rental.getLandlordAccNo())
-                .landlordBranch(rental.getLandlordBranch())
-                .companyComm(rental.getCompanyComm())
-                .agentGrossComm(rental.getAgentGrossComm())
-                .payeAmount(rental.getPayeAmount())
-                .agentNettComm(rental.getAgentNettComm())
-                .landlordPayAmount(rental.getLandlordPayAmount())
-                .vat(rental.getVat())
-
-                .createdBy(rental.getCreatedBy())
-                .createdAt(rental.getCreatedAt())
-                .updatedAt(rental.getUpdatedAt())
-                .build();
+        return null;
     }
 
     public List<RentalReturnDto> toDtoList(@NonNull List<Rental> rentals){
