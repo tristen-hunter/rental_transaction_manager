@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -134,5 +135,13 @@ public class InstanceService {
 
         // 5. map to DTO and return
         return InstanceMapper.toReturnDto(savedInstance);
+    }
+
+
+    @Transactional
+    public List<InstanceReturnDto> findByRentalId(@NonNull UUID rentalId){
+        List<RentalInstance> entities = instanceRepo.findByRental_Id(rentalId);
+
+        return InstanceMapper.toReturnDtoList(entities);
     }
 }

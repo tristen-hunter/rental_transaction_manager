@@ -6,7 +6,6 @@ import com.propcoza.legends.tools.rental_transaction_manager.entity.Adjustment;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Note;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -101,7 +100,7 @@ public class InstanceMapper {
         return dto;
     }
 
-    public static @NonNull @Unmodifiable List<InstanceReturnDto> toReturnDtoList(@NonNull List<RentalInstance> instances) {
+    public static @NonNull List<InstanceReturnDto> toReturnDtoList(@NonNull List<RentalInstance> instances) {
         return instances.stream()
                 .map(InstanceMapper::toReturnDto)
                 .toList();
