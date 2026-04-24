@@ -66,22 +66,6 @@ public class RentalService {
     }
 
     /**
-     *
-     * @param rental
-     * This passes the actual rental MASTER object created by the admin
-     * @param billingPeriod
-     * here we take the paymentDate and normalize it to the first day of the month for simplified lookups
-     */
-    @Transactional
-    public void generateMonthlyInstance(Rental rental, LocalDate billingPeriod){
-        if(instanceRepo.existsByRentalAndBillingPeriod(rental, billingPeriod)){
-            return;
-        }
-
-
-    }
-
-    /**
      * this returns a list of all MASTER rentals with no filters
      */
 //    @Transactional

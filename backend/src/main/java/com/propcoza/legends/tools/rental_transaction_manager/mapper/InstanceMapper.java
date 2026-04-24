@@ -18,6 +18,7 @@ public class InstanceMapper {
         // Note: rental must be resolved and set by the service layer via rentalId
         instance.setBillingPeriod(dto.getBillingPeriod());
         instance.setActualPaymentDate(dto.getActualPaymentDate());
+        instance.setStatus(dto.getStatus());
 
         instance.setRentalCommissionPercent(dto.getRentalCommissionPercent());
         instance.setOfficeSplit(dto.getOfficeSplit());

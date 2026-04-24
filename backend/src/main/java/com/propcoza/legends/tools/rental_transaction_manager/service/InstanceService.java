@@ -1,7 +1,11 @@
 package com.propcoza.legends.tools.rental_transaction_manager.service;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceCreateDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
+import com.propcoza.legends.tools.rental_transaction_manager.mapper.InstanceMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalInstanceRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
 import jakarta.transaction.Transactional;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,8 +34,16 @@ public class InstanceService {
                 .orElseThrow(() -> new RuntimeException("Rental not found"));
     }
 
+    /**
+     * @param rental
+     * this is the entity that needs to be mapped
+     * @return
+     * returns a DTO to be edited by the user.
+     *
+     * this fundtion is called once everytime a new instance is created - after editing this DTO must be passed to a new function
+     */
     @Transactional
-    public InstanceCreateDto createInstanceDto(Rental rental){
+    public InstanceCreateDto createInstanceDto(@NonNull Rental rental){
         /// 1. Map the constants from the entity to the DTO
         InstanceCreateDto newDto = new InstanceCreateDto();
 
@@ -38,6 +51,7 @@ public class InstanceService {
         LocalDate firstBillingPeriod = rental.getPaymentDate().withDayOfMonth(1);
         newDto.setBillingPeriod(firstBillingPeriod);
         newDto.setActualPaymentDate(rental.getPaymentDate());
+        newDto.setStatus(InstanceStatus.DRAFT);
         newDto.setRentalCommissionPercent(rental.getRentalCommissionPercent());
         newDto.setOfficeSplit(rental.getOfficeSplit());
         newDto.setAgentPaye(rental.getAgentPaye());
@@ -91,6 +105,33 @@ public class InstanceService {
         newDto.setLeaseFeeOfficePortion(BigDecimal.ZERO);
         newDto.setDeposit(BigDecimal.ZERO);
 
+        // Explicitly initializing as empty lists
+        newDto.setAdjustments(new ArrayList<>());
+        newDto.setNotes(new ArrayList<>());
+
         return newDto;
+    }
+
+    @Transactional
+    public InstanceReturnDto saveInitialDraft(@NonNull UUID rentalId) {
+        // 1. Getting the rental entity
+        Rental rental = rentalRepo.findById(rentalId)
+                .orElseThrow(() -> new RuntimeException("Rental not found"));
+
+        // 2. Generate the DTO logic (Calculates your 10%, VAT, etc.)
+        InstanceCreateDto newDtoDraft = createInstanceDto(rental);
+
+        // 3. Map DTO -> Entity
+        RentalInstance instance = InstanceMapper.toEntity(newDtoDraft);
+
+        // CRITICAL: Link the instance back to the parent Rental
+        instance.setRental(rental);
+        instance.setStatus(InstanceStatus.DRAFT);
+
+        // 4. Save to DB
+        RentalInstance savedInstance = instanceRepo.save(instance);
+
+        // 5. map to DTO and return
+        return InstanceMapper.toReturnDto(savedInstance);
     }
 }

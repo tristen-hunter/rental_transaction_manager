@@ -1,5 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
+import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -23,6 +24,8 @@ public class InstanceCreateDto {
     private LocalDate billingPeriod;
 
     private LocalDate actualPaymentDate;
+
+    private InstanceStatus status = InstanceStatus.DRAFT;
 
     // -------------------------------
     //     Commission Percentages
