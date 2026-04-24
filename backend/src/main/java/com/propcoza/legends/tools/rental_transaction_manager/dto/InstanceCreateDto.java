@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -46,7 +48,7 @@ public class InstanceCreateDto {
 
     /// baseRent plus all adjustments (set to baseRent by default)
     @PositiveOrZero
-    private BigDecimal totalAmountPayed;
+    private BigDecimal totalAmountPaid;
 
     /// this is the amount the tenant pays each month (excluding adjustments: totalAmountPayed - adjustments)
     /// However this is calculated first, totalAmountPayed - adjustments this is merely a relationship
@@ -111,4 +113,11 @@ public class InstanceCreateDto {
 
     @PositiveOrZero
     private BigDecimal deposit;
+
+    /**
+     * These are stored locally before being added to the DB
+     */
+    private List<AdjustmentDto> adjustments = new ArrayList<>();
+
+    private List<NoteDto> notes = new ArrayList<>();
 }

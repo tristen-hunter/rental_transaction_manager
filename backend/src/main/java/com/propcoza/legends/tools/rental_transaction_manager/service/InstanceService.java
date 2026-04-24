@@ -46,33 +46,45 @@ public class InstanceService {
         ///  Here I need to map the variables that are not constant
         // Variables
         BigDecimal totalAdjustments = BigDecimal.ZERO;
-        BigDecimal baseComm = rental.getBaseRent().multiply(BigDecimal.valueOf(rental.getRentalCommissionPercent()));
+        // 1. Calculate the Total Commission (VAT Inclusive)
+        BigDecimal baseComm = rental.getBaseRent()
+                .multiply(BigDecimal.valueOf(rental.getRentalCommissionPercent()))
+                .setScale(2, RoundingMode.HALF_UP);
 
         BigDecimal vat = BigDecimal.ZERO;
-        if (rental.getVatRegistered()){
-            BigDecimal amountExclVat = rental.getBaseRent()
-                    .divide(BigDecimal.valueOf(1.15), 2, RoundingMode.HALF_UP);
+        BigDecimal commExclVat;
 
-            // VAT is the difference
-            vat = rental.getBaseRent().subtract(amountExclVat);
+        // 2. Extract VAT from the Commission, not the Rent
+        if (rental.getVatRegistered()) {
+            // Standard "Inside" VAT calc: Total / 1.15
+            commExclVat = baseComm.divide(BigDecimal.valueOf(1.15), 2, RoundingMode.HALF_UP);
+            vat = baseComm.subtract(commExclVat);
+        } else {
+            commExclVat = baseComm;
         }
+        // 3. Split the NET (Excl VAT) amount
+        BigDecimal agentGrossComm = commExclVat.multiply(BigDecimal.valueOf(rental.getAgentSplit()))
+                .setScale(2, RoundingMode.HALF_UP);
 
-        BigDecimal commExclVat = rental.getBaseRent().subtract(vat);
-        BigDecimal agentGrossComm = commExclVat.multiply(BigDecimal.valueOf(rental.getAgentSplit()));
-        BigDecimal agentPaye = agentGrossComm.multiply(BigDecimal.valueOf(rental.getAgentPaye()));
+        // If officeSplit is 0.3, this gives the 30% portion
+        BigDecimal companyComm = commExclVat.subtract(agentGrossComm);
+
+        // 4. Tax
+        BigDecimal payeAmount = agentGrossComm.multiply(BigDecimal.valueOf(rental.getAgentPaye()))
+                .setScale(2, RoundingMode.HALF_UP);
 
 
         // Assignment
-        newDto.setTotalAmountPayed(rental.getBaseRent().add(totalAdjustments)); /// INCOMPLETE
+        newDto.setTotalAmountPaid(rental.getBaseRent().add(totalAdjustments)); /// INCOMPLETE
         newDto.setBaseRent(rental.getBaseRent());
         newDto.setLandlordPayAmount(rental.getBaseRent().subtract(baseComm));
         newDto.setBaseComm(baseComm);
         newDto.setVat(vat);
         newDto.setCommExclVat(commExclVat);
-        newDto.setCompanyComm(baseComm.subtract(agentGrossComm));
+        newDto.setCompanyComm(commExclVat.subtract(agentGrossComm));
         newDto.setAgentGrossComm(agentGrossComm);
-        newDto.setPayeAmount(agentPaye);
-        newDto.setAgentNettComm(agentGrossComm.subtract(agentPaye));
+        newDto.setPayeAmount(payeAmount);
+        newDto.setAgentNettComm(agentGrossComm.subtract(payeAmount));
 
         newDto.setLeaseFee(BigDecimal.ZERO);
         newDto.setLeaseFeeAgentPortion(BigDecimal.ZERO);

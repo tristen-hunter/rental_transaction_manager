@@ -12,7 +12,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "adjustments")
+@Table(name = "adjustments", indexes = {
+        @Index(name = "idx_adjustment_rental_instance", columnList = "rental_instance_id")
+})
 public class Adjustment {
 
     @Id
@@ -20,7 +22,6 @@ public class Adjustment {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    // Link back to the specific Rental transaction
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rental_instance_id", nullable = false)
     private RentalInstance rentalInstance;
@@ -37,4 +38,17 @@ public class Adjustment {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    // Standard practice: entities with UUIDs should use ID for equality
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Adjustment that)) return false;
+        return id != null && id.equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

@@ -31,7 +31,7 @@ public class InstanceReturnDto {
     // -------------------------------
 
     private BigDecimal baseRent;
-    private BigDecimal totalAmountPayed;
+    private BigDecimal totalAmountPaid;
     private BigDecimal landlordPayAmount;
     private BigDecimal baseComm;
     private BigDecimal vat;

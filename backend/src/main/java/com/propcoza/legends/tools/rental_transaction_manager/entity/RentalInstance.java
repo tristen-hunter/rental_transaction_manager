@@ -73,7 +73,7 @@ public class RentalInstance {
 
     /// = baseRent + all adjustments (such as a deposit or lease fee)
     @Column(name = "total_amount_payed", precision = 19, scale = 2)
-    private BigDecimal totalAmountPayed; // totalRentReceived + adjustments
+    private BigDecimal totalAmountPaid; // totalRentReceived + adjustments
 
     /// the rent amount paid every month (used to calculate payouts)
     @Column(name = "base_rent", precision = 19, scale = 2)

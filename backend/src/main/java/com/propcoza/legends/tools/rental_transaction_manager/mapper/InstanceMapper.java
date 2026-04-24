@@ -24,7 +24,7 @@ public class InstanceMapper {
         instance.setAgentPaye(dto.getAgentPaye());
 
         instance.setBaseRent(dto.getBaseRent());
-        instance.setTotalAmountPayed(dto.getTotalAmountPayed());
+        instance.setTotalAmountPaid(dto.getTotalAmountPaid());
         instance.setLandlordPayAmount(dto.getLandlordPayAmount());
         instance.setBaseComm(dto.getBaseComm());
         instance.setVat(dto.getVat());
@@ -56,7 +56,7 @@ public class InstanceMapper {
         dto.setAgentPaye(instance.getAgentPaye());
 
         dto.setBaseRent(instance.getBaseRent());
-        dto.setTotalAmountPayed(instance.getTotalAmountPayed());
+        dto.setTotalAmountPaid(instance.getTotalAmountPaid());
         dto.setLandlordPayAmount(instance.getLandlordPayAmount());
         dto.setBaseComm(instance.getBaseComm());
         dto.setVat(instance.getVat());
