@@ -2,6 +2,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.repo;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,4 +27,7 @@ public interface RentalInstanceRepo extends JpaRepository<RentalInstance, UUID> 
 
     // Get all Instances associated with a rental (master)
     List<RentalInstance> findByRental_Id(UUID rentalId);
+
+    // Find a specific instance by its ID
+    @NonNull Optional<RentalInstance> findById(UUID id);
 }
