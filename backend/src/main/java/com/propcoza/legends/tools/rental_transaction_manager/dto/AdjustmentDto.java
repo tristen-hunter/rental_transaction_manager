@@ -23,6 +23,6 @@ public class AdjustmentDto {
     @Positive(message = "Amount must be greater than zero")
     private BigDecimal amount;
 
-    @NotBlank(message = "Reason for adjustment is required")
-    private String reason;
+    @NotBlank(message = "Description for adjustment is required")
+    private String description;
 }

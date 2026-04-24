@@ -26,6 +26,7 @@ public class InstanceService {
 
     private final RentalInstanceRepo instanceRepo;
     private final RentalRepo rentalRepo;
+    private final InstanceMapper instanceMapper;
 
     @Transactional
     public Rental findRentalById(@NonNull UUID rentalId){
@@ -122,7 +123,7 @@ public class InstanceService {
         InstanceCreateDto newDtoDraft = createInstanceDto(rental);
 
         // 3. Map DTO -> Entity
-        RentalInstance instance = InstanceMapper.toEntity(newDtoDraft);
+        RentalInstance instance = instanceMapper.toEntity(newDtoDraft);
 
         // CRITICAL: Link the instance back to the parent Rental
         instance.setRental(rental);

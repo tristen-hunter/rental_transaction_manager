@@ -2,17 +2,24 @@ package com.propcoza.legends.tools.rental_transaction_manager.mapper;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.Adjustment;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.Note;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
+@RequiredArgsConstructor
 public class InstanceMapper {
 
-    private InstanceMapper() {}
+    private final AdjustmentMapper adjMapper;
+    private final NoteMapper noteMapper;
 
-    public static @NonNull RentalInstance toEntity(@NonNull InstanceCreateDto dto) {
+    public @NonNull RentalInstance toEntity(@NonNull InstanceCreateDto dto) {
         RentalInstance instance = new RentalInstance();
 
         // Note: rental must be resolved and set by the service layer via rentalId
@@ -40,6 +47,20 @@ public class InstanceMapper {
         instance.setLeaseFeeOfficePortion(dto.getLeaseFeeOfficePortion());
 
         instance.setDeposit(dto.getDeposit());
+
+        if (dto.getAdjustments() != null) {
+            dto.getAdjustments().forEach(adjDto -> {
+                Adjustment adj = adjMapper.toEntity(adjDto);
+                instance.addAdjustment(adj);
+            });
+        }
+
+        if (dto.getNotes() != null) {
+            dto.getNotes().forEach(noteDto -> {
+                Note note = noteMapper.toEntity(noteDto);
+                instance.addNote(note);
+            });
+        }
 
         return instance;
     }

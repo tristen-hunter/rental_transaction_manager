@@ -33,7 +33,7 @@ public class Adjustment {
     private BigDecimal amount;
 
     @Column(nullable = false)
-    private String reason;
+    private String description;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

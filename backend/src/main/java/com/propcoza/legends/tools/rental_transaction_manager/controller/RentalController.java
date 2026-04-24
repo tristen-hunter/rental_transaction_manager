@@ -4,6 +4,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.service.RentalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,11 @@ public class RentalController {
         return new ResponseEntity<>(createdRental, HttpStatus.CREATED);
     }
 
-//    @GetMapping
-//    public List<RentalReturnDto> getAllRentals(){
-//        return rentalService.getAllRentals();
-//    }
+    @GetMapping
+    public List<RentalReturnDto> getRentalsByStatus(@RequestParam RentalStatus status){
+        return rentalService.getRentalsByStatus(status);
+    }
+
 //
 //    // Gets all MASTER rentals associated with an agent
 //    @GetMapping("/agent/{agentId}")

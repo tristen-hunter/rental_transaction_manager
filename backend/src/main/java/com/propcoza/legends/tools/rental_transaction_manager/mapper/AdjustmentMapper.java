@@ -31,7 +31,7 @@ public class AdjustmentMapper {
         adjustment.setRentalInstance(rentalInstance);
         adjustment.setType(dto.getType());
         adjustment.setAmount(dto.getAmount());
-        adjustment.setReason(dto.getReason());
+        adjustment.setDescription(dto.getDescription());
 
         return adjustment;
     }

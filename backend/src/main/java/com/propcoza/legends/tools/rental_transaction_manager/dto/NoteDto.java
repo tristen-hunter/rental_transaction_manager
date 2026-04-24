@@ -15,7 +15,7 @@ public class NoteDto {
     @NotNull(message = "Rental Instance ID is required")
     private UUID rentalInstanceId;
 
-    @NotBlank(message = "Note description cannot be empty")
+    @NotBlank(message = "Note content cannot be empty")
     @Size(max = 2000, message = "Note is too long (max 2000 characters)")
-    private String description;
+    private String content;
 }

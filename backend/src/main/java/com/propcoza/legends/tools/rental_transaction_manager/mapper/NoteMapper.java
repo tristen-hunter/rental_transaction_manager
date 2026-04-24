@@ -30,7 +30,7 @@ public class NoteMapper {
 
         Note note = new Note();
         note.setRentalInstance(rentalInstance);
-        note.setDescription(dto.getDescription());
+        note.setContent(dto.getContent());
 
         return note;
     }

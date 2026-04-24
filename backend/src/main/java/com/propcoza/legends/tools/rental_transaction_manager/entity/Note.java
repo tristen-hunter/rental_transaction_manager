@@ -28,7 +28,7 @@ public class Note {
 
     @NotBlank // Ensures the note isn't empty in the application layer
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String description;
+    private String content;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -68,11 +68,13 @@ public class RentalService {
     /**
      * this returns a list of all MASTER rentals with no filters
      */
-//    @Transactional
-//    public List<RentalReturnDto> getAllRentals(){
-//        return rentalMapper.toDtoList(rentalRepo.findAll());
-//    }
-//
+    @Transactional
+    public List<RentalReturnDto> getRentalsByStatus(RentalStatus status){
+        List<Rental> entities = rentalRepo.findByStatus(status);
+
+        return RentalMapper.toReturnDtoList(entities);
+    }
+
 //    /**
 //     * @param agentId
 //     * Here we flatten the Agent object to extract the Id, then that is passed to a repo call
