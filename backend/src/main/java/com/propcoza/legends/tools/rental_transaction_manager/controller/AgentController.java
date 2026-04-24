@@ -2,6 +2,8 @@ package com.propcoza.legends.tools.rental_transaction_manager.controller;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.service.AgentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/agents")
@@ -28,5 +31,10 @@ public class AgentController {
     @GetMapping
     public List<AgentReturnDto> getAllAgents(){
         return agentService.getAllAgents();
+    }
+
+    @GetMapping("/{agentId}")
+    public List<RentalReturnDto> getRentalsByAgentId(@PathVariable UUID agentId){
+        return agentService.getRentalsByAgentId(agentId);
     }
 }

@@ -2,9 +2,13 @@ package com.propcoza.legends.tools.rental_transaction_manager.service;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.AgentMapper;
+import com.propcoza.legends.tools.rental_transaction_manager.mapper.RentalMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.AgentRepo;
+import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,7 @@ public class AgentService {
 
     private final AgentRepo agentRepo;
     private final AgentMapper agentMapper;
+    private final RentalRepo rentalRepo;
 
     // [ADMIN]
     @Transactional
@@ -73,6 +79,13 @@ public class AgentService {
 
     public List<AgentReturnDto> getAllAgents(){
         return agentMapper.toDtoList(agentRepo.findAll());
+    }
+
+    @Transactional
+    public List<RentalReturnDto> getRentalsByAgentId(UUID agentId){
+        List<Rental> entities = rentalRepo.getRentalsByAgent_Id(agentId);
+
+        return RentalMapper.toReturnDtoList(entities);
     }
 
 

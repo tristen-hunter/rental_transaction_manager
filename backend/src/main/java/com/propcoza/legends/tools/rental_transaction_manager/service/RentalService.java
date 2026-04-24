@@ -66,7 +66,7 @@ public class RentalService {
     }
 
     /**
-     * this returns a list of all MASTER rentals with no filters
+     * this returns a list of all MASTER rentals with a status filter
      */
     @Transactional
     public List<RentalReturnDto> getRentalsByStatus(RentalStatus status){
@@ -74,17 +74,6 @@ public class RentalService {
 
         return RentalMapper.toReturnDtoList(entities);
     }
-
-//    /**
-//     * @param agentId
-//     * Here we flatten the Agent object to extract the Id, then that is passed to a repo call
-//     * @return
-//     * We return the Dto after using the mapper to map the list of rentslsd returned by the DB
-//     */
-//    @Transactional
-//    public List<RentalReturnDto> getRentalsByAgentId(UUID agentId){
-//        return rentalMapper.toDtoList(rentalRepo.getRentalsByAgent_Id(agentId));
-//    }
 
     /**
      * @param rentalId
