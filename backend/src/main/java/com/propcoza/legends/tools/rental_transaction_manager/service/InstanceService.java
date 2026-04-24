@@ -10,6 +10,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,7 +50,11 @@ public class InstanceService {
 
         BigDecimal vat = BigDecimal.ZERO;
         if (rental.getVatRegistered()){
-            vat = rental.getBaseRent().subtract(rental.getBaseRent().divide(BigDecimal.valueOf(1.15)));
+            BigDecimal amountExclVat = rental.getBaseRent()
+                    .divide(BigDecimal.valueOf(1.15), 2, RoundingMode.HALF_UP);
+
+            // VAT is the difference
+            vat = rental.getBaseRent().subtract(amountExclVat);
         }
 
         BigDecimal commExclVat = rental.getBaseRent().subtract(vat);
