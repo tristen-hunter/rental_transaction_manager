@@ -4,7 +4,9 @@ import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceCreateD
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.service.InstanceService;
+import com.propcoza.legends.tools.rental_transaction_manager.service.RentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class InstanceController {
 
     private final InstanceService instanceService;
+    private final RentalService rentalService;
 
     @PostMapping("/{rentalId}")
     public InstanceReturnDto instanceCreateDto(@PathVariable UUID rentalId) {
@@ -25,4 +28,14 @@ public class InstanceController {
 
         return instanceService.saveInitialDraft(rentalId);
     }
+
+    /**
+     * This function mass creates Instances of ALL current rentals (deprecated)
+     */
+//    @PostMapping("/pending")
+//    public List<InstanceReturnDto> createAllPendingInstances(){
+//        List<Rental> rentals = instanceService.getAllActiveRentals();
+//
+//        return instanceService.saveAllInitialDrafts(rentals);
+//    }
 }

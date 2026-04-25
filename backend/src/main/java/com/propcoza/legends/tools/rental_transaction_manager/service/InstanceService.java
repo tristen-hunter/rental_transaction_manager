@@ -5,6 +5,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnD
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.InstanceMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalInstanceRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
@@ -138,6 +139,45 @@ public class InstanceService {
     }
 
 
+    /**
+     * Gets ALL current ACTIVE rentals
+     * @return A List item
+     */
+    @Transactional
+    public List<Rental> getAllActiveRentals(){
+        return rentalRepo.findByStatus(RentalStatus.ACTIVE);
+    }
+
+    /// Deprecated
+    @Transactional
+    public List<InstanceReturnDto> saveAllInitialDrafts(@NonNull List<Rental> rentals){
+        // 1. Process all rentals into entities in-memory
+        List<RentalInstance> instancesToSave = rentals.stream()
+                .map(rental -> {
+                    // Reuse your existing math logic
+                    InstanceCreateDto newDtoDraft = createInstanceDto(rental);
+
+                    // Map to Entity
+                    RentalInstance instance = instanceMapper.toEntity(newDtoDraft);
+
+                    // Set relationships and metadata
+                    instance.setRental(rental);
+                    instance.setStatus(InstanceStatus.DRAFT);
+
+                    return instance;
+                })
+                .toList();
+
+        // 2. Batch Save (MUCH faster than saving inside the loop)
+        List<RentalInstance> savedInstances = instanceRepo.saveAll(instancesToSave);
+
+        // 3. Map back to Return DTOs
+        return savedInstances.stream()
+                .map(InstanceMapper::toReturnDto)
+                .toList();
+    }
+
+    /// Find ALL instances by a rental ID
     @Transactional
     public List<InstanceReturnDto> findByRentalId(@NonNull UUID rentalId){
         List<RentalInstance> entities = instanceRepo.findByRental_Id(rentalId);
