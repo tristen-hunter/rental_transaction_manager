@@ -1,6 +1,6 @@
-import axiosClient from "../api/axiosClient"
+import axiosClient from "../context/axiosClient"
 import { useEffect, useState } from "react";
-import type { AgentReturnDto } from "../types/agentReturnDto";
+import type { AgentReturnDto } from "../features/agents/agentReturnDto";
 
 export default function Agents() {
   const [agents, setAgents] = useState<AgentReturnDto[]>([]);

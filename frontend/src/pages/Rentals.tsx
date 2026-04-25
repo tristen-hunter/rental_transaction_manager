@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axiosClient from "../api/axiosClient";
-import type { RentalReturnDto, RentalStatus } from "../types/rental";
+import axiosClient from "../context/axiosClient";
+import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
 
 export default function Rentals() {
   const [rentals, setRentals] = useState<RentalReturnDto[]>([]);
