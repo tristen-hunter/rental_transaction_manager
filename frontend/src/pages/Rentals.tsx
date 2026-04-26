@@ -33,8 +33,8 @@ export default function Rentals() {
 
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Rentals</h1>
+    <div className="max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold">Rentals</h1>
 
       {/* Filter Buttons */}
       <div className="flex gap-2 my-4">
@@ -52,7 +52,7 @@ export default function Rentals() {
       {loading ? (
         <p>Loading {status} rentals...</p>
       ) : (
-        <ul>
+        <div className="grid grid-cols-1 gap-2">
           {rentals.map((rental) => (
             <DataCard
               key={rental.id}
@@ -83,7 +83,7 @@ export default function Rentals() {
               onDelete={() => console.log("Delete", rental.id)}
             />
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

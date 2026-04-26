@@ -36,7 +36,7 @@ export default function Agents() {
 
   // Combine your header and your list into one return statement
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto">
       <h1 className="text-3xl font-bold">Agents Page</h1>
       <div className="grid grid-cols-1 gap-2">
         {agents.map((agent) => (
