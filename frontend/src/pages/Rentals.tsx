@@ -3,12 +3,14 @@ import axiosClient from "../context/axiosClient";
 import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
 import DataCard from "@/components/global/DataCard";
 import { Home } from 'lucide-react';
+import RentalForm from "@/features/rentals/RentalForm";
 
 
 export default function Rentals() {
   const [rentals, setRentals] = useState<RentalReturnDto[]>([]);
   const [status, setStatus] = useState<RentalStatus>("ACTIVE") // default
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -37,7 +39,8 @@ export default function Rentals() {
       <h1 className="text-3xl font-bold">Rentals</h1>
 
       {/* Filter Buttons */}
-      <div className="flex gap-2 my-4">
+      <div className="flex justify-between">
+        <div className="flex gap-2 my-4">
         {(["ACTIVE", "CANCELLED", "COMPLETED"] as RentalStatus[]).map((s) => (
           <button
             key={s}
@@ -47,6 +50,19 @@ export default function Rentals() {
             {s}
           </button>
         ))}
+        </div>
+        <div className="flex gap-2 my-4">
+          <button 
+            onClick={() => setShowModal(true)}
+            className="px-4 py-2 rounded bg-blue-600 text-white">
+              New Rental
+          </button>
+
+          <RentalForm 
+            isOpen={showModal} 
+            onClose={() => setShowModal(false)} 
+          />
+        </div>
       </div>
 
       {loading ? (
