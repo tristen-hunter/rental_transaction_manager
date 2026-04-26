@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../context/axiosClient";
 import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
+import DataCard from "@/components/global/DataCard";
+import { Home } from 'lucide-react';
+
 
 export default function Rentals() {
   const [rentals, setRentals] = useState<RentalReturnDto[]>([]);
@@ -51,9 +54,34 @@ export default function Rentals() {
       ) : (
         <ul>
           {rentals.map((rental) => (
-            <li key={rental.id} className="border-b py-2">
-              {rental.address} - <strong>{rental.status}</strong>
-            </li>
+            <DataCard
+              key={rental.id}
+              title={rental.address}
+              subtitle={rental.tenantName}
+              status={rental.status}
+              icon={Home}
+              body={{
+                kind: "rental",
+                startDate: rental.startDate,
+                endDate: rental.endDate,
+                tenantName: rental.tenantName,
+                landlordName: rental.landlordName,
+                landlordBankName: rental.landlordBankName,
+                landlordAccNo: rental.landlordAccNo,
+                landlordBranch: rental.landlordBranch,
+                baseRent: rental.baseRent,
+                rentalCommissionPercent: rental.rentalCommissionPercent,
+                officeSplit: rental.officeSplit,
+                agentSplit: rental.agentSplit,
+                agentPaye: rental.agentPaye,
+                vatRegistered: rental.vatRegistered,
+                createdBy: rental.createdBy,
+                createdAt: rental.createdAt,
+                updatedAt: rental.updatedAt,
+              }}
+              onEdit={() => console.log("Edit", rental.id)}
+              onDelete={() => console.log("Delete", rental.id)}
+            />
           ))}
         </ul>
       )}

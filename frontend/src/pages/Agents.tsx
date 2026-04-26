@@ -1,6 +1,8 @@
 import axiosClient from "../context/axiosClient"
 import { useEffect, useState } from "react";
+import DataCard from "@/components/global/DataCard";
 import type { AgentReturnDto } from "../features/agents/agentReturnDto";
+import { User2 } from "lucide-react";
 
 export default function Agents() {
   const [agents, setAgents] = useState<AgentReturnDto[]>([]);
@@ -34,14 +36,30 @@ export default function Agents() {
 
   // Combine your header and your list into one return statement
   return (
-    <div>
+    <div className="max-w-6xl mx-auto space-y-6">
       <h1 className="text-3xl font-bold">Agents Page</h1>
-      <h2>Agents List</h2>
-      <ul>
+      <div className="grid grid-cols-1 gap-2">
         {agents.map((agent) => (
-          <li key={agent.id}>{agent.fullName}</li>
+          <DataCard
+            key={agent.id}
+            title={agent.fullName}
+            subtitle={agent.bankName}
+            status={agent.isActive}
+            icon={User2}
+            body={{
+              kind: "agent",
+              totalRentals: agent.totalRentals,   // optional
+              bankName: agent.bankName,
+              accountNumber: agent.accountNumber,
+              branchCode: agent.branchCode,
+              createdAt: agent.createdAt,
+              updatedAt: agent.updatedAt,
+            }}
+            onEdit={() => console.log("Edit", agent.id)}
+            onDelete={() => console.log("Delete", agent.id)}
+          />
         ))}
-      </ul>
+        </div>
     </div>
   );
 }

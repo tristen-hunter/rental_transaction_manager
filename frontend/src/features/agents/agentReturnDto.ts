@@ -1,6 +1,7 @@
 export interface AgentReturnDto {
   id: string; // UUIDs are handled as strings in TS
   fullName: string;
+  email: string;
   bankName: string;
   accountNumber: string;
   branchCode: string;
