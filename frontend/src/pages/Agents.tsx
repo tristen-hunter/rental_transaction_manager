@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import DataCard from "@/components/global/DataCard";
 import type { AgentReturnDto } from "../features/agents/agentReturnDto";
 import { User2 } from "lucide-react";
+import AgentCreateForm from "@/features/agents/AgentCreateForm";
 
 export default function Agents() {
   const [agents, setAgents] = useState<AgentReturnDto[]>([]);
   const [loading, setLoading] = useState(true); // Fixed casing (setloading -> setLoading)
   const [error, setError] = useState<string | null>(null); // Explicit type
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // It's cleaner to use a flag to prevent state updates on unmounted components
@@ -37,7 +39,20 @@ export default function Agents() {
   // Combine your header and your list into one return statement
   return (
     <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold">Agents Page</h1>
+      <div className="flex justify-between gap-2 my-4">
+        <h1 className="text-3xl font-bold">Agents Page</h1>
+        <button 
+          onClick={() => setShowModal(true)}
+          className="px-4 py-2 rounded bg-blue-600 text-white">
+            New Agent
+        </button>
+
+        <AgentCreateForm
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+        />
+      </div>
+      
       <div className="grid grid-cols-1 gap-2">
         {agents.map((agent) => (
           <DataCard

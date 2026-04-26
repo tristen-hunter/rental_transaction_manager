@@ -3,7 +3,7 @@ import axiosClient from "../context/axiosClient";
 import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
 import DataCard from "@/components/global/DataCard";
 import { Home } from 'lucide-react';
-import RentalForm from "@/features/rentals/RentalForm";
+import RentalCreateForm from "@/features/rentals/RentalCreateForm";
 
 
 export default function Rentals() {
@@ -58,7 +58,7 @@ export default function Rentals() {
               New Rental
           </button>
 
-          <RentalForm 
+          <RentalCreateForm 
             isOpen={showModal} 
             onClose={() => setShowModal(false)} 
           />

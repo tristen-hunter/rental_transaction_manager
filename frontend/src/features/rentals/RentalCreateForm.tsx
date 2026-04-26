@@ -32,7 +32,7 @@ interface Props {
   onClose: () => void;
 }
 
-const RentalForm: React.FC<Props> = ({ isOpen, onClose }) => {
+const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<RentalFormInputs>({
     defaultValues: { autoRenew: true, vatRegistered: false }
   });
@@ -187,4 +187,4 @@ const FormSection = ({ title, subtitle, icon: Icon, children }: any) => (
   </div>
 );
 
-export default RentalForm;
+export default RentalCreateForm;
