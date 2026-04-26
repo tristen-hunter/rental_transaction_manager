@@ -14,6 +14,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { AgentService } from './agentService';
 
 interface AgentFormInputs {
   fullName: string;
@@ -39,9 +40,27 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
 
   const watchIsActive = watch("isActive");
 
-  const onSubmit: SubmitHandler<AgentFormInputs> = (data) => {
-    console.log("Agent DTO to Backend:", data);
-    onClose();
+  /**
+   * @param data AgentCreatDto
+   *  POST '/api/agents'
+   */
+  const onSubmit: SubmitHandler<AgentFormInputs> = async (data) => {
+    try {
+      // 1. Call the backend
+      const result = await AgentService.create(data);
+      
+      // 2. Give user feedback (consider Shadcn Toast)
+      console.log("Success:", result);
+      alert("Agent Created Successfully!"); 
+
+      // 3. Close the modal
+      onClose();
+
+    } catch (error){
+      // 4. Handle errors (e.g., validation errors from Java)
+      console.error("Submission failed:", error);
+      alert("Check your connection or data.");
+    }
   };
 
   if (!isOpen) return null;
@@ -154,7 +173,7 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   );
 };
 
-// Reusable Section Wrapper to match your design palette
+// Reusable Section Wrapper to match design
 const FormSection = ({ title, subtitle, icon: Icon, children }: any) => (
   <div className="group border rounded-lg bg-white border-gray-200 transition-all p-4 hover:border-blue-300 hover:shadow-sm">
     <div className="flex items-center gap-3 mb-4">

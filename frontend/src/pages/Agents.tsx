@@ -1,7 +1,7 @@
 import axiosClient from "../context/axiosClient"
 import { useEffect, useState } from "react";
 import DataCard from "@/components/global/DataCard";
-import type { AgentReturnDto } from "../features/agents/agentReturnDto";
+import type { AgentReturnDto } from "@/features/agents/AgentReturnDto";
 import { User2 } from "lucide-react";
 import AgentCreateForm from "@/features/agents/AgentCreateForm";
 
@@ -11,6 +11,10 @@ export default function Agents() {
   const [error, setError] = useState<string | null>(null); // Explicit type
   const [showModal, setShowModal] = useState(false);
 
+  /**
+   * Runs on mount
+   * GET request for
+   */
   useEffect(() => {
     // It's cleaner to use a flag to prevent state updates on unmounted components
     let isMounted = true;
@@ -36,7 +40,7 @@ export default function Agents() {
   if (loading) return <p>Loading Agents...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  // Combine your header and your list into one return statement
+  // Combine header and list into one return statement
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between gap-2 my-4">
@@ -58,7 +62,7 @@ export default function Agents() {
           <DataCard
             key={agent.id}
             title={agent.fullName}
-            subtitle={agent.bankName}
+            subtitle={agent.email}
             status={agent.isActive}
             icon={User2}
             body={{

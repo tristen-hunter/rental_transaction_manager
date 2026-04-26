@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { X, Building2, Wallet, Calendar, Percent } from 'lucide-react';
 
@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RentalService } from './RentalService';
+import type { RentalCreateDto } from './RentalCreateDto';
+import type { AgentIdNameDto } from '../agents/AgentIdNameDto';
+import { AgentService } from '../agents/agentService';
 
 interface RentalFormInputs {
   agentId: string;
@@ -33,22 +37,50 @@ interface Props {
 }
 
 const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
+  const [agents, setAgents] = useState<AgentIdNameDto[]>([]);
+
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<RentalFormInputs>({
     defaultValues: { autoRenew: true, vatRegistered: false }
   });
 
+  useEffect(() => {
+    if (isOpen) {
+      const fetchAgents = async () => {
+        try {
+          const data = await AgentService.fetchAgentNamesAndIds();
+          setAgents(data);
+        } catch (error) {
+          console.error("Failed to load agents", error);
+        }
+      };
+      fetchAgents();
+    }
+  }, [isOpen])
+
   const watchAutoRenew = watch("autoRenew");
 
-  const onSubmit: SubmitHandler<RentalFormInputs> = (data) => {
-    // Transform percentages to decimals for the backend
-    const dto = {
+  const onSubmit: SubmitHandler<RentalFormInputs> = async (data) => {
+    // 1. Transform percentages to decimals for the backend
+    const dto: RentalCreateDto = {
       ...data,
+      endDate: data.autoRenew ? null : data.endDate,
       rentalCommissionPercent: Number(data.rentalCommissionPercent) / 100,
       officeSplit: Number(data.officeSplit) / 100,
       agentPaye: Number(data.agentPaye) / 100,
     };
-    console.log("Submit DTO:", dto);
-    onClose();
+
+    // 2. Call the end point, log result, close modal
+    try {
+      const result = await RentalService.create(dto);
+      console.log("Success:", result);
+
+      onClose();
+
+    } catch (error){
+      // 3. Handle errors (e.g., validation errors from Java)
+      console.error("Submission failed:", error);
+      alert("Check your connection or data.");
+    }
   };
 
   if (!isOpen) return null;
@@ -79,8 +111,22 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Input {...register("address", { required: true })} placeholder="123 Legend Lane..." className={errors.address ? "border-red-500" : ""} />
               </div>
               <div className="space-y-1.5">
-                <Label>Agent UUID</Label>
-                <Input {...register("agentId", { required: true })} placeholder="Agent ID" />
+                <Label htmlFor="agentId">Assign Agent</Label>
+                <select
+                  id="agentId"
+                  {...register("agentId", { required: "Agent selection is required" })}
+                  className={`flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 ${
+                    errors.agentId ? "border-red-500" : "border-gray-200"
+                  }`}
+                >
+                  <option value="">Select an Agent...</option>
+                  {agents.map((agent) => (
+                    <option key={agent.id} value={agent.id}>
+                      {agent.fullName}
+                    </option>
+                  ))}
+                </select>
+                {errors.agentId && <p className="text-xs text-red-500">Selection required</p>}
               </div>
               <div className="space-y-1.5">
                 <Label>Tenant Name</Label>
