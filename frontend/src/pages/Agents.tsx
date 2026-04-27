@@ -1,9 +1,8 @@
 import axiosClient from "../context/axiosClient"
 import { useEffect, useState } from "react";
-import DataCard from "@/components/global/DataCard";
 import type { AgentReturnDto } from "@/features/agents/AgentReturnDto";
-import { User2 } from "lucide-react";
 import AgentCreateForm from "@/features/agents/AgentCreateForm";
+import { AgentCard } from "@/features/agents/AgentCard";
 
 export default function Agents() {
   const [agents, setAgents] = useState<AgentReturnDto[]>([]);
@@ -59,23 +58,26 @@ export default function Agents() {
       
       <div className="grid grid-cols-1 gap-2">
         {agents.map((agent) => (
-          <DataCard
+          <AgentCard
             key={agent.id}
-            title={agent.fullName}
-            subtitle={agent.email}
-            status={agent.isActive}
-            icon={User2}
-            body={{
+            name={agent.fullName}
+            email={agent.email}
+            isActive={agent.isActive}
+            // Pass the whole agent object for the expanded view & logic
+            agent={{
               kind: "agent",
-              totalRentals: agent.totalRentals,   // optional
+              totalRentals: agent.totalRentals,
               bankName: agent.bankName,
               accountNumber: agent.accountNumber,
               branchCode: agent.branchCode,
               createdAt: agent.createdAt,
               updatedAt: agent.updatedAt,
             }}
-            onEdit={() => console.log("Edit", agent.id)}
-            onDelete={() => console.log("Delete", agent.id)}
+            // Centralized handlers
+            // onEdit={(data) => handleEditAgent(agent.id, data)}
+            // onDeactivate={(data) => handleDeactivateAgent(agent.id)}
+            onEdit ={() => console.log("EDITING: ", agent.fullName)}
+            onDeactivate={() => console.log("DDEACTIVATING: ", agent.fullName)}
           />
         ))}
         </div>
