@@ -156,10 +156,10 @@ function RentalExpanded({ data }: { data: RentalBodyData }) {
       <Section title="Commission Breakdown" />
       <div className="grid grid-cols-3 gap-x-4 gap-y-2">
         <Field label="Base Rent"       value={currency(data.baseRent)} />
-        <Field label="Commission %"    value={`${data.rentalCommissionPercent}%`} />
-        <Field label="Office Split"    value={`${data.officeSplit}%`} />
-        <Field label="Agent Split"     value={`${data.agentSplit}%`} />
-        <Field label="Agent PAYE"      value={currency(data.agentPaye)} />
+        <Field label="Commission %"    value={`${data.rentalCommissionPercent*100}%`} />
+        <Field label="Office Split"    value={`${data.officeSplit*100}%`} />
+        <Field label="Agent Split"     value={`${data.agentSplit*100}%`} />
+        <Field label="Agent PAYE"      value={`${data.agentPaye*100}%`} />
         <Field label="VAT Registered"  value={data.vatRegistered ? "Yes" : "No"} />
       </div>
 

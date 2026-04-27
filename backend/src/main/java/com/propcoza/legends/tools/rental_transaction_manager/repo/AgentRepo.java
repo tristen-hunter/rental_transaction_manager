@@ -1,5 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.repo;
 
+import com.propcoza.legends.tools.rental_transaction_manager.common.utils.AgentIdDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,9 @@ public interface AgentRepo extends JpaRepository<Agent, UUID> {
 
     // Test if agent exists by email
     boolean existsByEmail(String email);
+
+    @Query("SELECT new com.propcoza.legends.tools.rental_transaction_manager.common.utils.AgentIdDto(a.id, a.fullName) FROM Agent a")
+    List<AgentIdDto> findAllProjectedBy();
 
     // returns a list of all agents whose isActive == True
     List<Agent> findByIsActiveTrue();

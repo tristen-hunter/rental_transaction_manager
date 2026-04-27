@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { X, Building2, Wallet, Calendar, Percent } from 'lucide-react';
 
-// Shadcn UI Components (Assuming standard shadcn install paths)
+// Shadcn UI Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RentalService } from './RentalService';
 import type { RentalCreateDto } from './RentalCreateDto';
 import type { AgentIdNameDto } from '../agents/AgentIdNameDto';
-import { AgentService } from '../agents/agentService';
+import { AgentService } from '../agents/AgentService';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 interface RentalFormInputs {
   agentId: string;
@@ -191,9 +198,31 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Label>Landlord Full Name</Label>
                 <Input {...register("landlordName")} placeholder="Landlord Name" />
               </div>
-              <Input {...register("landlordBankName")} placeholder="Bank Name" />
-              <Input {...register("landlordAccNo")} placeholder="Account Number" />
-              <Input {...register("landlordBranch")} placeholder="Branch Code" className="col-span-2 md:col-span-1" />
+
+              {/* Updated Bank Name Dropdown */}
+              <div className="space-y-1.5">
+                <Label>Bank Name</Label>
+                <Select onValueChange={(val) => setValue("landlordBankName", val)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a bank" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {["Absa", "Capitec", "FNB", "Nedbank", "Standard Bank", "TymeBank", "Discovery Bank", "Investec", "Other"].map(bank => (
+                      <SelectItem key={bank} value={bank}>{bank}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Account Number</Label>
+                <Input {...register("landlordAccNo")} placeholder="Account Number" />
+              </div>
+
+              <div className="col-span-2 md:col-span-1 space-y-1.5">
+                <Label>Branch Code</Label>
+                <Input {...register("landlordBranch")} placeholder="Branch Code" />
+              </div>
             </div>
           </FormSection>
 

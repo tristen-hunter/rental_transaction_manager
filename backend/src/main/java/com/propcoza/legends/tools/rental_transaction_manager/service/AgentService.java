@@ -1,5 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.service;
 
+import com.propcoza.legends.tools.rental_transaction_manager.common.utils.AgentIdDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
@@ -102,5 +103,10 @@ public class AgentService {
             }
         }
         return result.toString().trim();
+    }
+
+    // UTIL - return all agent names and ID's
+    public List<AgentIdDto> getAllAgentIds(){
+        return agentRepo.findAllProjectedBy();
     }
 }

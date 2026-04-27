@@ -14,7 +14,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { AgentService } from './agentService';
+import { AgentService } from './AgentService';
 
 interface AgentFormInputs {
   fullName: string;
@@ -31,7 +31,7 @@ interface Props {
 }
 
 const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
-  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<AgentFormInputs>({
+  const { register, handleSubmit, setValue, watch} = useForm<AgentFormInputs>({
     defaultValues: {
       isActive: true,
       bankName: ""
