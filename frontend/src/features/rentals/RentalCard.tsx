@@ -1,7 +1,18 @@
-import { currency, Field, fmt, Section } from "@/components/global/DataCard";
+import DataCard, { currency, Field, fmt, OverflowMenu, Section } from "@/components/global/DataCard";
+import { Home, Edit2, PlusSquare, RefreshCw, Trash2 } from "lucide-react";
+interface RentalCardProps {
+  rental: RentalBodyData;
+  address: string;
+  agentName: string;
+  status: string;
+  onEdit: (rental: RentalBodyData) => void;
+  onSetStatus: (rental: RentalBodyData) => void;
+  onCreateInstance: (rental: RentalBodyData) => void;
+  onDelete: (rental: RentalBodyData) => void;
+}
 
 export interface RentalBodyData {
-  kind: "rental";
+  // kind: "rental";
   // Collapsed preview
   startDate: string;
   // Expanded: tenant
@@ -61,4 +72,81 @@ function RentalExpanded({ data }: { data: RentalBodyData }) {
       </div>
     </div>
   );
+}
+
+export function RentalCard({rental, address, agentName, status, onEdit, onSetStatus, onCreateInstance, onDelete}: RentalCardProps){
+
+  const rentalStatusMap: Record<string, { label: string; color: string }> = {
+    ACTIVE:    { label: "Active",    color: "bg-green-600 hover:bg-green-600" },
+    CANCELLED: { label: "Cancelled", color: "bg-red-600 hover:bg-red-600" },
+    COMPLETED: { label: "Completed", color: "bg-blue-600 hover:bg-blue-600" },
+    DRAFT:     { label: "Draft",     color: "bg-orange-500 hover:bg-orange-500" },
+  };
+
+  const currentStatus = rentalStatusMap[status] || { 
+    label: status, 
+    color: "bg-gray-400" 
+  };
+
+  const actions = (
+    <OverflowMenu>
+      {/* Edit - Keep Logs */}
+      <div 
+        className="flex items-center px-2 py-1.5 text-sm cursor-pointer hover:bg-gray-100 rounded-sm"
+        onClick={(e) => { e.stopPropagation(); onEdit(rental); }}
+      >
+        <Edit2 className="mr-2 h-3.5 w-3.5 text-gray-400" />
+        <span>Edit Logs</span>
+      </div>
+
+      {/* Add Instance - Creates DRAFT */}
+      <div 
+        className="flex items-center px-2 py-1.5 text-sm cursor-pointer hover:bg-gray-100 rounded-sm"
+        onClick={(e) => { e.stopPropagation(); onCreateInstance(rental); }}
+      >
+        <PlusSquare className="mr-2 h-3.5 w-3.5 text-gray-400" />
+        <span>Add Instance (Draft)</span>
+      </div>
+
+      {/* Set Status - Cycles statuses */}
+      <div 
+        className="flex items-center px-2 py-1.5 text-sm cursor-pointer hover:bg-gray-100 rounded-sm"
+        onClick={(e) => { e.stopPropagation(); onSetStatus(rental); }}
+      >
+        <RefreshCw className="mr-2 h-3.5 w-3.5 text-gray-400" />
+        <span>Set Status</span>
+      </div>
+
+      {/* Delete - Cascade.ALL Logic */}
+      <div 
+        className="flex items-center px-2 py-1.5 text-sm cursor-pointer hover:bg-red-50 hover:text-red-600 text-red-500 rounded-sm border-t border-gray-100 mt-1"
+        title="Warning: This will delete all children and instances (Cascade Delete)"
+        onClick={(e) => { 
+          e.stopPropagation(); 
+          if (confirm("Are you sure? This will delete all associated instances and children.")) {
+            onDelete(rental);
+          }
+        }}
+      >
+        <Trash2 className="mr-2 h-3.5 w-3.5" />
+        <span className="font-medium">Delete Everything</span>
+      </div>
+    </OverflowMenu>
+  );
+
+  return(
+    <DataCard
+      title={address}
+      subtitle={agentName}
+      icon={Home}
+      status={{
+        label: currentStatus.label,
+        colorClassName: currentStatus.color
+      }}
+      infoLabel={rental.startDate ? fmt(rental.startDate) : "No Date"}
+      actions={actions}
+    >
+      <RentalExpanded data={rental} />
+    </DataCard>
+  )
 }

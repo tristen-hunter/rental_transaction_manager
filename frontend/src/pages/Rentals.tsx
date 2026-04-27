@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../context/axiosClient";
 import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
-import DataCard from "@/components/global/DataCard";
-import { Home } from 'lucide-react';
 import RentalCreateForm from "@/features/rentals/RentalCreateForm";
+import { RentalCard } from "@/features/rentals/RentalCard";
 
 
 export default function Rentals() {
@@ -67,40 +66,25 @@ export default function Rentals() {
 
       {loading ? (
         <p>Loading {status} rentals...</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-2">
-          {rentals.map((rental) => (
-            <DataCard
-              key={rental.id}
-              title={rental.address}
-              subtitle={rental.tenantName}
-              status={rental.status}
-              icon={Home}
-              body={{
-                kind: "rental",
-                startDate: rental.startDate,
-                endDate: rental.endDate,
-                tenantName: rental.tenantName,
-                landlordName: rental.landlordName,
-                landlordBankName: rental.landlordBankName,
-                landlordAccNo: rental.landlordAccNo,
-                landlordBranch: rental.landlordBranch,
-                baseRent: rental.baseRent,
-                rentalCommissionPercent: rental.rentalCommissionPercent,
-                officeSplit: rental.officeSplit,
-                agentSplit: rental.agentSplit,
-                agentPaye: rental.agentPaye,
-                vatRegistered: rental.vatRegistered,
-                createdBy: rental.createdBy,
-                createdAt: rental.createdAt,
-                updatedAt: rental.updatedAt,
-              }}
-              onEdit={() => console.log("Edit", rental.id)}
-              onDelete={() => console.log("Delete", rental.id)}
-            />
-          ))}
-        </div>
-      )}
+        ) : (
+          <div className="grid grid-cols-1 gap-2">
+            {rentals.map((rental) => (
+              <RentalCard
+                key={rental.id}
+                rental={rental}               // Pass the whole object for the expanded view
+                address={rental.address}       // Title
+                agentName={rental.agentName}   // Subtitle
+                status={rental.status}         // Wrapper will map this to the colored badge
+                
+                // Connect the specific actions
+                onEdit={() => console.log("Edit", rental.address)}
+                onDelete={(data) => console.log("Delete", data.tenantName)}
+                onSetStatus={(data) => console.log("Update Status", data.tenantName)}
+                onCreateInstance={(data) => console.log("Create Instance", data.tenantName)}
+              />
+            ))}
+          </div>
+        )}
     </div>
   );
 }

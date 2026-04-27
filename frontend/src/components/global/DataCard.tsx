@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { type LucideIcon, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreVertical } from "lucide-react";
 
 
 // export type CardBodyData = AgentBodyData | RentalBodyData;
@@ -9,7 +16,10 @@ interface DataCardProps {
   title: string;
   subtitle: string;
   icon: LucideIcon;
-  status?: string | boolean;
+  status?: {
+    label: string;
+    colorClassName: string;
+  };
   infoLabel?: string | null;
   actions: React.ReactNode; // Handle buttons here
   children: React.ReactNode; // Handle the specific Expanded view here
@@ -17,25 +27,10 @@ interface DataCardProps {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: string | boolean }) {
-  if (typeof status === "boolean") {
-    return (
-      <Badge
-        variant={status ? "default" : "secondary"}
-        className={`text-[10px] px-1.5 py-0 h-4 shrink-0 ${status ? "bg-green-600 hover:bg-green-600" : ""}`}
-      >
-        {status ? "Active" : "Inactive"}
-      </Badge>
-    );
-  }
-  const colours: Record<string, string> = {
-    ACTIVE:    "bg-green-600 hover:bg-green-600",
-    CANCELLED: "bg-red-600 hover:bg-red-600",
-    COMPLETED: "bg-blue-600 hover:bg-blue-600",
-  };
+function StatusBadge({ label, colorClassName }: { label: string; colorClassName: string }) {
   return (
-    <Badge className={`text-[10px] px-1.5 py-0 h-4 shrink-0 ${colours[status] || ""}`}>
-      {status}
+    <Badge className={`text-[10px] px-1.5 py-0 h-4 shrink-0 ${colorClassName}`}>
+      {label}
     </Badge>
   );
 }
@@ -70,7 +65,20 @@ export function currency(n: number) {
   return new Intl.NumberFormat("en-ZA", { style: "currency", currency: "ZAR" }).format(n);
 }
 
-
+export function OverflowMenu({ children }: { children: React.ReactNode }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+          <MoreVertical className="w-3.5 h-3.5 text-gray-400" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-40">
+        {children}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 
 // ─── DataCard ────────────────────────────────────────────────────────────────
@@ -111,20 +119,26 @@ return (
           <span className="hidden sm:block shrink-0 text-xs text-gray-400">{infoLabel}</span>
         )}
 
-        {status !== undefined && <StatusBadge status={status} />}
+        {status && (
+          <StatusBadge 
+            label={status.label} 
+            colorClassName={status.colorClassName} 
+          />
+        )}
 
         {/* Actions Slot: Logic is handled by the parent */}
+        <div className="shrink-0 flex gap-1 opacity-100 transition-opacity">
+          {actions}
+        </div>
+
         <ChevronDown
           className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform duration-200
             ${open ? "rotate-180 text-blue-500" : ""}`}
         />
-        <div className="shrink-0 flex gap-1 opacity-100 transition-opacity">
-          {actions}
-        </div>
       </div>
 
-      <div className={`transition-all duration-200 ease-in-out overflow-hidden
-        ${open ? "max-h-125 opacity-100" : "max-h-0 opacity-0"}`}
+      <div className={`transition-all duration-300 ease-in-out overflow-hidden
+        ${open ? "max-h-250 opacity-100" : "max-h-0 opacity-0"}`}
       >
         <div className="border-t border-gray-100 bg-gray-50/60">
           {children}

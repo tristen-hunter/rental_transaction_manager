@@ -1,13 +1,5 @@
 import { User, Edit2, PowerOff } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import DataCard, { Field, fmt, Section } from "@/components/global/DataCard";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
-
+import DataCard, { Field, fmt, OverflowMenu, Section } from "@/components/global/DataCard";
 
 interface AgentCardProps {
   agent: AgentBodyData;
@@ -50,21 +42,6 @@ function AgentExpanded({ data }: { data: AgentBodyData }) {
   );
 }
 
-function OverflowMenu({ children }: { children: React.ReactNode }) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-        <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-          <MoreVertical className="w-3.5 h-3.5 text-gray-400" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        {children}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
-
 export function AgentCard({ agent, name, email, isActive, onEdit, onDeactivate }: AgentCardProps) {
   
   const canDeactivate = (agent.totalRentals ?? 0) === 0;
@@ -101,12 +78,19 @@ export function AgentCard({ agent, name, email, isActive, onEdit, onDeactivate }
     </OverflowMenu>
   );
 
+  const statusConfig = {
+    label: isActive ? "Active" : "Inactive",
+    colorClassName: isActive 
+      ? "bg-green-600 hover:bg-green-600" 
+      : "bg-gray-500 hover:bg-gray-500"
+  };
+
   return (
     <DataCard
       title={name}
       subtitle={email}
       icon={User}
-      status={isActive}
+      status={statusConfig}
       infoLabel={agent.totalRentals !== undefined ? `${agent.totalRentals} rentals` : null}
       actions={actions}
     >
