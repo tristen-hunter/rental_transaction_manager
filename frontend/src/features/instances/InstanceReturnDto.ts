@@ -1,3 +1,6 @@
+export type InstanceStatus = "APPROVED" | "CANCELLED" | "DRAFT";
+
+
 export interface InstanceReturnDto {
   id: string;
   rentalId: string;
@@ -10,6 +13,7 @@ export interface InstanceReturnDto {
 
   rentalCommissionPercent: number;
   officeSplit: number;
+  agentSplit: number;
   agentPaye: number;
 
   // -------------------------------

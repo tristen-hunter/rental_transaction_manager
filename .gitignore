@@ -1,0 +1,19 @@
+# --- Java/Maven/Gradle ---
+target/
+build/
+.gradle/
+*.jar
+*.war
+
+# --- Node/React ---
+node_modules/
+npm-debug.log*
+frontend/dist/
+frontend/build/
+
+# --- IDEs & OS ---
+.idea/
+.vscode/
+*.iml
+.DS_Store
+.env

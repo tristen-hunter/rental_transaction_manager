@@ -44,7 +44,7 @@ function RentalExpanded({ data }: { data: RentalBodyData }) {
     <div className="px-3 pb-3 space-y-2">
       <Section title="TENANT INFO" />
       <div className="grid grid-cols-3 gap-x-4 gap-y-2">
-        <Field label="name"     value={data.tenantName} />
+        <Field label="name"       value={data.tenantName} />
         <Field label="Start Date" value={fmt(data.startDate)} />
         <Field label="End Date"   value={fmt(data.endDate)} />
       </div>

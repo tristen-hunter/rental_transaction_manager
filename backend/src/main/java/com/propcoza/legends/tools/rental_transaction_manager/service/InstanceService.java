@@ -146,7 +146,13 @@ public class InstanceService {
     @Transactional
     public List<Rental> getAllActiveRentals(){
         return rentalRepo.findByStatus(RentalStatus.ACTIVE);
-    }
+    };
+
+    @Transactional
+    public List<InstanceReturnDto> getAllDraftInstances(InstanceStatus status) {
+        List<RentalInstance> instanceList = instanceRepo.findByStatus(status);
+        return InstanceMapper.toReturnDtoList(instanceList);
+    };
 
     /// Deprecated
     @Transactional

@@ -2,6 +2,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.controller;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
@@ -27,6 +28,11 @@ public class InstanceController {
         Rental newRental = instanceService.findRentalById(rentalId);
 
         return instanceService.saveInitialDraft(rentalId);
+    }
+
+    @GetMapping
+    public List<InstanceReturnDto> allDraftInstances(InstanceStatus status) {
+        return instanceService.getAllDraftInstances(status);
     }
 
     /**
