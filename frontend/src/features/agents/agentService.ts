@@ -12,7 +12,7 @@ export const AgentService = {
      */
     create: async (data: AgentCreateDto) => {
         const response = await axiosClient.post<AgentReturnDto>("/agents", data);
-        console.log(response.data);
+        // console.log(response.data);
 
         return response.data;
     },

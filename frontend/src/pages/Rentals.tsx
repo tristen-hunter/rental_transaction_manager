@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import axiosClient from "../context/axiosClient";
 import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
 import RentalCreateForm from "@/features/rentals/RentalCreateForm";
-import { RentalCard } from "@/features/rentals/RentalCard";
+import { RentalCard, type RentalBodyData } from "@/features/rentals/RentalCard";
+import { RentalService } from "@/features/rentals/RentalService";
 
 
 export default function Rentals() {
@@ -31,6 +32,19 @@ export default function Rentals() {
       setLoading(false);
     });
   }, [status]) 
+
+  const handleCreateInstance = async (rental: RentalBodyData) => {
+    try {
+      const res = await RentalService.createInstance(rental.id);
+
+      console.log(res)
+
+      alert("Instance created successfully!")
+    } catch (err) {
+      console.error("Error creating instance: ", err);
+      alert("Failed to create instance.");
+    }
+  }
 
 
   return (
@@ -80,7 +94,7 @@ export default function Rentals() {
                 onEdit={() => console.log("Edit", rental.address)}
                 onDelete={(data) => console.log("Delete", data.tenantName)}
                 onSetStatus={(data) => console.log("Update Status", data.tenantName)}
-                onCreateInstance={(data) => console.log("Create Instance", data.tenantName)}
+                onCreateInstance={handleCreateInstance}
               />
             ))}
           </div>

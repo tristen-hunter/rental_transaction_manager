@@ -1,5 +1,7 @@
 import DataCard, { currency, Field, fmt, OverflowMenu, Section } from "@/components/global/DataCard";
 import { Home, Edit2, PlusSquare, RefreshCw, Trash2 } from "lucide-react";
+
+
 interface RentalCardProps {
   rental: RentalBodyData;
   address: string;
@@ -13,6 +15,7 @@ interface RentalCardProps {
 
 export interface RentalBodyData {
   // kind: "rental";
+  id: string;
   // Collapsed preview
   startDate: string;
   // Expanded: tenant
@@ -102,7 +105,10 @@ export function RentalCard({rental, address, agentName, status, onEdit, onSetSta
       {/* Add Instance - Creates DRAFT */}
       <div 
         className="flex items-center px-2 py-1.5 text-sm cursor-pointer hover:bg-gray-100 rounded-sm"
-        onClick={(e) => { e.stopPropagation(); onCreateInstance(rental); }}
+        onClick={(e) => { 
+          e.stopPropagation(); 
+          onCreateInstance(rental); 
+        }}
       >
         <PlusSquare className="mr-2 h-3.5 w-3.5 text-gray-400" />
         <span>Add Instance (Draft)</span>

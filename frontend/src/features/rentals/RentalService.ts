@@ -14,5 +14,16 @@ export const RentalService = {
         console.log(response.data);
 
         return response.data;
+    },
+
+    /**
+     * POST create Instance
+     * @returns InstanceReturnDto
+     */
+    createInstance: async (rentalId: string) => {
+        const response = await axiosClient.post(`/instances/${rentalId}`);
+        // console.log(response.data)
+
+        return response.data;
     }
 }
