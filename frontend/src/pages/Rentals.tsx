@@ -49,7 +49,7 @@ export default function Rentals() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold">Rentals</h1>
+      <h1 className="text-3xl font-bold">RENTALS - {status}</h1>
 
       {/* Filter Buttons */}
       <div className="flex justify-between">

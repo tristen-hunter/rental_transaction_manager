@@ -12,7 +12,7 @@ export default function Agents() {
 
   /**
    * Runs on mount
-   * GET request for
+   * GET request 
    */
   useEffect(() => {
     // It's cleaner to use a flag to prevent state updates on unmounted components
@@ -43,7 +43,7 @@ export default function Agents() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between gap-2 my-4">
-        <h1 className="text-3xl font-bold">Agents Page</h1>
+        <h1 className="text-3xl font-bold">ALL AGENTS</h1>
         <button 
           onClick={() => setShowModal(true)}
           className="px-4 py-2 rounded bg-blue-600 text-white">

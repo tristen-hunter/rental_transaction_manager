@@ -13,6 +13,7 @@ interface InstanceCardProps {
 
 export interface InstanceBodyData {
   id: string;
+  rentalId: string;
   // Collapsed preview
   actualPaymentDate: string;
   billingPeriod: string;
