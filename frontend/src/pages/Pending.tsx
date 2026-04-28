@@ -1,6 +1,8 @@
 import axiosClient from "@/context/axiosClient";
 import { InstanceCard, type InstanceBodyData } from "@/features/instances/InstanceCard";
 import { type InstanceReturnDto, type InstanceStatus } from "@/features/instances/InstanceReturnDto";
+import { InstanceService } from "@/features/instances/InstanceService";
+import type { InstanceUpdateDto } from "@/features/instances/InstanceUpdateDto";
 import InstanceUpdateForm from "@/features/instances/InstanceUpdateForm";
 import { type RentalReturnDto } from "@/features/rentals/rental";
 import { useEffect, useState } from "react";
@@ -21,7 +23,7 @@ export default function Pending() {
     })
     .then((res) => {
       setInstances(res.data);
-      console.log(res.data);
+      // console.log(res.data);  FOR CHECKING THE RETURN DATA FROM THE DB
       
       setLoading(false);
     })
@@ -65,12 +67,23 @@ export default function Pending() {
     setIsEditOpen(false);
     setSelectedInstance(null);
   };
-  
+
   const handleSuccess=() => {
     console.log()
     setRefresh(r => r + 1);
     handleClose();
   }
+
+  /** Handles API Call */
+  const handleSaveInstance = async (updatedData: InstanceUpdateDto) => {
+    try {
+      await InstanceService.updateInstance(updatedData);
+      handleSuccess();
+    } catch (err) {
+      console.error("Failed to update instance:", err);
+    }
+  }
+
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -118,7 +131,7 @@ export default function Pending() {
           instance={selectedInstance}
           rental={rentalMap.get(selectedInstance.rentalId)}
           onClose={handleClose}
-          onSuccess={handleSuccess}
+          onSuccess={handleSaveInstance}
         />
       )}
     </div>

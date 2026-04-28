@@ -19,7 +19,7 @@ type Props = {
     instance: InstanceBodyData
     rental?: RentalReturnDto
     onClose: () => void
-    onSuccess: () => void
+    onSuccess: (data: InstanceUpdateDto) => Promise<void> | void
 }
 
 const STATUS_OPTIONS = ["DRAFT", "APPROVED", "CANCELLED"]
@@ -91,7 +91,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
         actualPaymentDate: instance.actualPaymentDate,
         rentalCommissionPercent: instance.rentalCommissionPercent,
         officeSplit: instance.officeSplit,
-        agentSplit: instance.officeSplit,
+        agentSplit: instance.agentSplit,
         agentPaye: instance.agentPaye,
         totalAmountPaid: instance.totalAmountPaid,
         baseRent: instance.baseRent,
@@ -111,6 +111,16 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
         createdAt: instance.createdAt,
         updatedAt: instance.updatedAt
     });
+
+    // Add a local loading state
+    const [isSaving, setIsSaving] = useState(false);
+
+    const onSaveClick = async () => {
+        console.log("CLICK")
+        setIsSaving(true);
+        await onSuccess(formData);
+        // No need to set false here if the component unmounts on success
+    };
 
     /// This is a generic field updater - keeps all changes in one place
     const handleChange = (field: keyof InstanceUpdateDto, value: string | number) => {
@@ -192,7 +202,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
                 </FormSection>
 
                 {/* 3. Calculated Totals (read-only) */}
-                <FormSection title="Calculated Totals" subtitle="Derived figures — read only" icon={Calculator}>
+                <FormSection title="Calculated Totals" subtitle="Derived figures — MUST BE MANUALLY UPDATED" icon={Calculator}>
                     <div className="grid grid-cols-2 gap-4">
                         <CurrencyInput label="Landlord Pay Amount" field="landlordPayAmount" value={formData.landlordPayAmount} onChange={handleChange} />
                         <CurrencyInput label="Base Commission" field="baseComm" value={formData.baseComm} onChange={handleChange} />
@@ -238,8 +248,16 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
             {/* ── Footer ── */}
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
                 <Button variant="outline" onClick={onClose}>Cancel</Button>
-                <Button onClick={onSuccess} className="bg-blue-600 hover:bg-blue-700">
-                    Save Changes
+                <Button 
+                    onClick={() => {
+                                onSaveClick();
+                                console.log(formData);
+
+                                onSuccess(formData);
+                            }} 
+                    className="bg-blue-600 hover:bg-blue-700"
+                >
+                    {isSaving ? "Saving..." : "Save Changes"}
                 </Button>
             </div>
 
