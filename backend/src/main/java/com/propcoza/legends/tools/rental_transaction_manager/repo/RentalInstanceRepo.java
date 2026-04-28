@@ -1,6 +1,7 @@
 package com.propcoza.legends.tools.rental_transaction_manager.repo;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;

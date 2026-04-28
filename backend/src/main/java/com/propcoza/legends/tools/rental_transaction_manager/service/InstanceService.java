@@ -2,6 +2,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.service;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
@@ -9,6 +10,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.InstanceMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalInstanceRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -64,21 +66,6 @@ public class InstanceService {
         ///  Here I need to map the variables that are not constant
         // Variables
         BigDecimal totalAdjustments = BigDecimal.ZERO;
-//        BigDecimal baseComm = rental.getBaseRent()
-//                .multiply(BigDecimal.valueOf(rental.getRentalCommissionPercent()))
-//                .setScale(2, RoundingMode.HALF_UP);
-//
-//        BigDecimal vat = BigDecimal.ZERO;
-//        BigDecimal commExclVat;
-//
-//        // 2. Extract VAT from the Commission, not the Rent
-//        if (rental.getVatRegistered()) {
-//            // Standard "Inside" VAT calc: Total / 1.15
-//            commExclVat = baseComm.divide(BigDecimal.valueOf(1.15), 2, RoundingMode.HALF_UP);
-//            vat = baseComm.subtract(commExclVat);
-//        } else {
-//            commExclVat = baseComm;
-//        }
 
         // 1. Calculate the Total Commission (VAT Inclusive)
         BigDecimal baseComm;
@@ -178,6 +165,16 @@ public class InstanceService {
         List<RentalInstance> instanceList = instanceRepo.findByStatus(status);
         return InstanceMapper.toReturnDtoList(instanceList);
     };
+
+    /// Save an edited DTO
+    @Transactional
+    public void updateInstance(@NonNull InstanceUpdateDto dto){
+        RentalInstance existingInstance = instanceRepo.findById(dto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("RentalInstance not found with ID: " + dto.getId()));
+        RentalInstance updatedInstance = InstanceMapper.updateEntityFromDto(dto, existingInstance);
+
+        instanceRepo.save(updatedInstance);
+    }
 
     /// Deprecated
     @Transactional

@@ -38,7 +38,7 @@ public class InstanceController {
 
     @PutMapping
     public void updateInstance(@RequestBody InstanceUpdateDto dto) {
-
+        instanceService.updateInstance(dto);
     }
 
     /**

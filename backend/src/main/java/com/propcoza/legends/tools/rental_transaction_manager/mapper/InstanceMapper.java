@@ -2,14 +2,17 @@ package com.propcoza.legends.tools.rental_transaction_manager.mapper;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Adjustment;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Note;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -61,6 +64,39 @@ public class InstanceMapper {
                 instance.addNote(note);
             });
         }
+
+        return instance;
+    }
+
+    public static RentalInstance updateEntityFromDto(@NonNull InstanceUpdateDto dto, @UnknownNullability RentalInstance instance) {
+        // --- Metadata & Dates ---
+        instance.setBillingPeriod(dto.getBillingPeriod());
+        instance.setActualPaymentDate(dto.getActualPaymentDate());
+        instance.setStatus(dto.getStatus());
+
+        // --- Commission Ratio Percentages ---
+        instance.setRentalCommissionPercent(dto.getRentalCommissionPercent());
+        instance.setOfficeSplit(dto.getOfficeSplit());
+        instance.setAgentSplit(dto.getAgentSplit());
+        instance.setAgentPaye(dto.getAgentPaye());
+
+        // --- Monthly Financial Snapshot (Inputs & Calculations) ---
+        instance.setTotalAmountPaid(dto.getTotalAmountPaid());
+        instance.setBaseRent(dto.getBaseRent());
+        instance.setLandlordPayAmount(dto.getLandlordPayAmount());
+        instance.setBaseComm(dto.getBaseComm());
+        instance.setVat(dto.getVat());
+        instance.setCommExclVat(dto.getCommExclVat());
+        instance.setCompanyComm(dto.getCompanyComm());
+        instance.setAgentGrossComm(dto.getAgentGrossComm());
+        instance.setPayeAmount(dto.getPayeAmount());
+        instance.setAgentNettComm(dto.getAgentNettComm());
+
+        // --- Once-off Fees ---
+        instance.setLeaseFee(dto.getLeaseFee());
+        instance.setLeaseFeeAgentPortion(dto.getLeaseFeeAgentPortion());
+        instance.setLeaseFeeOfficePortion(dto.getLeaseFeeOfficePortion());
+        instance.setDeposit(dto.getDeposit());
 
         return instance;
     }
