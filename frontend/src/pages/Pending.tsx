@@ -1,6 +1,7 @@
 import axiosClient from "@/context/axiosClient";
 import { InstanceCard, type InstanceBodyData } from "@/features/instances/InstanceCard";
 import { type InstanceReturnDto, type InstanceStatus } from "@/features/instances/InstanceReturnDto";
+import InstanceUpdateForm from "@/features/instances/InstanceUpdateForm";
 import { type RentalReturnDto } from "@/features/rentals/rental";
 import { useEffect, useState } from "react";
 
@@ -9,7 +10,9 @@ export default function Pending() {
   const [activeRentals, setActiveRentals] = useState<RentalReturnDto[]>([])
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<InstanceStatus>("DRAFT");
+  const [refresh, setRefresh] = useState(0);
 
+  /// Gets all instances sorted by status
   useEffect(() => {
     setLoading(true);
 
@@ -26,7 +29,7 @@ export default function Pending() {
       console.error(err);
       setLoading(false);
     });
-  }, [status]);
+  }, [status, refresh]);
 
   /// Get ALL active rentals (for address and meta data)
   useEffect(() => {
@@ -45,6 +48,29 @@ export default function Pending() {
   const rentalMap = new Map(
     activeRentals.map((rental) => [rental.id, rental])
   );
+
+
+  /**
+   * States used to toggle the edit form
+   */
+  const [selectedInstance, setSelectedInstance] = useState<InstanceBodyData | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleEdit = (instance: InstanceBodyData) => {
+    setSelectedInstance(instance);
+    setIsEditOpen(true);
+  }
+
+  const handleClose = () => {
+    setIsEditOpen(false);
+    setSelectedInstance(null);
+  };
+  
+  const handleSuccess=() => {
+    console.log()
+    setRefresh(r => r + 1);
+    handleClose();
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -77,13 +103,23 @@ export default function Pending() {
                 agentName={rental?.agentName ?? "No Agent Found"} // Add rental data here
                 status={instance.status}
 
-                onEdit={(data: InstanceBodyData) => console.log("Edit", data.id)}
+                onEdit={() => handleEdit(instance)}
                 onSetStatus={(data: InstanceBodyData) => console.log("Set Status", data.id)}
                 onDelete={(data: InstanceBodyData) => console.log("Delete", data.id)}
               />
+
             );
           })}
         </div>
+      )}
+
+      {isEditOpen && selectedInstance && (
+        <InstanceUpdateForm
+          instance={selectedInstance}
+          rental={rentalMap.get(selectedInstance.rentalId)}
+          onClose={handleClose}
+          onSuccess={handleSuccess}
+        />
       )}
     </div>
   );

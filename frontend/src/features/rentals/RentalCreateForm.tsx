@@ -254,7 +254,12 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
 };
 
 // Helper Component to maintain your design standards
-const FormSection = ({ title, subtitle, icon: Icon, children }: any) => (
+const FormSection = ({ title, subtitle, icon: Icon, children }: {
+    title: string
+    subtitle: string
+    icon: React.ElementType
+    children: React.ReactNode
+}) => (
   <div className="group border rounded-lg bg-white border-gray-200 transition-all overflow-hidden p-4 hover:border-blue-300">
     <div className="flex items-center gap-3 mb-4">
       <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-blue-50 transition-colors">
