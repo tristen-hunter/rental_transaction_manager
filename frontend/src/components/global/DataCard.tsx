@@ -10,12 +10,11 @@ import {
 import { MoreVertical } from "lucide-react";
 
 
-// export type CardBodyData = AgentBodyData | RentalBodyData;
-
 interface DataCardProps {
   title: string;
   subtitle: string;
   icon: LucideIcon;
+  onTitleClick?: () => void;
   status?: {
     label: string;
     colorClassName: string;
@@ -87,6 +86,7 @@ export default function DataCard({
   title,
   subtitle,
   icon: Icon,
+  onTitleClick,
   status,
   infoLabel,
   actions,
@@ -111,8 +111,27 @@ return (
         </div>
 
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-800 truncate leading-tight">{title}</p>
-          <p className="text-xs text-gray-400 truncate leading-tight">{subtitle}</p>
+          {/* Inner wrapper that only spans the width of the text */}
+          <div 
+            className="w-fit cursor-pointer group/title"
+            onClick={(e) => {
+              if (onTitleClick) {
+                e.stopPropagation();
+                onTitleClick();
+              }
+            }}
+          >
+            <p className={`text-sm font-semibold text-gray-800 truncate leading-tight transition-all duration-200
+              group-hover/title:text-blue-800 
+              hover:underline decoration-blue-400
+              group-hover/title:[text-shadow:0_0_8px_rgba(30,64,175,0.3)]`}
+            >
+              {title}
+            </p>
+            <p className="text-xs text-gray-400 truncate leading-tight">
+              {subtitle}
+            </p>
+          </div>
         </div>
 
         {infoLabel && (

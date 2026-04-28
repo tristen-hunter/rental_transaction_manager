@@ -8,6 +8,7 @@ interface AgentCardProps {
   isActive: boolean;
   onEdit: (agent: AgentBodyData) => void;
   onDeactivate: (agent: AgentBodyData) => void;
+  onTitleClick: (agent: AgentBodyData) => Promise<void>;
 }
 
 export interface AgentBodyData {
@@ -42,7 +43,15 @@ function AgentExpanded({ data }: { data: AgentBodyData }) {
   );
 }
 
-export function AgentCard({ agent, name, email, isActive, onEdit, onDeactivate }: AgentCardProps) {
+export function AgentCard({ 
+  agent, 
+  name, 
+  email, 
+  isActive, 
+  onEdit, 
+  onDeactivate,
+  onTitleClick
+}: AgentCardProps) {
   
   const canDeactivate = (agent.totalRentals ?? 0) === 0;
 
@@ -90,6 +99,7 @@ export function AgentCard({ agent, name, email, isActive, onEdit, onDeactivate }
       title={name}
       subtitle={email}
       icon={User}
+      onTitleClick={() => onTitleClick(agent)}
       status={statusConfig}
       infoLabel={agent.totalRentals !== undefined ? `${agent.totalRentals} rentals` : null}
       actions={actions}

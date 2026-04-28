@@ -145,6 +145,7 @@ export function RentalCard({rental, address, agentName, status, onEdit, onSetSta
       title={address}
       subtitle={agentName}
       icon={Home}
+      onTitleClick={() => console.log("DISPLAY INSTANCES")}
       status={{
         label: currentStatus.label,
         colorClassName: currentStatus.color

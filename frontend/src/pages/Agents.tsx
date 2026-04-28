@@ -3,12 +3,16 @@ import { useEffect, useState } from "react";
 import type { AgentReturnDto } from "@/features/agents/AgentReturnDto";
 import AgentCreateForm from "@/features/agents/AgentCreateForm";
 import { AgentCard } from "@/features/agents/AgentCard";
+import type { RentalReturnDto } from "@/features/rentals/rental";
+import { AgentService } from "@/features/agents/AgentService";
 
 export default function Agents() {
   const [agents, setAgents] = useState<AgentReturnDto[]>([]);
   const [loading, setLoading] = useState(true); // Fixed casing (setloading -> setLoading)
   const [error, setError] = useState<string | null>(null); // Explicit type
   const [showModal, setShowModal] = useState(false);
+
+  const [agentRentals, setAgentRentals] = useState<RentalReturnDto[]>([]);
 
   /**
    * Runs on mount
@@ -38,6 +42,20 @@ export default function Agents() {
 
   if (loading) return <p>Loading Agents...</p>;
   if (error) return <p>Error: {error}</p>;
+
+  /** Runs when a title is clicked. Fetches all an agents rentals */
+  const handleFetchRentals = async (id: AgentReturnDto["id"]) => {
+    try {
+      const res = await AgentService.fetchAgentsRentals(id);
+      setAgentRentals(res);
+
+      // console.log(res);
+    } catch (err) {
+      console.error("Failed to find Rentals")
+      alert("No rentals found")
+    }
+  
+  }
 
   // Combine header and list into one return statement
   return (
@@ -73,11 +91,9 @@ export default function Agents() {
               createdAt: agent.createdAt,
               updatedAt: agent.updatedAt,
             }}
-            // Centralized handlers
-            // onEdit={(data) => handleEditAgent(agent.id, data)}
-            // onDeactivate={(data) => handleDeactivateAgent(agent.id)}
             onEdit ={() => console.log("EDITING: ", agent.fullName)}
             onDeactivate={() => console.log("DDEACTIVATING: ", agent.fullName)}
+            onTitleClick={() => handleFetchRentals(agent.id)}
           />
         ))}
         </div>
