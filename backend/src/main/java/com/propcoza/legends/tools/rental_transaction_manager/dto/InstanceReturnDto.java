@@ -24,6 +24,7 @@ public class InstanceReturnDto {
 
     private double rentalCommissionPercent;
     private double officeSplit;
+    private double agentSplit;
     private double agentPaye;
 
     // -------------------------------

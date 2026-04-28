@@ -47,7 +47,7 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   const [agents, setAgents] = useState<AgentIdNameDto[]>([]);
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<RentalFormInputs>({
-    defaultValues: { autoRenew: true, vatRegistered: false }
+    defaultValues: { autoRenew: true, vatRegistered: true }
   });
 
   useEffect(() => {
@@ -65,6 +65,7 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   }, [isOpen])
 
   const watchAutoRenew = watch("autoRenew");
+  const watchVat = watch("vatRegistered");
 
   const onSubmit: SubmitHandler<RentalFormInputs> = async (data) => {
     // 1. Transform percentages to decimals for the backend
@@ -189,6 +190,14 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Input type="number" {...register("agentPaye")} placeholder="25" />
               </div>
             </div>
+            <div className="flex items-end pb-2 space-x-2">
+                <Checkbox 
+                  id="vatRegistered" 
+                  checked={watchVat} // This ensures the UI matches the 'true' default
+                  onCheckedChange={(checked) => setValue("vatRegistered", !!checked)} 
+                />
+                <Label htmlFor="vatRegistered" className="cursor-pointer">Vat Registered</Label>
+              </div>
           </FormSection>
 
           {/* Section: Landlord Banking */}

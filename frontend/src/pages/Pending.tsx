@@ -18,6 +18,8 @@ export default function Pending() {
     })
     .then((res) => {
       setInstances(res.data);
+      console.log(res.data);
+      
       setLoading(false);
     })
     .catch((err) => {

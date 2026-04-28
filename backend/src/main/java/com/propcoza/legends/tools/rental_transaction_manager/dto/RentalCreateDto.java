@@ -75,12 +75,12 @@ public record RentalCreateDto(
         @DecimalMin(value = "0.0", inclusive = false, message = "Commission percent must be greater than 0")
         @DecimalMax(value = "1.0", message = "Commission percent must be expressed as a decimal (e.g. 0.10 for 10%)")
         @NotNull
-        Double rentalCommissionPercent,
+        double rentalCommissionPercent,
 
         @DecimalMin(value = "0.0", inclusive = false, message = "Office split must be greater than 0")
         @DecimalMax(value = "1.0", message = "Office split must be expressed as a decimal (e.g. 0.30 for 30%)")
         @NotNull
-        Double officeSplit,
+        double officeSplit,
 
         /**
          * Agent split is intentionally excluded here.
@@ -90,7 +90,7 @@ public record RentalCreateDto(
         @DecimalMin(value = "0.0", inclusive = false, message = "Agent PAYE must be greater than 0")
         @DecimalMax(value = "1.0", message = "Agent PAYE must be expressed as a decimal (e.g. 0.25 for 25%)")
         @NotNull
-        Double agentPaye,
+        double agentPaye,
 
         // -------------------------------
         //    VAT

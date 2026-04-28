@@ -63,6 +63,9 @@ public class RentalInstance {
     @Column(name = "office_split")
     private double officeSplit; // office portion as a percentage (usually 30%)
 
+    @Column(name = "agent_split")
+    private double agentSplit;
+
     @Column(name = "agent_paye")
     private double agentPaye;
 

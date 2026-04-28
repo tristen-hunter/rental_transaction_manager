@@ -43,7 +43,7 @@ public class RentalMapper {
         // Relationship
         rental.setAgent(agent);
 
-        // Meta data
+        // Metadata
         rental.setAddress(dto.address());
         rental.setTenantName(dto.tenantName());
         rental.setPaymentDate(dto.paymentDate());
@@ -82,10 +82,10 @@ public class RentalMapper {
      * Maps a {@link Rental} entity to a {@link RentalReturnDto}.
      *
      * <p>{@code agentName} is resolved from the associated {@link Agent} — ensure
-     * the agent relationship is initialised before calling this method to
+     * the agent relationship is initialized before calling this method to
      * avoid a {@code LazyInitializationException}.
      *
-     * @param rental the entity to map (agent must be initialised)
+     * @param rental the entity to map (agent must be initialized)
      * @return a fully populated {@link RentalReturnDto}
      */
     public static @NonNull RentalReturnDto toReturnDto(@NonNull Rental rental) {
@@ -99,7 +99,7 @@ public class RentalMapper {
                 agent.getId(),
                 agent.getFullName(),
 
-                // Meta data
+                // Metadata
                 rental.getAddress(),
                 rental.getTenantName(),
                 rental.getPaymentDate(),

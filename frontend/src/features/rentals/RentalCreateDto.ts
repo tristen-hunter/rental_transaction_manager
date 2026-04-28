@@ -17,5 +17,4 @@ export interface RentalCreateDto {
     agentPaye: number;
 
     vatRegistered: boolean;
-    createdBy: string;
 }

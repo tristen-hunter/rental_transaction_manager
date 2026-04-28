@@ -15,6 +15,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +48,10 @@ public class RentalService {
                 dto.paymentDate())) {
             throw new RuntimeException("A rental record already exists for this tenant/agent on this date.");
         }
+
+//        BigDecimal agentSplit = BigDecimal.ONE.subtract(BigDecimal.valueOf(dto.officeSplit()))
+//                .setScale(2, RoundingMode.HALF_UP);
+
 
         // 2. Map to Entity
         RentalCreateDto normalizedDto = NormalizationUtils.normalizeRentalCreateDto(dto);

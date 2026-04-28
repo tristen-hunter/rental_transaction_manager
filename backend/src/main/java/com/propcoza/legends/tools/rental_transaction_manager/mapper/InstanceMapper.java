@@ -28,6 +28,7 @@ public class InstanceMapper {
 
         instance.setRentalCommissionPercent(dto.getRentalCommissionPercent());
         instance.setOfficeSplit(dto.getOfficeSplit());
+        instance.setAgentSplit(dto.getAgentSplit());
         instance.setAgentPaye(dto.getAgentPaye());
 
         instance.setBaseRent(dto.getBaseRent());
@@ -74,6 +75,7 @@ public class InstanceMapper {
 
         dto.setRentalCommissionPercent(instance.getRentalCommissionPercent());
         dto.setOfficeSplit(instance.getOfficeSplit());
+        dto.setAgentSplit(instance.getAgentSplit());
         dto.setAgentPaye(instance.getAgentPaye());
 
         dto.setBaseRent(instance.getBaseRent());

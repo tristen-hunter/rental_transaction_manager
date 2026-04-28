@@ -41,6 +41,10 @@ public class InstanceCreateDto {
     @PositiveOrZero
     private double officeSplit;
 
+    /// this is how much the office gets out of the commExclVat
+    @PositiveOrZero
+    private double agentSplit;
+
     /// this is how much PAYE the agent pays on their gross comm
     @PositiveOrZero
     private double agentPaye;

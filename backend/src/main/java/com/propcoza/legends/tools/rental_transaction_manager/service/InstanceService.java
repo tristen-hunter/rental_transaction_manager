@@ -57,30 +57,56 @@ public class InstanceService {
         newDto.setStatus(InstanceStatus.DRAFT);
         newDto.setRentalCommissionPercent(rental.getRentalCommissionPercent());
         newDto.setOfficeSplit(rental.getOfficeSplit());
+        newDto.setAgentSplit(rental.getAgentSplit());
         newDto.setAgentPaye(rental.getAgentPaye());
         newDto.setBaseRent(rental.getBaseRent());
 
         ///  Here I need to map the variables that are not constant
         // Variables
         BigDecimal totalAdjustments = BigDecimal.ZERO;
+//        BigDecimal baseComm = rental.getBaseRent()
+//                .multiply(BigDecimal.valueOf(rental.getRentalCommissionPercent()))
+//                .setScale(2, RoundingMode.HALF_UP);
+//
+//        BigDecimal vat = BigDecimal.ZERO;
+//        BigDecimal commExclVat;
+//
+//        // 2. Extract VAT from the Commission, not the Rent
+//        if (rental.getVatRegistered()) {
+//            // Standard "Inside" VAT calc: Total / 1.15
+//            commExclVat = baseComm.divide(BigDecimal.valueOf(1.15), 2, RoundingMode.HALF_UP);
+//            vat = baseComm.subtract(commExclVat);
+//        } else {
+//            commExclVat = baseComm;
+//        }
+
         // 1. Calculate the Total Commission (VAT Inclusive)
-        BigDecimal baseComm = rental.getBaseRent()
+        BigDecimal baseComm;
+        BigDecimal rawComm = rental.getBaseRent()
                 .multiply(BigDecimal.valueOf(rental.getRentalCommissionPercent()))
                 .setScale(2, RoundingMode.HALF_UP);
 
+        if (rental.getVatRegistered()) {
+            // Add 15% on top of the raw commission
+            baseComm = rawComm.multiply(BigDecimal.valueOf(1.15))
+                    .setScale(2, RoundingMode.HALF_UP);
+        } else {
+            baseComm = rawComm;
+        }
+
+        // 2. Calculate VAT and the Net amount (commExclVat)
         BigDecimal vat = BigDecimal.ZERO;
         BigDecimal commExclVat;
 
-        // 2. Extract VAT from the Commission, not the Rent
         if (rental.getVatRegistered()) {
-            // Standard "Inside" VAT calc: Total / 1.15
-            commExclVat = baseComm.divide(BigDecimal.valueOf(1.15), 2, RoundingMode.HALF_UP);
+            commExclVat = rawComm; // The raw commission is the amount excluding VAT
             vat = baseComm.subtract(commExclVat);
         } else {
             commExclVat = baseComm;
         }
+
         // 3. Split the NET (Excl VAT) amount
-        BigDecimal agentGrossComm = commExclVat.multiply(BigDecimal.valueOf(rental.getAgentSplit()))
+        BigDecimal agentGrossComm = commExclVat.subtract(commExclVat.multiply(BigDecimal.valueOf(rental.getOfficeSplit())))
                 .setScale(2, RoundingMode.HALF_UP);
 
         // If officeSplit is 0.3, this gives the 30% portion
@@ -98,7 +124,7 @@ public class InstanceService {
         newDto.setBaseComm(baseComm);
         newDto.setVat(vat);
         newDto.setCommExclVat(commExclVat);
-        newDto.setCompanyComm(commExclVat.subtract(agentGrossComm));
+        newDto.setCompanyComm(companyComm);
         newDto.setAgentGrossComm(agentGrossComm);
         newDto.setPayeAmount(payeAmount);
         newDto.setAgentNettComm(agentGrossComm.subtract(payeAmount));
@@ -137,7 +163,6 @@ public class InstanceService {
         // 5. map to DTO and return
         return InstanceMapper.toReturnDto(savedInstance);
     }
-
 
     /**
      * Gets ALL current ACTIVE rentals
