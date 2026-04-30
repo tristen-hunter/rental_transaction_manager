@@ -1,9 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.controller;
 
-import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
-import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
-import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
-import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.*;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.service.RentalService;
@@ -37,6 +34,14 @@ public class RentalController {
     @GetMapping("/instances/{rentalId}")
     public List<InstanceReturnDto> findByRental_Id(@PathVariable UUID rentalId){
         return rentalService.findByRental_Id(rentalId);
+    }
+
+    /**
+     * {/api/v1/rentals}
+     */
+    @PutMapping
+    public void updateRental(@Valid @RequestBody RentalUpdateDto dto){
+        rentalService.updateRental(dto);
     }
 
 }

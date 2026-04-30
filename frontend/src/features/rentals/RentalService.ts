@@ -1,6 +1,7 @@
 import axiosClient from "@/context/axiosClient";
 import { type RentalCreateDto } from "./RentalCreateDto";
 import type { RentalReturnDto } from "./rental";
+import type { RentalUpdateDto } from "./RentalUpdateDto";
 
 /// Holds all API end points for Rentals
 export const RentalService = {
@@ -32,5 +33,14 @@ export const RentalService = {
         
         console.log(response.data)
         return response.data;
+    },
+
+    updateRental: async (data: RentalUpdateDto): Promise<void> => {
+        try {
+            await axiosClient.put("/rentals", data);
+        }catch (err) {
+            console.error("Service layer Error: updateRental failed", err)
+            throw err;
+        }
     }
 }

@@ -117,7 +117,7 @@ export function RentalCard({
         onClick={(e) => { e.stopPropagation(); onEdit(rental); }}
       >
         <Edit2 className="mr-2 h-3.5 w-3.5 text-gray-400" />
-        <span>Edit Logs</span>
+        <span>Edit Rental</span>
       </div>
 
       {/* Add Instance - Creates DRAFT */}

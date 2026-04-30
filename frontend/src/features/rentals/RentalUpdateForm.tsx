@@ -98,6 +98,7 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
     const [isSaving, setIsSaving] = useState(false);
 
     const onSaveClick = async () => {
+      // console.log("FORM DATA: ", formData)
       setIsSaving(true);
       await onSuccess(formData);
       // No need to set false here if the component unmounts on success

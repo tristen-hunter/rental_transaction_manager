@@ -2,12 +2,14 @@ package com.propcoza.legends.tools.rental_transaction_manager.mapper;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -129,6 +131,50 @@ public class RentalMapper {
                 rental.getCreatedAt(),
                 rental.getUpdatedAt()
         );
+    }
+
+
+    /**
+     * Updates an existing {@link Rental} entity with values from a {@link RentalUpdateDto}.
+     *
+     * <p>Note: The agent relationship update is handled by the service layer
+     * if the agentId has changed. This mapper focuses on state updates.
+     *
+     * @param dto            the DTO containing updated fields
+     * @param existingRental the managed entity to update
+     * @return the updated entity
+     */
+    public static @NonNull Rental updateEntityFromDto(@NonNull RentalUpdateDto dto, @NonNull Rental existingRental) {
+        // Metadata
+        existingRental.setAddress(dto.getAddress());
+        existingRental.setTenantName(dto.getTenantName());
+        existingRental.setPaymentDate(dto.getPaymentDate());
+
+        // Recurring rental fields
+        existingRental.setStartDate(dto.getStartDate());
+        existingRental.setEndDate(dto.getEndDate());
+        existingRental.setAutoRenew(dto.getAutoRenew());
+        existingRental.setStatus(dto.getStatus());
+
+        // Landlord info
+        existingRental.setLandlordName(dto.getLandlordName());
+        existingRental.setLandlordBankName(dto.getLandlordBankName());
+        existingRental.setLandlordAccNo(dto.getLandlordAccNo());
+        existingRental.setLandlordBranch(dto.getLandlordBranch());
+
+        // Commission & Splits
+        // We recalculate agentSplit to ensure the @AssertTrue validation passes
+        existingRental.setBaseRent(dto.getBaseRent());
+        existingRental.setRentalCommissionPercent(dto.getRentalCommissionPercent());
+        existingRental.setOfficeSplit(dto.getOfficeSplit());
+        existingRental.setAgentSplit(1.0 - dto.getOfficeSplit());
+
+        existingRental.setAgentPaye(dto.getAgentPaye());
+        existingRental.setVatRegistered(dto.getVatRegistered());
+        existingRental.setUpdatedAt(LocalDateTime.now());
+        // Note: createdBy and createdAt are intentionally ignored to maintain audit history
+
+        return existingRental;
     }
 
     // -------------------------------------------------------

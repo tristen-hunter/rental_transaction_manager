@@ -4,6 +4,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.common.utils.Normal
 import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.*;
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.InstanceMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.RentalMapper;
@@ -92,5 +93,15 @@ public class RentalService {
     public List<InstanceReturnDto> findByRental_Id(UUID rentalId){
         List<RentalInstance> instances = instanceRepo.findByRental_Id(rentalId);
         return InstanceMapper.toReturnDtoList(instances);
+    }
+
+
+    @Transactional
+    public void updateRental(@NonNull RentalUpdateDto dto){
+        Rental existingRenal = rentalRepo.findById(dto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+
+        Rental UpdatedRental = RentalMapper.updateEntityFromDto(dto, existingRenal);
+        rentalRepo.save(UpdatedRental);
     }
 }

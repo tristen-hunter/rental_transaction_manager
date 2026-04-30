@@ -5,6 +5,8 @@ import RentalCreateForm from "@/features/rentals/RentalCreateForm";
 import { RentalCard, type RentalBodyData } from "@/features/rentals/RentalCard";
 import { RentalService } from "@/features/rentals/RentalService";
 import { useNavigate } from "react-router-dom";
+import type { RentalUpdateDto } from "@/features/rentals/RentalUpdateDto";
+import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
 
 
 export default function Rentals() {
@@ -12,8 +14,8 @@ export default function Rentals() {
   const [status, setStatus] = useState<RentalStatus>("ACTIVE") // default
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
-  
 
   const navigate = useNavigate();
 
@@ -36,7 +38,7 @@ export default function Rentals() {
       console.error(err);
       setLoading(false);
     });
-  }, [status]) 
+  }, [status, refresh]) 
 
   /// Creates individual instances as DRAFT
   const handleCreateInstance = async (rental: RentalBodyData) => {
@@ -60,6 +62,33 @@ export default function Rentals() {
   /**
    * For handling editing
    */
+  const [selectedRental, setSelectedRental] = useState<RentalBodyData | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleEdit = (rental: RentalBodyData) => {
+    setSelectedRental(rental);
+    setIsEditOpen(true);
+  }
+
+  const handleClose = () => {
+    setIsEditOpen(false);
+    setSelectedRental(null);
+  }
+
+  const handleSuccess = () => {
+    setRefresh(r => r + 1);
+    handleClose();
+  }
+
+  const handleSaveRental = async (updatedData: RentalUpdateDto) => {
+    try {
+      // console.log("UPDATED DATA: ", updatedData)
+      await RentalService.updateRental(updatedData);
+      handleSuccess();
+    } catch (err){
+      console.error("Failed to update rental:", err);
+    }
+  }
 
 
   return (
@@ -106,13 +135,20 @@ export default function Rentals() {
                 status={rental.status}         // Wrapper will map this to the colored badge
                 onTitleClick={() => handleNav(rental.id)}
                 // Connect the specific actions
-                onEdit={() => console.log("Edit", rental.address)}
+                onEdit={() => handleEdit(rental)}
                 onDelete={(data) => console.log("Delete", data.tenantName)}
                 onSetStatus={(data) => console.log("Update Status", data.tenantName)}
                 onCreateInstance={handleCreateInstance}
               />
             ))}
           </div>
+        )}
+        {isEditOpen && selectedRental && (
+          <RentalUpdateForm 
+            rental={selectedRental}
+            onClose={handleClose}
+            onSuccess={handleSaveRental}
+          />
         )}
     </div>
   );

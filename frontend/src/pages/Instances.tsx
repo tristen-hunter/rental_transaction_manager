@@ -69,7 +69,6 @@ export default function Instances() {
   };
 
   const handleSuccess=() => {
-    console.log()
     setRefresh(r => r + 1);
     handleClose();
   }
