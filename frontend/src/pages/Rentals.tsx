@@ -4,6 +4,7 @@ import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
 import RentalCreateForm from "@/features/rentals/RentalCreateForm";
 import { RentalCard, type RentalBodyData } from "@/features/rentals/RentalCard";
 import { RentalService } from "@/features/rentals/RentalService";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Rentals() {
@@ -11,6 +12,8 @@ export default function Rentals() {
   const [status, setStatus] = useState<RentalStatus>("ACTIVE") // default
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -46,6 +49,9 @@ export default function Rentals() {
     }
   }
 
+  const handleNav = (rentalId: RentalReturnDto["id"]) => {
+    navigate(`/rentals/${rentalId}`)
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -89,7 +95,7 @@ export default function Rentals() {
                 address={rental.address}       // Title
                 agentName={rental.agentName}   // Subtitle
                 status={rental.status}         // Wrapper will map this to the colored badge
-                
+                onTitleClick={() => handleNav(rental.id)}
                 // Connect the specific actions
                 onEdit={() => console.log("Edit", rental.address)}
                 onDelete={(data) => console.log("Delete", data.tenantName)}

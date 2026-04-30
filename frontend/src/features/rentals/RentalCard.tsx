@@ -11,6 +11,7 @@ interface RentalCardProps {
   onSetStatus: (rental: RentalBodyData) => void;
   onCreateInstance: (rental: RentalBodyData) => void;
   onDelete: (rental: RentalBodyData) => void;
+  onTitleClick: (agent: RentalBodyData) => void;
 }
 
 export interface RentalBodyData {
@@ -77,7 +78,17 @@ function RentalExpanded({ data }: { data: RentalBodyData }) {
   );
 }
 
-export function RentalCard({rental, address, agentName, status, onEdit, onSetStatus, onCreateInstance, onDelete}: RentalCardProps){
+export function RentalCard({
+  rental, 
+  address, 
+  agentName, 
+  status, 
+  onEdit, 
+  onSetStatus, 
+  onCreateInstance, 
+  onDelete,
+  onTitleClick
+}: RentalCardProps){
 
   const rentalStatusMap: Record<string, { label: string; color: string }> = {
     ACTIVE:    { label: "Active",    color: "bg-green-600 hover:bg-green-600" },
@@ -145,7 +156,7 @@ export function RentalCard({rental, address, agentName, status, onEdit, onSetSta
       title={address}
       subtitle={agentName}
       icon={Home}
-      onTitleClick={() => console.log("DISPLAY INSTANCES")}
+      onTitleClick={() => onTitleClick(rental)}
       status={{
         label: currentStatus.label,
         colorClassName: currentStatus.color

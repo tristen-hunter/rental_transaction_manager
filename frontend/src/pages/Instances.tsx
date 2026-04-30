@@ -7,7 +7,7 @@ import InstanceUpdateForm from "@/features/instances/InstanceUpdateForm";
 import { type RentalReturnDto } from "@/features/rentals/rental";
 import { useEffect, useState } from "react";
 
-export default function Pending() {
+export default function Instances() {
   const [instances, setInstances] = useState<InstanceReturnDto[]>([]);
   const [activeRentals, setActiveRentals] = useState<RentalReturnDto[]>([])
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ export default function Pending() {
     })
     .then((res) => {
       setInstances(res.data);
-      console.log(res.data);  // FOR CHECKING THE RETURN DATA FROM THE DB
+      // console.log(res.data);  // FOR CHECKING THE RETURN DATA FROM THE DB
       
       setLoading(false);
     })

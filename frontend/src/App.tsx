@@ -2,10 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Agents from "./pages/Agents";
 import Rentals from "./pages/Rentals";
-import Pending from "./pages/Pending";
 import TopBar from "./components/layout/Topbar";
 import Sidebar from "./components/layout/Sidebar";
 import AgentsRentals from "./pages/AgentsRentals";
+import RentalsInstances from "./pages/RentalsInstances";
+import Instances from "./pages/Instances";
 
 export default function App() {
   return (
@@ -30,8 +31,9 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route path="/agents" element={<Agents />} />
               <Route path="/rentals" element={<Rentals />} />
-              <Route path="/pending" element={<Pending />} />
+              <Route path="/instances" element={<Instances />} />
               <Route path="/agents/:agentId" element={<AgentsRentals />} />
+              <Route path="/rentals/:rentalId" element={<RentalsInstances />} />
             </Routes>
           </main>
         </div>

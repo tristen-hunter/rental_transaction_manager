@@ -23,7 +23,14 @@ export const RentalService = {
     createInstance: async (rentalId: string) => {
         const response = await axiosClient.post(`/instances/${rentalId}`);
         // console.log(response.data)
+        return response.data;
+    },
 
+    /**Fetch all instances for a rental */
+    fetchRentalsInstances: async (rentalId: string) => {
+        const response = await axiosClient.get(`/rentals/${rentalId}`);
+        
+        console.log(response.data)
         return response.data;
     }
 }

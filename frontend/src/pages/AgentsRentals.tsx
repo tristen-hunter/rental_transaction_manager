@@ -11,8 +11,9 @@ export default function AgentsRentals() {
   const { agentId } = useParams<{ agentId: string }>(); // Matches :agentId in App.tsx
   const [agentRentals, setAgentRentals] = useState<RentalReturnDto[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const navigate = useNavigate();
 
-  const navigateBack = useNavigate();
 
   useEffect(() => {
     // Prevent execution if agentId is missing
@@ -59,9 +60,13 @@ export default function AgentsRentals() {
     }
   }
 
+    const handleNav = (rentalId: RentalReturnDto["id"]) => {
+      navigate(`/rentals/${rentalId}`)
+    }
+
   return (
     <div className="max-w-6xl mx-auto">
-      <button onClick={() => navigateBack(-1)} className="text-blue-600 mb-4 hover:cursor-pointer">
+      <button onClick={() => navigate(-1)} className="text-blue-600 mb-4 hover:cursor-pointer">
       <ArrowLeft />
       </button>
       <div className="text-xl font-bold mb-4">AGENTS RENTALS</div>
@@ -80,6 +85,7 @@ export default function AgentsRentals() {
             onDelete={(data) => console.log("Delete", data.tenantName)}
             onSetStatus={(data) => console.log("Update Status", data.tenantName)}
             onCreateInstance={handleCreateInstance}
+            onTitleClick={() => handleNav(rental.id)}
           />
         ))}
         </div>
