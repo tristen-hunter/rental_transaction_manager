@@ -14,7 +14,7 @@ export default function Instances() {
   const [status, setStatus] = useState<InstanceStatus>("DRAFT");
   const [refresh, setRefresh] = useState(0);
 
-  /// Gets all instances sorted by status
+  /// Gets all instances by status
   useEffect(() => {
     setLoading(true);
 
@@ -120,7 +120,6 @@ export default function Instances() {
                 onSetStatus={(data: InstanceBodyData) => console.log("Set Status", data.id)}
                 onDelete={(data: InstanceBodyData) => console.log("Delete", data.id)}
               />
-
             );
           })}
         </div>

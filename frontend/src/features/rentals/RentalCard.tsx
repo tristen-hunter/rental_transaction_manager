@@ -1,5 +1,6 @@
 import DataCard, { currency, Field, fmt, OverflowMenu, Section } from "@/components/global/DataCard";
 import { Home, Edit2, PlusSquare, RefreshCw, Trash2 } from "lucide-react";
+import type { RentalStatus } from "./rental";
 
 
 interface RentalCardProps {
@@ -17,11 +18,17 @@ interface RentalCardProps {
 export interface RentalBodyData {
   // kind: "rental";
   id: string;
+  agentId: string;
+  agentName: string;
+  address: string;
+  paymentDate: string;
   // Collapsed preview
   startDate: string;
   // Expanded: tenant
   tenantName: string;
   endDate: string;
+  autoRenew: boolean;
+  status: RentalStatus;
   // Expanded: landlord
   landlordName: string;
   landlordBankName: string;

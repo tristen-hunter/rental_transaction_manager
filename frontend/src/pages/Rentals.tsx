@@ -13,6 +13,8 @@ export default function Rentals() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export default function Rentals() {
     });
   }, [status]) 
 
+  /// Creates individual instances as DRAFT
   const handleCreateInstance = async (rental: RentalBodyData) => {
     try {
       const res = await RentalService.createInstance(rental.id);
@@ -49,9 +52,15 @@ export default function Rentals() {
     }
   }
 
+  /// Navigation for titl clicks
   const handleNav = (rentalId: RentalReturnDto["id"]) => {
     navigate(`/instances/rentals/${rentalId}`)
   }
+
+  /**
+   * For handling editing
+   */
+
 
   return (
     <div className="max-w-6xl mx-auto">
