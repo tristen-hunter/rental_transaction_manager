@@ -5,6 +5,7 @@ import Rentals from "./pages/Rentals";
 import Pending from "./pages/Pending";
 import TopBar from "./components/layout/Topbar";
 import Sidebar from "./components/layout/Sidebar";
+import AgentsRentals from "./pages/AgentsRentals";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/agents" element={<Agents />} />
               <Route path="/rentals" element={<Rentals />} />
               <Route path="/pending" element={<Pending />} />
+              <Route path="/agents/:agentId" element={<AgentsRentals />} />
             </Routes>
           </main>
         </div>

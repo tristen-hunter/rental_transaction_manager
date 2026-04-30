@@ -8,7 +8,7 @@ interface AgentCardProps {
   isActive: boolean;
   onEdit: (agent: AgentBodyData) => void;
   onDeactivate: (agent: AgentBodyData) => void;
-  onTitleClick: (agent: AgentBodyData) => Promise<void>;
+  onTitleClick: (agent: AgentBodyData) => void;
 }
 
 export interface AgentBodyData {

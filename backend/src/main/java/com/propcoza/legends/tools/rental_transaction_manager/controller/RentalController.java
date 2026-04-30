@@ -1,6 +1,7 @@
 package com.propcoza.legends.tools.rental_transaction_manager.controller;
 
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstance;
@@ -34,7 +35,7 @@ public class RentalController {
     }
 
     @GetMapping("/rental/{rentalId}")
-    public List<RentalInstance> findByRental_Id(@PathVariable UUID rentalId){
+    public List<InstanceReturnDto> findByRental_Id(@PathVariable UUID rentalId){
         return rentalService.findByRental_Id(rentalId);
     }
 

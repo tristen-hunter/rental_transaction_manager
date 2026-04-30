@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import type { AgentReturnDto } from "@/features/agents/AgentReturnDto";
 import AgentCreateForm from "@/features/agents/AgentCreateForm";
 import { AgentCard } from "@/features/agents/AgentCard";
-import type { RentalReturnDto } from "@/features/rentals/rental";
-import { AgentService } from "@/features/agents/AgentService";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Agents() {
   const [agents, setAgents] = useState<AgentReturnDto[]>([]);
-  const [loading, setLoading] = useState(true); // Fixed casing (setloading -> setLoading)
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Explicit type
   const [showModal, setShowModal] = useState(false);
 
-  const [agentRentals, setAgentRentals] = useState<RentalReturnDto[]>([]);
+  const navigate = useNavigate();
 
   /**
    * Runs on mount
@@ -43,19 +43,10 @@ export default function Agents() {
   if (loading) return <p>Loading Agents...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  /** Runs when a title is clicked. Fetches all an agents rentals */
-  const handleFetchRentals = async (id: AgentReturnDto["id"]) => {
-    try {
-      const res = await AgentService.fetchAgentsRentals(id);
-      setAgentRentals(res);
-
-      // console.log(res);
-    } catch (err) {
-      console.error("Failed to find Rentals")
-      alert("No rentals found")
-    }
-  
+  const handleNav = (id: AgentReturnDto["id"]) => {
+    navigate(`/agents/${id}`);
   }
+
 
   // Combine header and list into one return statement
   return (
@@ -93,7 +84,7 @@ export default function Agents() {
             }}
             onEdit ={() => console.log("EDITING: ", agent.fullName)}
             onDeactivate={() => console.log("DDEACTIVATING: ", agent.fullName)}
-            onTitleClick={() => handleFetchRentals(agent.id)}
+            onTitleClick={() => handleNav(agent.id)}
           />
         ))}
         </div>

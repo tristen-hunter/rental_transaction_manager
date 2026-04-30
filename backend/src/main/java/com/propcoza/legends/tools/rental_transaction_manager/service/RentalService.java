@@ -1,9 +1,11 @@
 package com.propcoza.legends.tools.rental_transaction_manager.service;
 
 import com.propcoza.legends.tools.rental_transaction_manager.common.utils.NormalizationUtils;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.InstanceReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.*;
+import com.propcoza.legends.tools.rental_transaction_manager.mapper.InstanceMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.RentalMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.AgentRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalInstanceRepo;
@@ -87,7 +89,8 @@ public class RentalService {
      * A list of all rental instances is returned with no filters
      */
     @Transactional
-    public List<RentalInstance> findByRental_Id(UUID rentalId){
-        return instanceRepo.findByRental_Id(rentalId);
+    public List<InstanceReturnDto> findByRental_Id(UUID rentalId){
+        List<RentalInstance> instances = instanceRepo.findByRental_Id(rentalId);
+        return InstanceMapper.toReturnDtoList(instances);
     }
 }
