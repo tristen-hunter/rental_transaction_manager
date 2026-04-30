@@ -17,29 +17,29 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/agents")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AgentController {
 
     private final AgentService agentService;
 
-    @PostMapping
+    @PostMapping("/agents")
     public ResponseEntity<AgentReturnDto> createAgent(@Valid @RequestBody AgentCreateDto agentCreateDto){
         AgentReturnDto createdAgent = agentService.createAgent(agentCreateDto);
         return new ResponseEntity<>(createdAgent, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/agents")
     public List<AgentReturnDto> getAllAgents(){
         return agentService.getAllAgents();
     }
 
-    @GetMapping("/{agentId}")
+    @GetMapping("/rentals/agents/{agentId}")
     public List<RentalReturnDto> getRentalsByAgentId(@PathVariable UUID agentId){
         return agentService.getRentalsByAgentId(agentId);
     }
 
-    @GetMapping("/all/agentSummary")
+    @GetMapping("/agents/all/agentSummary")
     public List<AgentIdDto> getAllAgentIds(){
         return agentService.getAllAgentIds();
     }

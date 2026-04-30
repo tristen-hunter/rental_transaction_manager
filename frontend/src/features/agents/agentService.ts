@@ -29,7 +29,7 @@ export const AgentService = {
 
     /** Fetches all Rentals for an Agent based on their ID */
     fetchAgentsRentals: async (agentId: string): Promise<RentalReturnDto[]> => {
-        const { data } = await axiosClient.get(`/agents/${agentId}`);
+        const { data } = await axiosClient.get(`/rentals/agents/${agentId}`);
 
         // console.log(data);
         return data;

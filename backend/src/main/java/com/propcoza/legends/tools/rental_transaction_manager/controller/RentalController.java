@@ -34,7 +34,7 @@ public class RentalController {
         return rentalService.getRentalsByStatus(status);
     }
 
-    @GetMapping("/{rentalId}")
+    @GetMapping("/instances/{rentalId}")
     public List<InstanceReturnDto> findByRental_Id(@PathVariable UUID rentalId){
         return rentalService.findByRental_Id(rentalId);
     }

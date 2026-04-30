@@ -50,7 +50,7 @@ export default function Rentals() {
   }
 
   const handleNav = (rentalId: RentalReturnDto["id"]) => {
-    navigate(`/rentals/${rentalId}`)
+    navigate(`/instances/rentals/${rentalId}`)
   }
 
   return (

@@ -28,7 +28,7 @@ export const RentalService = {
 
     /**Fetch all instances for a rental */
     fetchRentalsInstances: async (rentalId: string) => {
-        const response = await axiosClient.get(`/rentals/${rentalId}`);
+        const response = await axiosClient.get(`/rentals/instances/${rentalId}`);
         
         console.log(response.data)
         return response.data;

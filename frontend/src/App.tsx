@@ -32,8 +32,8 @@ export default function App() {
               <Route path="/agents" element={<Agents />} />
               <Route path="/rentals" element={<Rentals />} />
               <Route path="/instances" element={<Instances />} />
-              <Route path="/agents/:agentId" element={<AgentsRentals />} />
-              <Route path="/rentals/:rentalId" element={<RentalsInstances />} />
+              <Route path="/rentals/agents/:agentId" element={<AgentsRentals />} />
+              <Route path="/instances/rentals/:rentalId" element={<RentalsInstances />} />
             </Routes>
           </main>
         </div>

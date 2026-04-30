@@ -30,7 +30,7 @@ export default function Sidebar() {
         <SidebarLink to="/" label="Dashboard" />
         <SidebarLink to="/agents" label="Agents" />
         <SidebarLink to="/rentals" label="Rentals" />
-        <SidebarLink to="/pending" label="Pending" />
+        <SidebarLink to="/instances" label="Instances" />
       </nav>
 
       <div className="p-4 border-t border-gray-800">

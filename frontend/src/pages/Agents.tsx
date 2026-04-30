@@ -44,7 +44,7 @@ export default function Agents() {
   if (error) return <p>Error: {error}</p>;
 
   const handleNav = (id: AgentReturnDto["id"]) => {
-    navigate(`/agents/${id}`);
+    navigate(`/rentals/agents/${id}`);
   }
 
 
