@@ -3,6 +3,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.service;
 import com.propcoza.legends.tools.rental_transaction_manager.common.utils.AgentIdDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Agent;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
@@ -10,6 +11,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.mapper.AgentMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.mapper.RentalMapper;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.AgentRepo;
 import com.propcoza.legends.tools.rental_transaction_manager.repo.RentalRepo;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -87,6 +89,15 @@ public class AgentService {
         List<Rental> entities = rentalRepo.getRentalsByAgent_Id(agentId);
 
         return RentalMapper.toReturnDtoList(entities);
+    }
+
+    @Transactional
+    public void updateAgent(AgentUpdateDto dto){
+        Agent existingAgent = agentRepo.findById(dto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Agent not found with ID: " + dto.getId()));
+
+        Agent updatedAgent = AgentMapper.updateEntityFromDto(dto, existingAgent);
+        agentRepo.save(updatedAgent);
     }
 
 

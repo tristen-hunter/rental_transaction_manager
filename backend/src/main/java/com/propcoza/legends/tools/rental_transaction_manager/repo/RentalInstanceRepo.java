@@ -25,7 +25,7 @@ public interface RentalInstanceRepo extends JpaRepository<RentalInstance, UUID> 
 
 
     // Find if an instance already exists
-    // NOTE: bolling period set to the first day in service layer (createRental)
+    // NOTE: billing period set to the first day in service layer (createRental)
     boolean existsByRentalAndBillingPeriod(Rental rental, LocalDate billingPeriod);
 
     // Get all Instances associated with a rental (master)

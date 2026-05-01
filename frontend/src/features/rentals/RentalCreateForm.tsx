@@ -46,7 +46,7 @@ interface Props {
 const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   const [agents, setAgents] = useState<AgentIdNameDto[]>([]);
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<RentalFormInputs>({
+  const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<RentalFormInputs>({
     defaultValues: { autoRenew: true, vatRegistered: true }
   });
 
@@ -82,6 +82,7 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
       const result = await RentalService.create(dto);
       console.log("Success:", result);
 
+      reset();
       onClose();
 
     } catch (error){
@@ -252,6 +253,7 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
     </div>
   );
 };
+
 
 // Helper Component to maintain your design standards
 const FormSection = ({ title, subtitle, icon: Icon, children }: {

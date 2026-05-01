@@ -3,6 +3,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.controller;
 import com.propcoza.legends.tools.rental_transaction_manager.common.utils.AgentIdDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentCreateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentReturnDto;
+import com.propcoza.legends.tools.rental_transaction_manager.dto.AgentUpdateDto;
 import com.propcoza.legends.tools.rental_transaction_manager.dto.RentalReturnDto;
 import com.propcoza.legends.tools.rental_transaction_manager.entity.Rental;
 import com.propcoza.legends.tools.rental_transaction_manager.service.AgentService;
@@ -42,5 +43,10 @@ public class AgentController {
     @GetMapping("/agents/all/agentSummary")
     public List<AgentIdDto> getAllAgentIds(){
         return agentService.getAllAgentIds();
+    }
+
+    @PutMapping("/agents")
+    public void updateAgent(@Valid @RequestBody AgentUpdateDto dto){
+        agentService.updateAgent(dto);
     }
 }

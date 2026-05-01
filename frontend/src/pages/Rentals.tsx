@@ -92,6 +92,12 @@ export default function Rentals() {
     }
   }
 
+  const handleSubmit = () => {
+    setShowModal(false);
+    setRefresh(r => r+1)
+  }
+
+
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -119,7 +125,7 @@ export default function Rentals() {
 
           <RentalCreateForm 
             isOpen={showModal} 
-            onClose={() => setShowModal(false)} 
+            onClose={handleSubmit} 
           />
         </div>
       </div>
