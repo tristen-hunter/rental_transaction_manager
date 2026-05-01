@@ -13,15 +13,25 @@ interface AgentCardProps {
 
 export interface AgentBodyData {
   kind: "agent";
+  // ID is required for the Update DTO to know which record to hit
+  id: string; 
+  
+  // Personal Info (needed to populate form fields)
+  fullName: string;
+  email: string;
+  isActive: boolean;
+
   // Collapsed preview
   totalRentals?: number;
+
   // Expanded: banking
   bankName: string;
   accountNumber: string;
   branchCode: string;
+
   // Expanded: logging
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 function AgentExpanded({ data }: { data: AgentBodyData }) {
@@ -36,8 +46,8 @@ function AgentExpanded({ data }: { data: AgentBodyData }) {
 
       <Section title="Log" />
       <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-        <Field label="Created"  value={fmt(data.createdAt)} />
-        <Field label="Updated"  value={fmt(data.updatedAt)} />
+        <Field label="Created"  value={fmt(data.createdAt ?? "")} />
+        <Field label="Updated"  value={fmt(data.updatedAt ?? "")} />
       </div>
     </div>
   );

@@ -2,8 +2,11 @@ import axiosClient from "../context/axiosClient"
 import { useEffect, useState } from "react";
 import type { AgentReturnDto } from "@/features/agents/AgentReturnDto";
 import AgentCreateForm from "@/features/agents/AgentCreateForm";
-import { AgentCard } from "@/features/agents/AgentCard";
+import { AgentCard, type AgentBodyData } from "@/features/agents/AgentCard";
 import { useNavigate } from "react-router-dom";
+import AgentUpdateForm from "@/features/agents/AgentUpdateForm";
+import type { AgentUpdateDto } from "@/features/agents/AgentUpdateDto";
+import { AgentService } from "@/features/agents/AgentService";
 
 
 export default function Agents() {
@@ -27,6 +30,8 @@ export default function Agents() {
     axiosClient.get<AgentReturnDto[]>("/agents")
       .then((response) => {
         if (isMounted) {
+          // console.log(response.data)
+
           setAgents(response.data);
           setLoading(false);
         }
@@ -42,8 +47,6 @@ export default function Agents() {
     return () => { isMounted = false; };
   }, [refresh]);
 
-  if (loading) return <p>Loading Agents...</p>;
-  if (error) return <p>Error: {error}</p>;
 
   const handleNav = (agent: AgentReturnDto) => {
     navigate(`/rentals/agents/${agent.id}`, {
@@ -57,6 +60,36 @@ export default function Agents() {
   }
 
 
+  const [selectedAgent, setSelectedAgent] = useState<AgentBodyData | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleEdit = (agent: AgentBodyData) => {
+    setSelectedAgent(agent)
+    setIsEditOpen(true);
+  }
+
+  const handleClose = () => {
+    setIsEditOpen(false);
+    setSelectedAgent(null);
+  }
+  
+  const handleSuccess = () => {
+    setRefresh(r => r + 1);
+    handleClose();
+  }
+
+  const handleSaveAgent = async (updatedData: AgentUpdateDto) => {
+    try {
+      await AgentService.updateAgent(updatedData);
+      handleSuccess();
+    } catch (err) {
+      console.error("Failed to update Agent: ", err)
+    }
+  }
+
+
+  if (loading) return <p>Loading Agents...</p>;
+  if (error) return <p>Error: {error}</p>;
   // Combine header and list into one return statement
   return (
     <div className="max-w-6xl mx-auto">
@@ -83,20 +116,28 @@ export default function Agents() {
             isActive={agent.isActive}
             // Pass the whole agent object for the expanded view & logic
             agent={{
-              kind: "agent",
-              totalRentals: agent.totalRentals,
+              id: agent.id,
+              fullName: agent.fullName,
+              email: agent.email,
+              isActive: agent.isActive,
               bankName: agent.bankName,
               accountNumber: agent.accountNumber,
               branchCode: agent.branchCode,
-              createdAt: agent.createdAt,
-              updatedAt: agent.updatedAt,
+              kind: "agent",
             }}
-            onEdit ={() => console.log("EDITING: ", agent.fullName)}
+            onEdit ={handleEdit}
             onDeactivate={() => console.log("DDEACTIVATING: ", agent.fullName)}
             onTitleClick={() => handleNav(agent)}
           />
         ))}
         </div>
+        {isEditOpen && selectedAgent && (
+          <AgentUpdateForm 
+            agent={selectedAgent}
+            onClose={handleClose}
+            onSuccess={handleSaveAgent}
+          />
+        )}
     </div>
   );
 }
