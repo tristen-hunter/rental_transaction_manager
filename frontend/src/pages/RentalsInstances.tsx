@@ -1,3 +1,4 @@
+import { Breadcrumbs } from "@/components/global/BreadCrumbs";
 import axiosClient from "@/context/axiosClient";
 import { InstanceCard, type InstanceBodyData } from "@/features/instances/InstanceCard";
 import { type InstanceReturnDto } from "@/features/instances/InstanceReturnDto";
@@ -104,9 +105,16 @@ export default function RentalsInstances() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <button onClick={() => navigate(-1)} className="text-blue-600 mb-4 hover:cursor-pointer">
-          <ArrowLeft />
-      </button>
+      <div className="flex items-center gap-4 mb-4">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="text-blue-600 hover:cursor-pointer flex items-center"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        
+        <Breadcrumbs />
+      </div>
       <div className="text-xl font-bold mb-4 uppercase">{rentalAddress} - INSTANCES</div>
       {rentalsInstances.length === 0 ? (
           <p>No instances belong to this rental</p>

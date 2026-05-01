@@ -6,6 +6,7 @@ import { RentalCard, type RentalBodyData } from "@/features/rentals/RentalCard";
 import { RentalService } from "@/features/rentals/RentalService";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { Breadcrumbs } from "@/components/global/BreadCrumbs";
 
 export default function AgentsRentals() {
   const { agentId } = useParams<{ agentId: string }>(); // Matches :agentId in App.tsx
@@ -63,15 +64,27 @@ export default function AgentsRentals() {
     }
   }
 
-  const handleNav = (rentalId: RentalReturnDto["id"]) => {
-    navigate(`/instances/rentals/${rentalId}`)
+  const handleNav = (rental: RentalReturnDto) => {
+    navigate(`/instances/rentals/${rental.id}`, {
+      state: { 
+        agentName: location.state?.agentName,
+        rentalAddress: rental.address 
+      }
+    });
   }
 
   return (
     <div className="max-w-6xl mx-auto">
-      <button onClick={() => navigate(-1)} className="text-blue-600 mb-4 hover:cursor-pointer">
-      <ArrowLeft />
-      </button>
+      <div className="flex items-center gap-4 mb-4">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="text-blue-600 hover:cursor-pointer flex items-center"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        
+        <Breadcrumbs />
+      </div>
       <div className="text-xl font-bold mb-4 uppercase">{agentName} - RENTALS</div>
       {agentRentals.length === 0 ? (
         <p>No rentals assigned to this agent.</p>
@@ -88,7 +101,7 @@ export default function AgentsRentals() {
             onDelete={(data) => console.log("Delete", data.tenantName)}
             onSetStatus={(data) => console.log("Update Status", data.tenantName)}
             onCreateInstance={handleCreateInstance}
-            onTitleClick={() => handleNav(rental.id)}
+            onTitleClick={() => handleNav(rental)}
           />
         ))}
         </div>
