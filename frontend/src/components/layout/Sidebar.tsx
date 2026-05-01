@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
 
 // 1. The Helper Component
-function SidebarLink({ to, label }: { to: string; label: string }) {
+function SidebarLink({ to, label, end=false }: { to: string; label: string, end?:boolean }) {
   return (
     <NavLink
       to={to}
+      end={end}
       className={({ isActive }) =>
         `flex items-center px-4 py-2.5 rounded-md transition-all duration-200 text-sm font-medium ${
           isActive
@@ -28,9 +29,9 @@ export default function Sidebar() {
       
       <nav className="flex-1 px-3 py-6 space-y-1">
         <SidebarLink to="/" label="Dashboard" />
-        <SidebarLink to="/agents" label="Agents" />
-        <SidebarLink to="/rentals" label="Rentals" />
-        <SidebarLink to="/instances" label="Instances" />
+        <SidebarLink to="/agents" label="Agents" end />
+        <SidebarLink to="/rentals" label="Rentals" end />
+        <SidebarLink to="/instances" label="Instances" end />
       </nav>
 
       <div className="p-4 border-t border-gray-800">

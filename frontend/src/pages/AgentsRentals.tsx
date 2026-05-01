@@ -89,20 +89,20 @@ export default function AgentsRentals() {
       {agentRentals.length === 0 ? (
         <p>No rentals assigned to this agent.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-2">
-        {agentRentals.map((rental) => (
-          <RentalCard
-            key={rental.id}
-            rental={rental}
-            address={rental.address}
-            agentName={rental.agentName}
-            status={rental.status}
-            onEdit={() => console.log("Edit", rental.address)}
-            onDelete={(data) => console.log("Delete", data.tenantName)}
-            onSetStatus={(data) => console.log("Update Status", data.tenantName)}
-            onCreateInstance={handleCreateInstance}
-            onTitleClick={() => handleNav(rental)}
-          />
+        <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          {agentRentals.map((rental) => (
+            <RentalCard
+              key={rental.id}
+              rental={rental}
+              address={rental.address}
+              agentName={"R " + rental.baseRent}
+              status={rental.status}
+              onEdit={() => console.log("Edit", rental.address)}
+              onDelete={(data) => console.log("Delete", data.tenantName)}
+              onSetStatus={(data) => console.log("Update Status", data.tenantName)}
+              onCreateInstance={handleCreateInstance}
+              onTitleClick={() => handleNav(rental)}
+            />
         ))}
         </div>
       )}

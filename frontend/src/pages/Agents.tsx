@@ -12,6 +12,8 @@ export default function Agents() {
   const [error, setError] = useState<string | null>(null); // Explicit type
   const [showModal, setShowModal] = useState(false);
 
+  const [refresh, setRefresh] = useState(0);
+
   const navigate = useNavigate();
 
   /**
@@ -38,7 +40,7 @@ export default function Agents() {
       });
 
     return () => { isMounted = false; };
-  }, []);
+  }, [refresh]);
 
   if (loading) return <p>Loading Agents...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -47,6 +49,11 @@ export default function Agents() {
     navigate(`/rentals/agents/${agent.id}`, {
       state: { agentName: agent.fullName }
     });
+  }
+
+  const handleSubmit = () => {
+    setShowModal(false);
+    setRefresh(r => r+1)
   }
 
 
@@ -63,7 +70,7 @@ export default function Agents() {
 
         <AgentCreateForm
           isOpen={showModal}
-          onClose={() => setShowModal(false)}
+          onClose={handleSubmit}
         />
       </div>
       

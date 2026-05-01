@@ -119,7 +119,7 @@ export default function RentalsInstances() {
       {rentalsInstances.length === 0 ? (
           <p>No instances belong to this rental</p>
       ): (
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
           {rentalsInstances.map((instance) => {
             const rental = rentalMap.get(instance.rentalId);
             return (
@@ -127,7 +127,7 @@ export default function RentalsInstances() {
                 key={instance.id}
                 instance={instance}
                 address={rental?.address ?? "No Address Found"} // Add rental data here
-                agentName={rental?.agentName ?? "No Agent Found"} // Add rental data here
+                agentName={"Payment Data: " + rental?.paymentDate || "none found"} // Add rental data here
                 status={instance.status}
 
                 onEdit={() => handleEdit(instance)}

@@ -31,7 +31,7 @@ interface Props {
 }
 
 const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
-  const { register, handleSubmit, setValue, watch} = useForm<AgentFormInputs>({
+  const { register, handleSubmit, setValue, watch, reset} = useForm<AgentFormInputs>({
     defaultValues: {
       isActive: true,
       bankName: ""
@@ -53,7 +53,8 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
       console.log("Success:", result);
       alert("Agent Created Successfully!"); 
 
-      // 3. Close the modal
+      // 3. Close the modal & Reset data
+      reset();
       onClose();
 
     } catch (error){
