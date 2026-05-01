@@ -11,7 +11,7 @@ interface RentalCardProps {
   onEdit: (rental: RentalBodyData) => void;
   onSetStatus: (rental: RentalBodyData) => void;
   onCreateInstance: (rental: RentalBodyData) => void;
-  onDelete: (rental: RentalBodyData) => void;
+  onDelete: (rentalId: string) => void;
   onTitleClick: (agent: RentalBodyData) => void;
 }
 
@@ -101,7 +101,6 @@ export function RentalCard({
     ACTIVE:    { label: "Active",    color: "bg-green-600 hover:bg-green-600" },
     CANCELLED: { label: "Cancelled", color: "bg-red-600 hover:bg-red-600" },
     COMPLETED: { label: "Completed", color: "bg-blue-600 hover:bg-blue-600" },
-    DRAFT:     { label: "Draft",     color: "bg-orange-500 hover:bg-orange-500" },
   };
 
   const currentStatus = rentalStatusMap[status] || { 
@@ -148,7 +147,7 @@ export function RentalCard({
         onClick={(e) => { 
           e.stopPropagation(); 
           if (confirm("Are you sure? This will delete all associated instances and children.")) {
-            onDelete(rental);
+            onDelete(rental.id);
           }
         }}
       >

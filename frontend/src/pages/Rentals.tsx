@@ -98,6 +98,16 @@ export default function Rentals() {
   }
 
 
+  const handleDelete = async (rentalId: string) => {
+    try {
+      await RentalService.deleteRental(rentalId);
+    } catch (err) {
+      console.error("Couldn't delete Rental", err)
+      throw err;
+    }
+    
+  }
+
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -144,7 +154,7 @@ export default function Rentals() {
                 onTitleClick={() => handleNav(rental)}
                 // Connect the specific actions
                 onEdit={() => handleEdit(rental)}
-                onDelete={(data) => console.log("Delete", data.tenantName)}
+                onDelete={() => handleDelete(rental.id)}
                 onSetStatus={(data) => console.log("Update Status", data.tenantName)}
                 onCreateInstance={handleCreateInstance}
               />

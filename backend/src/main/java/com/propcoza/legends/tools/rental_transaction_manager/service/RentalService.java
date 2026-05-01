@@ -104,4 +104,13 @@ public class RentalService {
         Rental UpdatedRental = RentalMapper.updateEntityFromDto(dto, existingRenal);
         rentalRepo.save(UpdatedRental);
     }
+
+    @Transactional
+    public void deleteRental(@NonNull UUID rentalId){
+        System.out.println(rentalId);
+        Rental selectedRental = rentalRepo.findById(rentalId)
+                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+
+        rentalRepo.delete(selectedRental);
+    }
 }

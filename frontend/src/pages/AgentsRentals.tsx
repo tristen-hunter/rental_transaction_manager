@@ -7,6 +7,8 @@ import { RentalService } from "@/features/rentals/RentalService";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Breadcrumbs } from "@/components/global/BreadCrumbs";
+import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
+import type { RentalUpdateDto } from "@/features/rentals/RentalUpdateDto";
 
 export default function AgentsRentals() {
   const { agentId } = useParams<{ agentId: string }>(); // Matches :agentId in App.tsx
@@ -16,9 +18,14 @@ export default function AgentsRentals() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [refresh, setRefresh] = useState(0);
+
   const agentName = location.state?.agentName || "Agent";
 
 
+  /**
+   * Fetches all Agent rentals, based on agentId
+   */
   useEffect(() => {
     // Prevent execution if agentId is missing
     if (!agentId) return;
@@ -47,9 +54,8 @@ export default function AgentsRentals() {
     return () => {
       isMounted = false;
     };
-  }, [agentId]);
+  }, [agentId, refresh]);
 
-  if (loading) return <div>Loading rentals...</div>;
 
   const handleCreateInstance = async (rental: RentalBodyData) => {
     try {
@@ -72,6 +78,47 @@ export default function AgentsRentals() {
       }
     });
   }
+
+  const handleDelete = async (rentalId: string) => {
+    try {
+      await RentalService.deleteRental(rentalId);
+    } catch (err) {
+      console.error("Couldn't delete Rental", err)
+      throw err;
+    }
+    
+  }
+
+  const [selectedRental, setSelectedRental] = useState<RentalBodyData | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleSaveRental = async (updatedData: RentalUpdateDto) => {
+    try {
+      // console.log("UPDATED DATA: ", updatedData)
+      await RentalService.updateRental(updatedData);
+      handleSuccess();
+    } catch (err){
+      console.error("Failed to update rental:", err);
+    }
+  }
+
+  const handleEdit = (rental: RentalBodyData) => {
+    setSelectedRental(rental);
+    setIsEditOpen(true);
+  }
+
+  const handleClose = () => {
+    setIsEditOpen(false);
+    setSelectedRental(null);
+  }
+
+  const handleSuccess = () => {
+    setRefresh(r => r + 1);
+    handleClose();
+  }
+
+
+  if (loading) return <div>Loading rentals...</div>;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -97,14 +144,21 @@ export default function AgentsRentals() {
               address={rental.address}
               agentName={"R " + rental.baseRent}
               status={rental.status}
-              onEdit={() => console.log("Edit", rental.address)}
-              onDelete={(data) => console.log("Delete", data.tenantName)}
+              onEdit={() => handleEdit(rental)}
+              onDelete={() => handleDelete(rental.id)}
               onSetStatus={(data) => console.log("Update Status", data.tenantName)}
               onCreateInstance={handleCreateInstance}
               onTitleClick={() => handleNav(rental)}
             />
         ))}
         </div>
+      )}
+      {isEditOpen && selectedRental && (
+        <RentalUpdateForm 
+          rental={selectedRental}
+          onClose={handleClose}
+          onSuccess={handleSaveRental}
+        />
       )}
     </div>
   );

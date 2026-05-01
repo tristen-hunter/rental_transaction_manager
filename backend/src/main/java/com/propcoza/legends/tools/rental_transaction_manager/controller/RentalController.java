@@ -44,4 +44,10 @@ public class RentalController {
         rentalService.updateRental(dto);
     }
 
+
+    @DeleteMapping("/{rentalId}")
+    public void deleteRental(@Valid @PathVariable UUID rentalId){
+        rentalService.deleteRental(rentalId);
+    }
+
 }

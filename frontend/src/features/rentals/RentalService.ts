@@ -30,8 +30,6 @@ export const RentalService = {
     /**Fetch all instances for a rental */
     fetchRentalsInstances: async (rentalId: string) => {
         const response = await axiosClient.get(`/rentals/instances/${rentalId}`);
-        
-        console.log(response.data)
         return response.data;
     },
 
@@ -42,5 +40,19 @@ export const RentalService = {
             console.error("Service layer Error: updateRental failed", err)
             throw err;
         }
+    },
+
+    /// How do config objects work?
+    deleteRental: async (rentalId: string) => {
+        try {
+            console.log(rentalId)
+            await axiosClient.delete(`/rentals/${rentalId}`, {
+                data: { rentalId }
+            })
+        } catch (err) {
+            console.error("Couldn't Delete rental. ID: ", rentalId)
+            throw err;
+        }
+        
     }
 }
