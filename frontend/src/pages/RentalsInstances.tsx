@@ -101,6 +101,16 @@ export default function RentalsInstances() {
     }
   }
 
+  const handleDelete = async (instanceId: string) => {
+    try {
+      await InstanceService.deleteInstance(instanceId);
+      setRefresh(r => r + 1);
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
   if (loading) return <div>Instances Loading...</div>
 
   return (
@@ -132,7 +142,7 @@ export default function RentalsInstances() {
 
                 onEdit={() => handleEdit(instance)}
                 onSetStatus={(data: InstanceBodyData) => console.log("Set Status", data.id)}
-                onDelete={(data: InstanceBodyData) => console.log("Delete", data.id)}
+                onDelete={() => handleDelete(instance.id)}
               />
             );
           })}

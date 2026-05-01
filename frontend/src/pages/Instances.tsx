@@ -83,6 +83,16 @@ export default function Instances() {
     }
   }
 
+  const handleDelete = async (instanceId: string) => {
+    try {
+      await InstanceService.deleteInstance(instanceId);
+      setRefresh(r => r + 1);
+
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -117,7 +127,7 @@ export default function Instances() {
 
                 onEdit={() => handleEdit(instance)}
                 onSetStatus={(data: InstanceBodyData) => console.log("Set Status", data.id)}
-                onDelete={(data: InstanceBodyData) => console.log("Delete", data.id)}
+                onDelete={() => handleDelete(instance.id)}
               />
             );
           })}

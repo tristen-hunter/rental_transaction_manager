@@ -176,6 +176,13 @@ public class InstanceService {
         instanceRepo.save(updatedInstance);
     }
 
+    @Transactional
+    public void deleteInstance(@NonNull UUID instanceId) {
+        RentalInstance selectedInstance = instanceRepo.findById(instanceId)
+                .orElseThrow(() -> new EntityNotFoundException("RentalInstance not found with ID: " + instanceId));
+        instanceRepo.delete(selectedInstance);
+    }
+
     /// Deprecated
     @Transactional
     public List<InstanceReturnDto> saveAllInitialDrafts(@NonNull List<Rental> rentals){

@@ -45,14 +45,11 @@ export const RentalService = {
     /// How do config objects work?
     deleteRental: async (rentalId: string) => {
         try {
-            console.log(rentalId)
-            await axiosClient.delete(`/rentals/${rentalId}`, {
-                data: { rentalId }
-            })
+            // console.log(rentalId)
+            await axiosClient.delete(`/rentals/${rentalId}`)
         } catch (err) {
             console.error("Couldn't Delete rental. ID: ", rentalId)
             throw err;
         }
-        
     }
 }

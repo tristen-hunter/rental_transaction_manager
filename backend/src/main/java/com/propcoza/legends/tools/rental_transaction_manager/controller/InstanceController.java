@@ -41,6 +41,11 @@ public class InstanceController {
         instanceService.updateInstance(dto);
     }
 
+    @DeleteMapping("/{instanceId}")
+    public void deleteInstances(@PathVariable UUID instanceId) {
+        instanceService.deleteInstance(instanceId);
+    }
+
     /**
      * This function mass creates Instances of ALL current rentals (deprecated)
      */

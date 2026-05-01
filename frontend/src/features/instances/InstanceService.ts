@@ -13,5 +13,14 @@ export const InstanceService = {
             console.error("Service Layer Error: updateInstance failed", error);
             throw error; 
         }
+    },
+
+    deleteInstance: async (instanceId: string) => {
+        try {
+            await axiosClient.delete(`/instances/${instanceId}`);
+        } catch (err) {
+            console.error("Couldn't delete Instance. ID: ", instanceId);
+            throw err;
+        }
     }
 }

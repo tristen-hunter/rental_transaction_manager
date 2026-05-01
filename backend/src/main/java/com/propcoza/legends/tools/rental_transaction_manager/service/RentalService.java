@@ -107,10 +107,8 @@ public class RentalService {
 
     @Transactional
     public void deleteRental(@NonNull UUID rentalId){
-        System.out.println(rentalId);
         Rental selectedRental = rentalRepo.findById(rentalId)
                 .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
-
         rentalRepo.delete(selectedRental);
     }
 }
