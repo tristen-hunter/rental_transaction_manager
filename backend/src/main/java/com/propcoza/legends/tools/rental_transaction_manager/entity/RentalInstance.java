@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 @Table(
         name = "rental_instances",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"rental_id", "billing_period"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"status", "actual_payment_date"})
 )
 public class RentalInstance {
 

@@ -6,6 +6,7 @@ import type { InstanceUpdateDto } from "@/features/instances/InstanceUpdateDto";
 import InstanceUpdateForm from "@/features/instances/InstanceUpdateForm";
 import { type RentalReturnDto } from "@/features/rentals/rental";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Instances() {
   const [instances, setInstances] = useState<InstanceReturnDto[]>([]);
@@ -78,8 +79,12 @@ export default function Instances() {
     try {
       await InstanceService.updateInstance(updatedData);
       handleSuccess();
+
+      toast.success("Instance Successfully Updated!")
     } catch (err) {
       console.error("Failed to update instance:", err);
+
+      toast.error("Instance Could Not Be Updated.")
     }
   }
 
@@ -87,8 +92,9 @@ export default function Instances() {
     try {
       await InstanceService.deleteInstance(instanceId);
       setRefresh(r => r + 1);
-
+      toast.success("Instance Successfully Deleted!")
     } catch (error) {
+      toast.error("Instance Could Not Be Deleted.")
       throw error;
     }
   }

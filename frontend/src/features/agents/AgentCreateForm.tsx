@@ -1,4 +1,5 @@
 import React from 'react';
+import { toast } from "react-toastify";
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { X, UserPlus, Mail, Landmark, ShieldCheck } from 'lucide-react';
 
@@ -47,12 +48,10 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   const onSubmit: SubmitHandler<AgentFormInputs> = async (data) => {
     try {
       // 1. Call the backend
-      const result = await AgentService.create(data);
+      await AgentService.create(data);
       
-      // 2. Give user feedback (consider Shadcn Toast)
-      console.log("Success:", result);
-      alert("Agent Created Successfully!"); 
-
+      // 2. Give user feedback
+      toast.success("Agent Successfully Created!")
       // 3. Close the modal & Reset data
       reset();
       onClose();
@@ -60,7 +59,7 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
     } catch (error){
       // 4. Handle errors (e.g., validation errors from Java)
       console.error("Submission failed:", error);
-      alert("Check your connection or data.");
+      toast.error("Agent Could Not Be Created...")
     }
   };
 

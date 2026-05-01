@@ -18,6 +18,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { toast } from 'react-toastify';
 
 interface RentalFormInputs {
   agentId: string;
@@ -79,16 +80,15 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
 
     // 2. Call the end point, log result, close modal
     try {
-      const result = await RentalService.create(dto);
-      console.log("Success:", result);
-
+      await RentalService.create(dto);
+      toast.success("Rental Created Successfully")
+      
       reset();
       onClose();
-
     } catch (error){
       // 3. Handle errors (e.g., validation errors from Java)
       console.error("Submission failed:", error);
-      alert("Check your connection or data.");
+      toast.error("Check your connection or data.");
     }
   };
 

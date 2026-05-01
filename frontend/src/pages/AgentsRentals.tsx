@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { Breadcrumbs } from "@/components/global/BreadCrumbs";
 import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
 import type { RentalUpdateDto } from "@/features/rentals/RentalUpdateDto";
+import { toast } from "react-toastify";
 
 export default function AgentsRentals() {
   const { agentId } = useParams<{ agentId: string }>(); // Matches :agentId in App.tsx
@@ -42,7 +43,7 @@ export default function AgentsRentals() {
       } catch (err) {
         console.error("Failed to find Rentals");
         // Only alert if the component is still active
-        if (isMounted) alert("No rentals found");
+        if (isMounted) toast.error("No rentals found");
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -63,10 +64,10 @@ export default function AgentsRentals() {
 
       console.log(res)
 
-      alert("Instance created successfully!")
+      toast.success("Instance Successfully Created!")
     } catch (err) {
       console.error("Error creating instance: ", err);
-      alert("Failed to create instance.");
+      toast.error("Instance Could Not Be Created.")
     }
   }
 
@@ -97,8 +98,11 @@ export default function AgentsRentals() {
       // console.log("UPDATED DATA: ", updatedData)
       await RentalService.updateRental(updatedData);
       handleSuccess();
+      toast.success("Instance Was Successfully Updated.")
+      
     } catch (err){
       console.error("Failed to update rental:", err);
+      toast.error("Instance Could Not Be Updated.")
     }
   }
 

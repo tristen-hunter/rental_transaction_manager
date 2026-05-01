@@ -7,6 +7,7 @@ import { RentalService } from "@/features/rentals/RentalService";
 import { useNavigate } from "react-router-dom";
 import type { RentalUpdateDto } from "@/features/rentals/RentalUpdateDto";
 import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
+import { toast } from "react-toastify";
 
 
 export default function Rentals() {
@@ -43,14 +44,12 @@ export default function Rentals() {
   /// Creates individual instances as DRAFT
   const handleCreateInstance = async (rental: RentalBodyData) => {
     try {
-      const res = await RentalService.createInstance(rental.id);
+      await RentalService.createInstance(rental.id);
 
-      console.log(res)
-
-      alert("Instance created successfully!")
+      toast.success("Instance Successfully Created!")
     } catch (err) {
       console.error("Error creating instance: ", err);
-      alert("Failed to create instance.");
+      toast.error("Instance Could Not Be Created.")
     }
   }
 
@@ -87,6 +86,7 @@ export default function Rentals() {
       // console.log("UPDATED DATA: ", updatedData)
       await RentalService.updateRental(updatedData);
       handleSuccess();
+      toast.success
     } catch (err){
       console.error("Failed to update rental:", err);
     }

@@ -116,7 +116,6 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
     const [isSaving, setIsSaving] = useState(false);
 
     const onSaveClick = async () => {
-        console.log("CLICK")
         setIsSaving(true);
         await onSuccess(formData);
         // No need to set false here if the component unmounts on success
@@ -251,8 +250,6 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
           <Button 
             onClick={() => {
                       onSaveClick();
-                      console.log(formData);
-
                       onSuccess(formData);
                     }} 
             className="bg-blue-600 hover:bg-blue-700"

@@ -10,6 +10,7 @@ import { RentalService } from "@/features/rentals/RentalService";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { toast } from "react-toastify";
 
 export default function RentalsInstances() {
     const { rentalId } = useParams<({ rentalId: string })>(); 
@@ -42,7 +43,7 @@ export default function RentalsInstances() {
         } catch (err) {
           console.error("Failed to find Instances");
 
-          if(isMounted) alert("No Instances Found");
+          if(isMounted) toast.error("No Instances Found");
         } finally {
           if (isMounted) setLoading(false);
         }
@@ -96,7 +97,11 @@ export default function RentalsInstances() {
     try {
         await InstanceService.updateInstance(updatedData);
         handleSuccess();
+
+        toast.success("Instance Successfully Updated!")
     } catch (err) {
+        toast.error("Instance Could Not Be Updated.")
+        
         console.error("Failed to update instance:", err);
     }
   }
@@ -105,8 +110,9 @@ export default function RentalsInstances() {
     try {
       await InstanceService.deleteInstance(instanceId);
       setRefresh(r => r + 1);
-
+      toast.success("Instance Successfully Deleted!")
     } catch (error) {
+      toast.error("Instance Could Not Be Deleted.")
       throw error;
     }
   }

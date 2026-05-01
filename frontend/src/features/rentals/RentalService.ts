@@ -12,8 +12,6 @@ export const RentalService = {
      */
     create: async (data: RentalCreateDto) => {
         const response = await axiosClient.post<RentalReturnDto> ("/rentals", data);
-        console.log(response.data);
-
         return response.data;
     },
 

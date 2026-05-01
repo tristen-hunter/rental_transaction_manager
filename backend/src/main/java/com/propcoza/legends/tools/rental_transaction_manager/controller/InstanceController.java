@@ -26,8 +26,6 @@ public class InstanceController {
 
     @PostMapping("/{rentalId}")
     public InstanceReturnDto instanceCreateDto(@PathVariable UUID rentalId) {
-        Rental newRental = instanceService.findRentalById(rentalId);
-
         return instanceService.saveInitialDraft(rentalId);
     }
 

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import AgentUpdateForm from "@/features/agents/AgentUpdateForm";
 import type { AgentUpdateDto } from "@/features/agents/AgentUpdateDto";
 import { AgentService } from "@/features/agents/AgentService";
+import { toast } from "react-toastify";
 
 
 export default function Agents() {
@@ -82,8 +83,10 @@ export default function Agents() {
     try {
       await AgentService.updateAgent(updatedData);
       handleSuccess();
+      toast.success("Agent Successfully Saved")
     } catch (err) {
       console.error("Failed to update Agent: ", err)
+      toast.error("Agent Could Not be Updated.")
     }
   }
 

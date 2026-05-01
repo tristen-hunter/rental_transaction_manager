@@ -7,6 +7,7 @@ import Sidebar from "./components/layout/Sidebar";
 import AgentsRentals from "./pages/AgentsRentals";
 import RentalsInstances from "./pages/RentalsInstances";
 import Instances from "./pages/Instances";
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   return (
@@ -24,6 +25,15 @@ export default function App() {
           <header className="h-16 bg-white shadow-sm flex items-center justify-between px-8">
             <TopBar />
           </header>
+
+          <ToastContainer
+            position="top-right"
+            autoClose={1500}
+            hideProgressBar
+            closeOnClick
+            pauseOnHover={false}
+            draggable={false}
+          />
 
           {/* 4. Main Content Area - Scrollable Rectangle */}
           <main className="flex-1 overflow-y-auto p-8">
