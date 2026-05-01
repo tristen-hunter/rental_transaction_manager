@@ -54,9 +54,11 @@ export default function Rentals() {
     }
   }
 
-  /// Navigation for titl clicks
-  const handleNav = (rentalId: RentalReturnDto["id"]) => {
-    navigate(`/instances/rentals/${rentalId}`)
+  /// Navigation for title clicks
+  const handleNav = (rental: RentalReturnDto) => {
+    navigate(`/instances/rentals/${rental.id}`, {
+      state: { rentalAddress: rental.address }
+    })
   }
 
   /**
@@ -133,7 +135,7 @@ export default function Rentals() {
                 address={rental.address}       // Title
                 agentName={rental.agentName}   // Subtitle
                 status={rental.status}         // Wrapper will map this to the colored badge
-                onTitleClick={() => handleNav(rental.id)}
+                onTitleClick={() => handleNav(rental)}
                 // Connect the specific actions
                 onEdit={() => handleEdit(rental)}
                 onDelete={(data) => console.log("Delete", data.tenantName)}

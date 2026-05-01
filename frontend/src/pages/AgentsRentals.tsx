@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AgentService } from "@/features/agents/AgentService";
 import type { RentalReturnDto } from "@/features/rentals/rental";
@@ -13,6 +13,9 @@ export default function AgentsRentals() {
   const [loading, setLoading] = useState(true);
   
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const agentName = location.state?.agentName || "Agent";
 
 
   useEffect(() => {
@@ -60,16 +63,16 @@ export default function AgentsRentals() {
     }
   }
 
-    const handleNav = (rentalId: RentalReturnDto["id"]) => {
-      navigate(`/instances/rentals/${rentalId}`)
-    }
+  const handleNav = (rentalId: RentalReturnDto["id"]) => {
+    navigate(`/instances/rentals/${rentalId}`)
+  }
 
   return (
     <div className="max-w-6xl mx-auto">
       <button onClick={() => navigate(-1)} className="text-blue-600 mb-4 hover:cursor-pointer">
       <ArrowLeft />
       </button>
-      <div className="text-xl font-bold mb-4">AGENTS RENTALS</div>
+      <div className="text-xl font-bold mb-4 uppercase">{agentName} - RENTALS</div>
       {agentRentals.length === 0 ? (
         <p>No rentals assigned to this agent.</p>
       ) : (

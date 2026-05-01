@@ -43,8 +43,10 @@ export default function Agents() {
   if (loading) return <p>Loading Agents...</p>;
   if (error) return <p>Error: {error}</p>;
 
-  const handleNav = (id: AgentReturnDto["id"]) => {
-    navigate(`/rentals/agents/${id}`);
+  const handleNav = (agent: AgentReturnDto) => {
+    navigate(`/rentals/agents/${agent.id}`, {
+      state: { agentName: agent.fullName }
+    });
   }
 
 
@@ -84,7 +86,7 @@ export default function Agents() {
             }}
             onEdit ={() => console.log("EDITING: ", agent.fullName)}
             onDeactivate={() => console.log("DDEACTIVATING: ", agent.fullName)}
-            onTitleClick={() => handleNav(agent.id)}
+            onTitleClick={() => handleNav(agent)}
           />
         ))}
         </div>

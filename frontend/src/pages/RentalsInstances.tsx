@@ -8,7 +8,7 @@ import type { RentalReturnDto } from "@/features/rentals/rental";
 import { RentalService } from "@/features/rentals/RentalService";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 export default function RentalsInstances() {
     const { rentalId } = useParams<({ rentalId: string })>(); 
@@ -18,6 +18,9 @@ export default function RentalsInstances() {
     const [refresh, setRefresh] = useState(0);
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const rentalAddress = location.state?.rentalAddress || "Rental";
 
     /**
      * Fetches Instances and saves them to rentalInstances
@@ -104,7 +107,7 @@ export default function RentalsInstances() {
       <button onClick={() => navigate(-1)} className="text-blue-600 mb-4 hover:cursor-pointer">
           <ArrowLeft />
       </button>
-      <div className="text-xl font-bold mb-4">RENTALS INSTANCES</div>
+      <div className="text-xl font-bold mb-4 uppercase">{rentalAddress} - INSTANCES</div>
       {rentalsInstances.length === 0 ? (
           <p>No instances belong to this rental</p>
       ): (
