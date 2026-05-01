@@ -3,6 +3,7 @@ import type { AgentCreateDto } from "./AgentCreateDto"
 import type { AgentReturnDto } from "./AgentReturnDto";
 import type { AgentIdNameDto } from "./AgentIdNameDto";
 import type { RentalReturnDto } from "../rentals/rental";
+import type { AgentUpdateDto } from "./AgentUpdateDto";
 
 /// Holds all Agent api end points (calls & dto's)
 export const AgentService = {
@@ -33,5 +34,9 @@ export const AgentService = {
 
         // console.log(data);
         return data;
+    },
+
+    updateAgent: async (dto: AgentUpdateDto): Promise<void> => {
+        await axiosClient.put("/agents", dto)
     }
 }
