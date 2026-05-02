@@ -1,9 +1,7 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,114 +15,126 @@ import java.util.UUID;
 @Setter
 public class InstanceCreateDto {
 
-    @NotNull
+    @NotNull(message = "Rental ID is required")
     private UUID rentalId;
 
-    @NotNull
+    @NotNull(message = "Billing period is required")
     private LocalDate billingPeriod;
 
     private LocalDate actualPaymentDate;
 
+    @NotNull(message = "Instance status is required")
     private InstanceStatus status = InstanceStatus.DRAFT;
 
     // -------------------------------
-    //     Commission Percentages
+    //     Commission Percentages & Splits
     // -------------------------------
 
-    /// This is the comm on the rent (usually 10% + VAT)
-    /// some Landlords do not pay VAT - this is handled at the office level
-    /// SO when vatRegistered == false then this will be a flat 10% and VAT = 0
-    @PositiveOrZero
-    private double rentalCommissionPercent;
+    @NotNull(message = "Rental commission percentage is required")
+    @Min(value = 0, message = "Commission cannot be negative")
+    @Max(value = 1, message = "Commission cannot exceed 100%")
+    private Double rentalCommissionPercent;
 
-    /// this is how much the office gets out of the commExclVat
-    @PositiveOrZero
-    private double officeSplit;
+    @NotNull(message = "Office split is required")
+    @Min(value = 0, message = "Office split cannot be negative")
+    @Max(value = 1, message = "Office split cannot exceed 100%")
+    private Double officeSplit;
 
-    /// this is how much the office gets out of the commExclVat
-    @PositiveOrZero
-    private double agentSplit;
+    @NotNull(message = "Agent split is required")
+    @Min(value = 0, message = "Agent split cannot be negative")
+    @Max(value = 1, message = "Agent split cannot exceed 100%")
+    private Double agentSplit;
 
-    /// this is how much PAYE the agent pays on their gross comm
-    @PositiveOrZero
-    private double agentPaye;
+    @NotNull(message = "Agent PAYE rate is required")
+    @Min(value = 0, message = "PAYE cannot be negative")
+    @Max(value = 1, message = "PAYE cannot exceed 100%")
+    private Double agentPaye;
 
     // -------------------------------
     //     Financial Snapshot
     // -------------------------------
 
-    /// baseRent plus all adjustments (set to baseRent by default)
-    @PositiveOrZero
+    @NotNull(message = "Total amount paid is required")
+    @PositiveOrZero(message = "Total amount paid cannot be negative")
     private BigDecimal totalAmountPaid;
 
-    /// this is the amount the tenant pays each month (excluding adjustments: totalAmountPayed - adjustments)
-    /// However this is calculated first, totalAmountPayed - adjustments this is merely a relationship
-    @NotNull
-    @Positive
+    @NotNull(message = "Base rent is required")
+    @Positive(message = "Base rent must be greater than zero")
     private BigDecimal baseRent;
 
-    /// This is the baseRent minus the baseComm
-    @PositiveOrZero
+    @NotNull(message = "Landlord payout amount is required")
+    @PositiveOrZero(message = "Landlord payout cannot be negative")
     private BigDecimal landlordPayAmount;
 
-    /// this is calculated before landlordPayAmount
-    /// It is the office split + vat + agent gross comm
-    @PositiveOrZero
+    @NotNull(message = "Base commission is required")
+    @PositiveOrZero(message = "Base commission cannot be negative")
     private BigDecimal baseComm;
 
-    /// Some deals do not include VAT (they are handled differently)
-    /// IF the deal is marked as vatRegistered == false, then VAT must equal 0
-    /// ELSE vat = baseComm - (baseComm / 1.15)
-    @PositiveOrZero
+    @NotNull(message = "VAT amount is required")
+    @PositiveOrZero(message = "VAT cannot be negative")
     private BigDecimal vat;
 
-    /// commExclVat is baseComm - vat
-    /// IF vatRegistered == false THEN this is equal to baseComm
-    /// ELSE baseComm - vat = commExclVat
-    @PositiveOrZero
+    @NotNull(message = "Commission excl. VAT is required")
+    @PositiveOrZero(message = "Commission excl. VAT cannot be negative")
     private BigDecimal commExclVat;
 
-    /// companyComm is the offices portion of the commExclVat
-    /// commExclVat * officeSplit (either 30 or 20%)
-    @PositiveOrZero
+    @NotNull(message = "Company commission is required")
+    @PositiveOrZero(message = "Company commission cannot be negative")
     private BigDecimal companyComm;
 
-    /// agentGrossComm is commExclVat minus the companyComm (usually 70% of commExclVat)
-    @PositiveOrZero
+    @NotNull(message = "Agent gross commission is required")
+    @PositiveOrZero(message = "Agent gross commission cannot be negative")
     private BigDecimal agentGrossComm;
 
-    /// payeAmount refers to the agentGrossComm * agentPaye (usually 18, but sometimes 25 - manually entered by the admin)
-    @PositiveOrZero
+    @NotNull(message = "PAYE amount is required")
+    @PositiveOrZero(message = "PAYE amount cannot be negative")
     private BigDecimal payeAmount;
 
-    /// = agentGrossComm minus payeAmount
-    @PositiveOrZero
+    @NotNull(message = "Agent nett commission is required")
+    @PositiveOrZero(message = "Agent nett commission cannot be negative")
     private BigDecimal agentNettComm;
 
     // -------------------------------
     //     Optional Manual Entries
     // -------------------------------
 
-    /**
-     * These are manually entered or kept as 0, they are non-standard but do apply in some cases
-     * only used on the first month, so they are always 0 except when the admin changes them manually before saving
-     */
-    @PositiveOrZero
-    private BigDecimal leaseFee;
+    @PositiveOrZero(message = "Lease fee cannot be negative")
+    private BigDecimal leaseFee = BigDecimal.ZERO;
 
-    @PositiveOrZero
-    private BigDecimal leaseFeeAgentPortion;
+    @PositiveOrZero(message = "Lease fee agent portion cannot be negative")
+    private BigDecimal leaseFeeAgentPortion = BigDecimal.ZERO;
 
-    @PositiveOrZero
-    private BigDecimal leaseFeeOfficePortion;
+    @PositiveOrZero(message = "Lease fee office portion cannot be negative")
+    private BigDecimal leaseFeeOfficePortion = BigDecimal.ZERO;
 
-    @PositiveOrZero
-    private BigDecimal deposit;
+    @PositiveOrZero(message = "Deposit cannot be negative")
+    private BigDecimal deposit = BigDecimal.ZERO;
 
-    /**
-     * These are stored locally before being added to the DB
-     */
+    // -------------------------------
+    //     Nested Structures
+    // -------------------------------
+
     private List<AdjustmentDto> adjustments = new ArrayList<>();
 
     private List<NoteDto> notes = new ArrayList<>();
+
+    // -------------------------------
+    //     Cross-Field Validation
+    // -------------------------------
+
+    @AssertTrue(message = "Agent split and office split must add up to 100% (1.0)")
+    public boolean isSplitValid() {
+        if (agentSplit == null || officeSplit == null) {
+            return true;
+        }
+        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
+    }
+
+    @AssertTrue(message = "Lease fee portions must sum to total lease fee")
+    public boolean isLeaseFeeValid() {
+        if (leaseFee == null || leaseFeeAgentPortion == null || leaseFeeOfficePortion == null) {
+            return true;
+        }
+        return leaseFeeAgentPortion.add(leaseFeeOfficePortion).compareTo(leaseFee) == 0;
+    }
 }

@@ -68,18 +68,21 @@ public class AgentService {
         Agent savedAgent = agentRepo.save(newAgent);
 
         return AgentReturnDto.builder()
-                .id(savedAgent.getId())
                 .fullName(savedAgent.getFullName())
+                .email(savedAgent.getEmail())
                 .bankName(savedAgent.getBankName())
                 .accountNumber(savedAgent.getAccountNumber())
                 .branchCode(savedAgent.getBranchCode())
                 .isActive(savedAgent.getIsActive())
+                .createdBy(savedAgent.getCreatedBy())
                 .createdAt(savedAgent.getCreatedAt())
-                .updatedAt(savedAgent.getUpdatedAt())
+                .lastModifiedBy(savedAgent.getLastModifiedBy())
+                .lastModifiedAt(savedAgent.getLastModifiedAt())
                 .totalRentals(0) // Initialize to 0 for a brand-new agent
                 .build();
     }
 
+    @Transactional
     public List<AgentReturnDto> getAllAgents(){
         return agentMapper.toDtoList(agentRepo.findAll());
     }
@@ -92,12 +95,31 @@ public class AgentService {
     }
 
     @Transactional
-    public void updateAgent(AgentUpdateDto dto){
-        Agent existingAgent = agentRepo.findById(dto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Agent not found with ID: " + dto.getId()));
+    public AgentReturnDto updateAgent(@NonNull AgentUpdateDto dto, UUID agentId) {
+        Agent existingAgent = agentRepo.findById(agentId)
+                .orElseThrow(() -> new EntityNotFoundException("Agent not found with ID: " + agentId));
+
+        // Normalize input data if present in request body
+        if (dto.getFullName() != null) {
+            dto.setFullName(capitalizeName(dto.getFullName().trim()));
+        }
+        if (dto.getEmail() != null) {
+            dto.setEmail(dto.getEmail().trim().toLowerCase());
+        }
+        if (dto.getBankName() != null) {
+            dto.setBankName(capitalizeName(dto.getBankName().trim()));
+        }
+        if (dto.getAccountNumber() != null) {
+            dto.setAccountNumber(dto.getAccountNumber().replaceAll("\\s+", ""));
+        }
+        if (dto.getBranchCode() != null) {
+            dto.setBranchCode(dto.getBranchCode().replaceAll("\\s+", ""));
+        }
 
         Agent updatedAgent = AgentMapper.updateEntityFromDto(dto, existingAgent);
-        agentRepo.save(updatedAgent);
+        Agent savedAgent = agentRepo.save(updatedAgent);
+
+        return agentMapper.toDto(savedAgent);
     }
 
 

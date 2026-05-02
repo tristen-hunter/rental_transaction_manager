@@ -1,8 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,18 +19,16 @@ public class InstanceReturnDto {
     private LocalDate actualPaymentDate;
 
     // -------------------------------
-    //     Commission Percentages
+    //     Commission Percentages (Changed to Double to avoid unboxing crashes)
     // -------------------------------
-
-    private double rentalCommissionPercent;
-    private double officeSplit;
-    private double agentSplit;
-    private double agentPaye;
+    private Double rentalCommissionPercent;
+    private Double officeSplit;
+    private Double agentSplit;
+    private Double agentPaye;
 
     // -------------------------------
     //     Financial Snapshot
     // -------------------------------
-
     private BigDecimal baseRent;
     private BigDecimal totalAmountPaid;
     private BigDecimal landlordPayAmount;
@@ -47,7 +43,6 @@ public class InstanceReturnDto {
     // -------------------------------
     //     Lease Fee
     // -------------------------------
-
     private BigDecimal leaseFee;
     private BigDecimal leaseFeeAgentPortion;
     private BigDecimal leaseFeeOfficePortion;
@@ -55,16 +50,19 @@ public class InstanceReturnDto {
     // -------------------------------
     //     Optional Manual Entries
     // -------------------------------
-
     private BigDecimal deposit;
 
     // -------------------------------
-    //     Instance Metadata
+    //     Instance Metadata (Type-safe Enum or String, without JPA annotation)
     // -------------------------------
-    @Enumerated(EnumType.STRING)
-    private String status;
-    private String CreatedBy;
+    private InstanceStatus status;
+
+    private String createdBy; // Fixed naming convention capitalization
     private LocalDateTime createdAt;
     private String lastModifiedBy;
     private LocalDateTime lastModifiedAt;
+
+    // Consider adding these if the frontend needs adjustment/note info on return
+    // private List<AdjustmentReturnDto> adjustments;
+    // private List<NoteReturnDto> notes;
 }

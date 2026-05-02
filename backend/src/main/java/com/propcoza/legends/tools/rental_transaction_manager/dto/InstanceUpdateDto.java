@@ -1,19 +1,19 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Setter
 public class InstanceUpdateDto {
 
+    @NotNull(message = "Instance ID is required for updates")
     private UUID id;
 
     private UUID rentalId;
@@ -22,50 +22,99 @@ public class InstanceUpdateDto {
 
     private LocalDate actualPaymentDate;
 
-    private double rentalCommissionPercent; // for example 10%
+    // -------------------------------
+    //     Commission Percentages & Splits
+    // -------------------------------
 
-    private double officeSplit; // office portion as a percentage (usually 30%)
+    @Min(value = 0, message = "Commission cannot be negative")
+    @Max(value = 1, message = "Commission cannot exceed 100%")
+    private Double rentalCommissionPercent;
 
-    private double agentSplit;
+    @Min(value = 0, message = "Office split cannot be negative")
+    @Max(value = 1, message = "Office split cannot exceed 100%")
+    private Double officeSplit;
 
-    private double agentPaye;
+    @Min(value = 0, message = "Agent split cannot be negative")
+    @Max(value = 1, message = "Agent split cannot exceed 100%")
+    private Double agentSplit;
 
+    @Min(value = 0, message = "PAYE cannot be negative")
+    @Max(value = 1, message = "PAYE cannot exceed 100%")
+    private Double agentPaye;
 
     // -------------------------------
-    //     Monthly Financial Snapshot (Calculated for the user, with manual over ride possible)
+    //     Financial Snapshot
     // -------------------------------
-    private BigDecimal totalAmountPaid; // totalRentReceived + adjustments
 
-    private BigDecimal baseRent; // used to calculate comm and landlord portion
+    @PositiveOrZero(message = "Total amount paid cannot be negative")
+    private BigDecimal totalAmountPaid;
 
+    @Positive(message = "Base rent must be greater than zero")
+    private BigDecimal baseRent;
+
+    @PositiveOrZero(message = "Landlord payout cannot be negative")
     private BigDecimal landlordPayAmount;
 
-    private BigDecimal baseComm; // commission + VAT
+    @PositiveOrZero(message = "Base commission cannot be negative")
+    private BigDecimal baseComm;
 
-    private BigDecimal vat; // sometimes not included based on seller profile
+    @PositiveOrZero(message = "VAT amount cannot be negative")
+    private BigDecimal vat;
 
-    private BigDecimal commExclVat; // if VAT = 0; then baseComm == commExclVat
+    @PositiveOrZero(message = "Commission excl. VAT cannot be negative")
+    private BigDecimal commExclVat;
 
+    @PositiveOrZero(message = "Company commission cannot be negative")
     private BigDecimal companyComm;
 
+    @PositiveOrZero(message = "Agent gross commission cannot be negative")
     private BigDecimal agentGrossComm;
 
+    @PositiveOrZero(message = "PAYE amount cannot be negative")
     private BigDecimal payeAmount;
 
+    @PositiveOrZero(message = "Agent nett commission cannot be negative")
     private BigDecimal agentNettComm;
 
-    private BigDecimal leaseFee; // manually entered by Fatima
+    // -------------------------------
+    //     Optional Manual Entries
+    // -------------------------------
 
-    private BigDecimal leaseFeeAgentPortion; // 50% to agent
+    @PositiveOrZero(message = "Lease fee cannot be negative")
+    private BigDecimal leaseFee;
 
-    private BigDecimal leaseFeeOfficePortion; // 50% to office
+    @PositiveOrZero(message = "Lease fee agent portion cannot be negative")
+    private BigDecimal leaseFeeAgentPortion;
 
-    private BigDecimal deposit; // part of totalAmountPayed (NOT baseRent)
+    @PositiveOrZero(message = "Lease fee office portion cannot be negative")
+    private BigDecimal leaseFeeOfficePortion;
+
+    @PositiveOrZero(message = "Deposit cannot be negative")
+    private BigDecimal deposit;
 
     // -------------------------------
     //     Instance Specific Data
     // -------------------------------
 
-    @Enumerated(EnumType.STRING)
     private InstanceStatus status;
+
+    // -------------------------------
+    //     Cross-Field Validation
+    // -------------------------------
+
+    @AssertTrue(message = "Agent split and office split must add up to 100% (1.0)")
+    public boolean isSplitValid() {
+        if (agentSplit == null || officeSplit == null) {
+            return true;
+        }
+        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
+    }
+
+    @AssertTrue(message = "Lease fee portions must sum to total lease fee")
+    public boolean isLeaseFeeValid() {
+        if (leaseFee == null || leaseFeeAgentPortion == null || leaseFeeOfficePortion == null) {
+            return true;
+        }
+        return leaseFeeAgentPortion.add(leaseFeeOfficePortion).compareTo(leaseFee) == 0;
+    }
 }

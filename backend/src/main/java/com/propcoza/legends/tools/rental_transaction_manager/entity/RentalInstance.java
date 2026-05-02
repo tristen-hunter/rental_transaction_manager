@@ -2,7 +2,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.entity;
 
 import com.propcoza.legends.tools.rental_transaction_manager.common.config.Auditable;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @Setter
 @Table(
         name = "rental_instances",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"status", "actual_payment_date"})
+        uniqueConstraints = @UniqueConstraint(columnNames = {"rental_id", "billing_period"})
 )
 public class RentalInstance extends Auditable {
 
@@ -58,17 +58,19 @@ public class RentalInstance extends Auditable {
     // Note: We duplicate these from the Master so that changes to the Master
     // in the future don't change past payslips.
 
-    @Column(name = "rental_commision_percent")
-    private double rentalCommissionPercent; // for example 10%
+    @Min(value = 0, message = "Commission cannot be negative")
+    @Max(value = 1, message = "Commission cannot exceed 100%")
+    @Column(name = "rental_commission_percent")
+    private Double rentalCommissionPercent; // for example 10%
 
     @Column(name = "office_split")
-    private double officeSplit; // office portion as a percentage (usually 30%)
+    private Double officeSplit; // office portion as a percentage (usually 30%)
 
     @Column(name = "agent_split")
-    private double agentSplit;
+    private Double agentSplit;
 
     @Column(name = "agent_paye")
-    private double agentPaye;
+    private Double agentPaye;
 
 
     // -------------------------------
@@ -80,8 +82,10 @@ public class RentalInstance extends Auditable {
     private BigDecimal totalAmountPaid; // totalRentReceived + adjustments
 
     /// the rent amount paid every month (used to calculate payouts)
-    @Column(name = "base_rent", precision = 19, scale = 2)
-    private BigDecimal baseRent; // used to calculate comm and landlord portion
+    @NotNull(message = "Base rent is required")
+    @PositiveOrZero(message = "Base rent cannot be negative")
+    @Column(name = "base_rent", precision = 19, scale = 2, nullable = false)
+    private BigDecimal baseRent;
 
     /// = baseRent - comm (10% + VAT, usually)
     @Column(name = "landlord_pay_amount", precision = 19, scale = 2)
@@ -119,16 +123,15 @@ public class RentalInstance extends Auditable {
     @Column(name = "lease_fee", precision = 19, scale = 2)
     private BigDecimal leaseFee; // manually entered by Fatima
 
-    @Column(name = "lease_fee_agent_portion")
-    private BigDecimal leaseFeeAgentPortion; // 50% to agent
-    @Column(name = "lease_fee_office_portion")
-    private BigDecimal leaseFeeOfficePortion; // 50% to office
+    @Column(name = "lease_fee_agent_portion", precision = 19, scale = 2)
+    private BigDecimal leaseFeeAgentPortion;
 
+    @Column(name = "lease_fee_office_portion", precision = 19, scale = 2)
+    private BigDecimal leaseFeeOfficePortion;
 
-    /// this is manually entered if there is one
+    @PositiveOrZero(message = "Deposit cannot be negative")
     @Column(name = "deposit", precision = 19, scale = 2)
-    private BigDecimal deposit; // part of totalAmountPayed (NOT baseRent)
-
+    private BigDecimal deposit;
     // -------------------------------
     //     Instance Specific Data
     // -------------------------------
@@ -146,14 +149,6 @@ public class RentalInstance extends Auditable {
 
     @OneToMany(mappedBy = "rentalInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Note> notes = new ArrayList<>();
-
-//    @CreationTimestamp
-//    @Column(name = "created_at", nullable = false, updatable = false)
-//    private LocalDateTime createdAt;
-//
-//    @UpdateTimestamp
-//    @Column(name = "updated_at")
-//    private LocalDateTime updatedAt;
 
     // -------------------------------
     //     Logic & Validation

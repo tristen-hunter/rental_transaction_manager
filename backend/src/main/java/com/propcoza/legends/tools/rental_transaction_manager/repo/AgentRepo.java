@@ -24,9 +24,6 @@ public interface AgentRepo extends JpaRepository<Agent, UUID> {
     // returns a list of all agents whose isActive == True
     List<Agent> findByIsActiveTrue();
 
-    // Loads rentals by agent without loading entire agent object
-    // List<Rental> findByAgentId(UUID agentId);
-
     @Query("SELECT a from Agent a LEFT JOIN FETCH a.rentals WHERE a.id = :id")
     Optional<Agent> findByIdWithRentals(@Param("id") UUID id)
 ;}

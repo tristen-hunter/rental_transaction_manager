@@ -119,8 +119,9 @@ public class Rental extends Auditable {
     /// run when values are entered to ensure they add up to 1 (100%)
     @AssertTrue(message = "Agent split and office split must add up to 100%")
     public boolean isSplitValid() {
-        // Check if the sum equals 1.0 (or 100)
-        // Note: Using a small epsilon for double comparison is safer
+        if (agentSplit == null || officeSplit == null) {
+            return true;
+        }
         return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
     }
 }

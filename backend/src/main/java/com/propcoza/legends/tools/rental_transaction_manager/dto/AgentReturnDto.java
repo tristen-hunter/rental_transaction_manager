@@ -13,8 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AgentReturnDto {
-    private UUID id;
-
     private String fullName;
 
     private String email;
@@ -28,8 +26,11 @@ public class AgentReturnDto {
     private Boolean isActive;
 
     private String createdBy;
+
     private LocalDateTime createdAt;
+
     private String lastModifiedBy;
+
     private LocalDateTime lastModifiedAt;
 
 

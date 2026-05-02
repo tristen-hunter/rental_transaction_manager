@@ -31,22 +31,26 @@ public class AgentController {
     }
 
     @GetMapping("/agents")
-    public List<AgentReturnDto> getAllAgents(){
-        return agentService.getAllAgents();
+    public ResponseEntity<List<AgentReturnDto>> getAllAgents(){
+        return ResponseEntity.ok(agentService.getAllAgents());
     }
 
     @GetMapping("/rentals/agents/{agentId}")
-    public List<RentalReturnDto> getRentalsByAgentId(@PathVariable UUID agentId){
-        return agentService.getRentalsByAgentId(agentId);
+    public ResponseEntity<List<RentalReturnDto>> getRentalsByAgentId(@PathVariable UUID agentId){
+        return ResponseEntity.ok(agentService.getRentalsByAgentId(agentId));
     }
 
     @GetMapping("/agents/all/agentSummary")
-    public List<AgentIdDto> getAllAgentIds(){
-        return agentService.getAllAgentIds();
+    public ResponseEntity<List<AgentIdDto>> getAllAgentIds(){
+        return ResponseEntity.ok(agentService.getAllAgentIds());
     }
 
-    @PutMapping("/agents")
-    public void updateAgent(@Valid @RequestBody AgentUpdateDto dto){
-        agentService.updateAgent(dto);
+    @PutMapping("/agents/{agentId}")
+    public ResponseEntity<AgentReturnDto> updateAgent(
+            @Valid @RequestBody AgentUpdateDto dto,
+            @PathVariable UUID agentId
+    ){
+        AgentReturnDto updatedAgent = agentService.updateAgent(dto, agentId);
+        return ResponseEntity.ok(updatedAgent);
     }
 }
