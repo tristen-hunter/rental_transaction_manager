@@ -100,7 +100,7 @@ export default function Agents() {
         <h1 className="text-3xl font-bold">ALL AGENTS</h1>
         <button 
           onClick={() => setShowModal(true)}
-          className="px-4 py-2 rounded bg-blue-600 text-white">
+          className="px-4 py-2 rounded bg-primary text-white">
             New Agent
         </button>
 

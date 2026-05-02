@@ -71,7 +71,7 @@ export default function EditRentalForm({
   };
 
   return (
-    <div className="p-4 bg-white rounded shadow">
+    <div className="p-4 bg-card rounded shadow">
       <h2 className="text-xl font-bold mb-4">
         Edit Rental
       </h2>
@@ -94,7 +94,7 @@ export default function EditRentalForm({
 
       <button
         onClick={handleSubmit}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        className="bg-primary text-white px-4 py-2 rounded"
       >
         Save Changes
       </button>

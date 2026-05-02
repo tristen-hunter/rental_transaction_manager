@@ -120,7 +120,7 @@ export default function Rentals() {
           <button
             key={s}
             onClick={() => setStatus(s)}
-            className={`px-4 py-2 rounded ${status === s ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded ${status === s ? 'bg-primary text-white' : 'bg-gray-200'}`}
           >
             {s}
           </button>
@@ -129,7 +129,7 @@ export default function Rentals() {
         <div className="flex gap-2 my-4">
           <button 
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 rounded bg-blue-600 text-white">
+            className="px-4 py-2 rounded bg-primary text-white">
               New Rental
           </button>
 

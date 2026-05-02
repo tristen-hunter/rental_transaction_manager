@@ -67,13 +67,13 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-gray-200">
+      <div className="bg-card rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-border">
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-muted/50">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Register New Agent</h2>
-            <p className="text-sm text-gray-500">Create a profile for a new rental agent.</p>
+            <p className="text-sm text-muted-foreground">Create a profile for a new rental agent.</p>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
             <X className="w-5 h-5" />
@@ -145,12 +145,12 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
           </FormSection>
 
           {/* Status Toggle */}
-          <div className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-gray-50/30">
+          <div className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-muted/30">
             <div className="flex items-center gap-3">
               <ShieldCheck className={`w-5 h-5 ${watchIsActive ? "text-green-500" : "text-gray-400"}`} />
               <div>
-                <p className="text-sm font-medium text-gray-800">Account Status</p>
-                <p className="text-xs text-gray-500">{watchIsActive ? "Agent is active and can process rentals" : "Agent is currently disabled"}</p>
+                <p className="text-sm font-medium text-foreground">Account Status</p>
+                <p className="text-xs text-muted-foreground">{watchIsActive ? "Agent is active and can process rentals" : "Agent is currently disabled"}</p>
               </div>
             </div>
             <Switch 
@@ -162,9 +162,9 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
         </form>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+        <div className="px-6 py-4 bg-muted border-t border-gray-100 flex justify-end gap-3">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)} className="bg-blue-600 hover:bg-blue-700 shadow-md">
+          <Button onClick={handleSubmit(onSubmit)} className="bg-primary hover:bg-blue-700 shadow-md">
             Create Agent
           </Button>
         </div>
@@ -175,13 +175,13 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
 
 // Reusable Section Wrapper to match design
 const FormSection = ({ title, subtitle, icon: Icon, children }: any) => (
-  <div className="group border rounded-lg bg-white border-gray-200 transition-all p-4 hover:border-blue-300 hover:shadow-sm">
+  <div className="group border rounded-lg bg-card border-border transition-all p-4 hover:border-accent hover:shadow-sm">
     <div className="flex items-center gap-3 mb-4">
-      <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-blue-50 transition-colors">
-        <Icon className="w-4 h-4 text-gray-500 group-hover:text-blue-600 transition-colors" />
+      <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-accent/10 transition-colors">
+        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
       </div>
       <div>
-        <p className="text-sm font-semibold text-gray-800 leading-tight">{title}</p>
+        <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>
         <p className="text-xs text-gray-400 leading-tight">{subtitle}</p>
       </div>
     </div>

@@ -101,7 +101,7 @@ export function AgentCard({
     label: isActive ? "Active" : "Inactive",
     colorClassName: isActive 
       ? "bg-green-600 hover:bg-green-600" 
-      : "bg-gray-500 hover:bg-gray-500"
+      : "bg-muted0 hover:bg-muted0"
   };
 
   return (

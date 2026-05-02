@@ -95,18 +95,18 @@ export default function DataCard({
   const [open, setOpen] = useState(false);
 
 return (
-    <div className={`group border rounded-lg bg-white transition-all overflow-hidden
-      ${open ? "border-blue-400 shadow-sm" : "border-gray-200 hover:border-blue-300 hover:shadow-sm"}`}
+    <div className={`group border rounded-lg bg-card transition-all overflow-hidden
+      ${open ? "border-primary shadow-sm" : "border-border hover:border-accent hover:shadow-sm"}`}
     >
       <div
         className="flex items-center gap-3 px-3 py-2 cursor-pointer select-none"
         onClick={() => setOpen((o) => !o)}
       >
         <div className={`shrink-0 p-1.5 rounded-md transition-colors
-          ${open ? "bg-blue-50" : "bg-gray-100 group-hover:bg-blue-50"}`}
+          ${open ? "bg-accent/10" : "bg-gray-100 group-hover:bg-accent/10"}`}
         >
           <Icon className={`w-4 h-4 transition-colors
-            ${open ? "text-blue-600" : "text-gray-500 group-hover:text-blue-600"}`}
+            ${open ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}
           />
         </div>
 
@@ -121,7 +121,7 @@ return (
               }
             }}
           >
-            <p className={`text-sm font-semibold text-gray-800 truncate leading-tight transition-all duration-200
+            <p className={`text-sm font-semibold text-foreground truncate leading-tight transition-all duration-200
               group-hover/title:text-blue-800 
               hover:underline decoration-blue-400
               group-hover/title:[text-shadow:0_0_8px_rgba(30,64,175,0.3)]`}
@@ -159,7 +159,7 @@ return (
       <div className={`transition-all duration-300 ease-in-out overflow-hidden
         ${open ? "max-h-250 opacity-100" : "max-h-0 opacity-0"}`}
       >
-        <div className="border-t border-gray-100 bg-gray-50/60">
+        <div className="border-t border-gray-100 bg-muted/60">
           {children}
         </div>
       </div>

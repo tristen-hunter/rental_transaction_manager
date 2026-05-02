@@ -6,7 +6,7 @@ export function Breadcrumbs({ current }: { current?: string }) {
   const { agentName, rentalAddress } = location.state || {};
 
   return (
-    <nav className="flex items-center space-x-2 text-[12px] text-gray-500 uppercase tracking-wide">
+    <nav className="flex items-center space-x-2 text-[12px] text-muted-foreground uppercase tracking-wide">
       {agentName && (
         <>
           <span className="font-medium text-gray-700">{agentName}</span>
@@ -22,7 +22,7 @@ export function Breadcrumbs({ current }: { current?: string }) {
       )}
 
       {current && (
-        <span className="font-bold text-blue-600">{current}</span>
+        <span className="font-bold text-primary">{current}</span>
       )}
     </nav>
   );

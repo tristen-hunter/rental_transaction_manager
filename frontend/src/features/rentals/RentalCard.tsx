@@ -100,7 +100,7 @@ export function RentalCard({
   const rentalStatusMap: Record<string, { label: string; color: string }> = {
     ACTIVE:    { label: "Active",    color: "bg-green-600 hover:bg-green-600" },
     CANCELLED: { label: "Cancelled", color: "bg-red-600 hover:bg-red-600" },
-    COMPLETED: { label: "Completed", color: "bg-blue-600 hover:bg-blue-600" },
+    COMPLETED: { label: "Completed", color: "bg-primary hover:bg-primary" },
   };
 
   const currentStatus = rentalStatusMap[status] || { 

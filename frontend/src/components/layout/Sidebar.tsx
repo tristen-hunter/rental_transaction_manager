@@ -9,8 +9,8 @@ function SidebarLink({ to, label, end=false }: { to: string; label: string, end?
       className={({ isActive }) =>
         `flex items-center px-4 py-2.5 rounded-md transition-all duration-200 text-sm font-medium ${
           isActive
-            ? "bg-blue-600 text-white shadow-sm" 
-            : "text-gray-400 hover:text-white hover:bg-gray-800"
+            ? "bg-primary text-white shadow-sm" 
+            : "text-gray-400 hover:text-white hover:bg-muted-foreground"
         }`
       }
     >
@@ -22,7 +22,7 @@ function SidebarLink({ to, label, end=false }: { to: string; label: string, end?
 // 2. The Main Sidebar Component
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-gray-900 text-white flex flex-col shrink-0">
+    <aside className="w-64 bg-foreground text-white flex flex-col shrink-0">
       <div className="p-6 text-xl font-bold border-b border-gray-800 tracking-tight">
         RentalManager
       </div>

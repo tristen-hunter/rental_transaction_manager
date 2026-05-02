@@ -124,7 +124,7 @@ export default function RentalsInstances() {
       <div className="flex items-center gap-4 mb-4">
         <button 
           onClick={() => navigate(-1)} 
-          className="text-blue-600 hover:cursor-pointer flex items-center"
+          className="text-primary hover:cursor-pointer flex items-center"
         >
           <ArrowLeft size={20} />
         </button>
@@ -135,7 +135,7 @@ export default function RentalsInstances() {
       {rentalsInstances.length === 0 ? (
           <p>No instances belong to this rental</p>
       ): (
-        <div className="grid grid-cols-1 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="grid grid-cols-1 gap-4 p-4 bg-muted rounded-lg border border-border">
           {rentalsInstances.map((instance) => {
             const rental = rentalMap.get(instance.rentalId);
             return (

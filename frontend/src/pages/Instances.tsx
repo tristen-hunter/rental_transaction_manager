@@ -110,7 +110,7 @@ export default function Instances() {
           <button
             key={s}
             onClick={() => setStatus(s)}
-            className={`px-4 py-2 rounded ${status === s ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+            className={`px-4 py-2 rounded ${status === s ? "bg-primary text-white" : "bg-gray-200"}`}
           >
             {s}
           </button>

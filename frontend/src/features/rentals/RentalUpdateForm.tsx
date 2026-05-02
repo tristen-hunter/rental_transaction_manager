@@ -110,13 +110,13 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-gray-200">
+            <div className="bg-card rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-border">
                 
                 {/* ── Header ── */}
-                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-muted/50">
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">Update Rental Contract</h2>
-                        <p className="text-sm text-gray-500">{formData.address}</p>
+                        <p className="text-sm text-muted-foreground">{formData.address}</p>
                     </div>
                     <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
                         <X className="w-5 h-5" />
@@ -164,13 +164,13 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <Label className="text-gray-400">Created At</Label>
-                                <div className="flex h-10 w-full items-center rounded-md border border-gray-100 bg-gray-50 px-3 text-sm text-gray-400">
+                                <div className="flex h-10 w-full items-center rounded-md border border-gray-100 bg-muted px-3 text-sm text-gray-400">
                                     {formData.createdAt ? new Date(formData.createdAt).toLocaleString() : "—"}
                                 </div>
                             </div>
                             <div className="space-y-1.5">
                                 <Label className="text-gray-400">Last Updated</Label>
-                                <div className="flex h-10 w-full items-center rounded-md border border-gray-100 bg-gray-50 px-3 text-sm text-gray-400">
+                                <div className="flex h-10 w-full items-center rounded-md border border-gray-100 bg-muted px-3 text-sm text-gray-400">
                                     {formData.updatedAt ? new Date(formData.updatedAt).toLocaleString() : "—"}
                                 </div>
                             </div>
@@ -179,11 +179,11 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
                 </div>
 
                 {/* ── Footer ── */}
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+                <div className="px-6 py-4 bg-muted border-t border-gray-100 flex justify-end gap-3">
                     <Button variant="outline" onClick={onClose}>Cancel</Button>
                     <Button 
                         onClick={onSaveClick} 
-                        className="bg-blue-600 hover:bg-blue-700 text-white min-w-30"
+                        className="bg-primary hover:bg-blue-700 text-white min-w-30"
                         disabled={isSaving}
                     >
                         {isSaving ? "Saving..." : "Save Changes"}
@@ -201,13 +201,13 @@ const FormSection = ({ title, subtitle, icon: Icon, children }: {
     icon: React.ElementType
     children: React.ReactNode
 }) => (
-  <div className="group border rounded-lg bg-white border-gray-200 transition-all overflow-hidden p-4 hover:border-blue-300">
+  <div className="group border rounded-lg bg-card border-border transition-all overflow-hidden p-4 hover:border-accent">
     <div className="flex items-center gap-3 mb-4">
-      <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-blue-50 transition-colors">
-        <Icon className="w-4 h-4 text-gray-500 group-hover:text-blue-600 transition-colors" />
+      <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-accent/10 transition-colors">
+        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-gray-800 leading-tight">{title}</p>
+        <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>
         <p className="text-xs text-gray-400 leading-tight">{subtitle}</p>
       </div>
     </div>
