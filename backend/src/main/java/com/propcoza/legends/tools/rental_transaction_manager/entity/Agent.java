@@ -1,5 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.entity;
 
+import com.propcoza.legends.tools.rental_transaction_manager.common.config.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "agents")
-public class Agent {
+public class Agent extends Auditable {
 
 
     @Id

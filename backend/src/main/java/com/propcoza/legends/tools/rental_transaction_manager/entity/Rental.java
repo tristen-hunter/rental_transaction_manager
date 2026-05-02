@@ -1,5 +1,6 @@
 package com.propcoza.legends.tools.rental_transaction_manager.entity;
 
+import com.propcoza.legends.tools.rental_transaction_manager.common.config.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.Getter;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "rentals")
-public class Rental {
+public class Rental extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
