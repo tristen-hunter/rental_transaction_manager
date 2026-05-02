@@ -96,6 +96,7 @@ public class RentalService {
     }
 
 
+    /// pass ID through the URL params
     @Transactional
     public void updateRental(@NonNull RentalUpdateDto dto){
         Rental existingRenal = rentalRepo.findById(dto.getId())

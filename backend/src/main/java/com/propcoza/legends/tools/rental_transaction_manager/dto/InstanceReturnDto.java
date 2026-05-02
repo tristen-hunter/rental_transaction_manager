@@ -1,6 +1,8 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.InstanceStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,8 +61,10 @@ public class InstanceReturnDto {
     // -------------------------------
     //     Instance Metadata
     // -------------------------------
-
-    private InstanceStatus status;
+    @Enumerated(EnumType.STRING)
+    private String status;
+    private String CreatedBy;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String lastModifiedBy;
+    private LocalDateTime lastModifiedAt;
 }

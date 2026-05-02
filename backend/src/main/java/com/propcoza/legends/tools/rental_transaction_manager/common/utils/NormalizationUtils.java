@@ -92,9 +92,7 @@ public final class NormalizationUtils {
                 dto.rentalCommissionPercent(),
                 dto.officeSplit(),
                 dto.agentPaye(),
-                dto.vatRegistered(),
-                trimSafely(dto.createdBy())
-        );
+                dto.vatRegistered());
     }
 
     // ------------------------------------------------------------------

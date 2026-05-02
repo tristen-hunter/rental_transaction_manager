@@ -27,9 +27,11 @@ public class AgentReturnDto {
 
     private Boolean isActive;
 
+    private String createdBy;
     private LocalDateTime createdAt;
+    private String lastModifiedBy;
+    private LocalDateTime lastModifiedAt;
 
-    private LocalDateTime updatedAt;
 
     // Returns the count of rentals rather than the full list for performance
     private Integer totalRentals;

@@ -24,6 +24,10 @@ public class AgentCreateDto {
     @NotBlank(message = "Email is required")
     @Email(message = "Please provide a valid email address")
     @Size(max = 255)
+    @Pattern(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+            message = "Please provide a valid email address"
+    )
     private String email;
 
     @NotBlank(message = "Bank Name is required")

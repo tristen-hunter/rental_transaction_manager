@@ -36,7 +36,6 @@ interface RentalFormInputs {
   officeSplit: number;
   agentPaye: number;
   vatRegistered: boolean;
-  createdBy: string;
 }
 
 interface Props {
@@ -235,11 +234,6 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </FormSection>
-
-          <div className="pt-4 border-t border-gray-100">
-             <Label>Created By</Label>
-             <Input {...register("createdBy")} placeholder="Staff name" className="mt-1" />
-          </div>
         </form>
 
         {/* Footer */}

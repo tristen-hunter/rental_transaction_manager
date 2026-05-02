@@ -147,13 +147,13 @@ public class RentalInstance extends Auditable {
     @OneToMany(mappedBy = "rentalInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Note> notes = new ArrayList<>();
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+//    @CreationTimestamp
+//    @Column(name = "created_at", nullable = false, updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @UpdateTimestamp
+//    @Column(name = "updated_at")
+//    private LocalDateTime updatedAt;
 
     // -------------------------------
     //     Logic & Validation

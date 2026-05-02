@@ -24,7 +24,6 @@ export interface RentalUpdateDto {
   agentSplit: number;
   agentPaye: number;
   vatRegistered: boolean;
-  createdBy?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  lastModifiedAT?: string;
+  lastModifiedBy?: string;
 }

@@ -27,37 +27,25 @@ public class Agent extends Auditable {
     @Column(updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name", nullable = false, length = 50)
     private String fullName;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Please provide a valid email address")
     @Column(name = "email", nullable = false, unique = true)
-    @Pattern(
-            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
-            message = "Please provide a valid email address"
-    )
     private String email;
 
-    @Column(name = "bank_name")
+    @Column(name = "bank_name", nullable = false)
     private String bankName;
 
-    @Column(name = "account_number")
+    @Column(name = "account_number", nullable = false)
     private String accountNumber;
 
-    @Column(name = "branch_code")
+    @Column(name = "branch_code", nullable = false)
     private String branchCode;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
 
     @OneToMany(mappedBy = "agent")

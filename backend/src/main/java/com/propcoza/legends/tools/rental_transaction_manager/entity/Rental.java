@@ -5,12 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -98,35 +95,20 @@ public class Rental extends Auditable {
     @Column(name = "base_rent", precision = 19, scale = 2)
     private BigDecimal baseRent; // used to calculate comm and landlord portion
 
-    @Column(name = "rental_commision_percent")
-    private double rentalCommissionPercent; // for example 10%
+    @Column(name = "rental_commission_percent")
+    private Double rentalCommissionPercent; // for example 0.1
 
     @Column(name = "office_split")
-    private double officeSplit; // office portion as a percentage (usually 30%)
+    private Double officeSplit; // office portion as a decimal, 0.3 (usually 30%)
 
     @Column(name = "agent_split")
-    private double agentSplit; // 100 - officeSplit
+    private Double agentSplit; // 1 - officeSplit
 
     @Column(name = "agent_paye")
-    private double agentPaye;
+    private Double agentPaye;
 
     @Column(name = "vat_registered")
     private Boolean vatRegistered = true;
-
-    // -------------------------------
-    //     Logging Data
-    // -------------------------------
-
-    @Column(name = "created_by")
-    private String createdBy;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
 
     // Inside Rental.java
@@ -134,7 +116,7 @@ public class Rental extends Auditable {
     private List<RentalInstance> instances = new ArrayList<>();
 
 
-    /// run when values are entered to ensure they add up to 100
+    /// run when values are entered to ensure they add up to 1 (100%)
     @AssertTrue(message = "Agent split and office split must add up to 100%")
     public boolean isSplitValid() {
         // Check if the sum equals 1.0 (or 100)

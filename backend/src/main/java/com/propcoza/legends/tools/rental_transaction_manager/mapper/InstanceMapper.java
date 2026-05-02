@@ -131,7 +131,7 @@ public class InstanceMapper {
 
         dto.setDeposit(instance.getDeposit());
 
-        dto.setStatus(instance.getStatus());
+        dto.setS(instance.getStatus());
         dto.setCreatedAt(instance.getCreatedAt());
         dto.setUpdatedAt(instance.getUpdatedAt());
 

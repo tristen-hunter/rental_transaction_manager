@@ -68,8 +68,4 @@ public class InstanceUpdateDto {
 
     @Enumerated(EnumType.STRING)
     private InstanceStatus status;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }

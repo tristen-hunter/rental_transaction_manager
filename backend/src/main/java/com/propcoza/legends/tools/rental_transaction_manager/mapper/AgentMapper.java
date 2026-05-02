@@ -24,8 +24,10 @@ public class AgentMapper {
                 .accountNumber(agent.getAccountNumber())
                 .branchCode(agent.getBranchCode())
                 .isActive(agent.getIsActive())
+                .createdBy(agent.getCreatedBy())
                 .createdAt(agent.getCreatedAt())
-                .updatedAt(agent.getUpdatedAt())
+                .lastModifiedBy(agent.getLastModifiedBy())
+                .lastModifiedAt(agent.getLastModifiedAt())
                 // Check if the list is null to avoid NullPointerException
                 .totalRentals(agent.getRentals() != null ? agent.getRentals().size() : 0)
                 .build();

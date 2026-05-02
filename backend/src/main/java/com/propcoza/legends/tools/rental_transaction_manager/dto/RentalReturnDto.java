@@ -25,7 +25,7 @@ public record RentalReturnDto(
         // -------------------------------
 
         UUID agentId,
-        String agentName, // resolved from Agent entity in mapper
+        String agentName,
 
         // -------------------------------
         //    Meta Data
@@ -59,11 +59,11 @@ public record RentalReturnDto(
         // -------------------------------
 
         BigDecimal baseRent,
-        double rentalCommissionPercent,
-        double officeSplit,
-        double agentSplit,   // derived, but returned for display convenience
-        double agentPaye,
-        boolean vatRegistered,
+        Double rentalCommissionPercent, // Changed to Double wrapper
+        Double officeSplit,             // Changed to Double wrapper
+        Double agentSplit,              // Changed to Double wrapper
+        Double agentPaye,               // Changed to Double wrapper
+        Boolean vatRegistered,          // Fixed: Changed boolean to Boolean wrapper
 
         // -------------------------------
         //    Audit
@@ -71,6 +71,6 @@ public record RentalReturnDto(
 
         String createdBy,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
-
+        LocalDateTime lastModifiedAt,
+        String lastModifiedBy
 ) {}

@@ -70,9 +70,6 @@ public class RentalMapper {
         rental.setAgentPaye(dto.agentPaye());
         rental.setVatRegistered(dto.vatRegistered());
 
-        // Audit
-        rental.setCreatedBy(dto.createdBy());
-
         return rental;
     }
 
@@ -129,7 +126,8 @@ public class RentalMapper {
                 // Audit
                 rental.getCreatedBy(),
                 rental.getCreatedAt(),
-                rental.getUpdatedAt()
+                rental.getLastModifiedAt(),
+                rental.getLastModifiedBy()
         );
     }
 
@@ -151,7 +149,6 @@ public class RentalMapper {
         existingRental.setPaymentDate(dto.getPaymentDate());
 
         // Recurring rental fields
-        existingRental.setStartDate(dto.getStartDate());
         existingRental.setEndDate(dto.getEndDate());
         existingRental.setAutoRenew(dto.getAutoRenew());
         existingRental.setStatus(dto.getStatus());
@@ -171,8 +168,6 @@ public class RentalMapper {
 
         existingRental.setAgentPaye(dto.getAgentPaye());
         existingRental.setVatRegistered(dto.getVatRegistered());
-        existingRental.setUpdatedAt(LocalDateTime.now());
-        // Note: createdBy and createdAt are intentionally ignored to maintain audit history
 
         return existingRental;
     }
