@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import type { RentalUpdateDto } from "@/features/rentals/RentalUpdateDto";
 import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
 import { toast } from "react-toastify";
+import { Plus } from "lucide-react";
 
 
 export default function Rentals() {
@@ -110,40 +111,61 @@ export default function Rentals() {
 
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold">RENTALS - {status}</h1>
+    <div className="mx-auto">
+      {/* 1. Sticky Header Section */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-t border-b border-border shadow-sm mb-6 px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4 py-3 max-w-6xl mx-auto">
+          
+          {/* Left side: Heading & Subheading */}
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl uppercase">
+              Rentals - {status.toLowerCase()}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Manage, filter, and create rental agreements
+            </p>
+          </div>
 
-      {/* Filter Buttons */}
-      <div className="flex justify-between">
-        <div className="flex gap-2 my-4">
-        {(["ACTIVE", "CANCELLED", "COMPLETED"] as RentalStatus[]).map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatus(s)}
-            className={`px-4 py-2 rounded ${status === s ? 'bg-primary text-white' : 'bg-gray-200'}`}
-          >
-            {s}
-          </button>
-        ))}
-        </div>
-        <div className="flex gap-2 my-4">
+          {/* Right side: Action Button */}
           <button 
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 rounded bg-primary text-white">
-              New Rental
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-all hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+            <span>New Rental</span>
           </button>
-
-          <RentalCreateForm 
-            isOpen={showModal} 
-            onClose={handleSubmit} 
-          />
         </div>
       </div>
+
+      {/* 2. Filter Tabs Section (Max-width aligns with the header above) */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-6">
+        <div className="flex flex-wrap gap-2">
+          {(["ACTIVE", "CANCELLED", "COMPLETED"] as RentalStatus[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatus(s)}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                status === s 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 3. Modal Form (Kept out of layout flow) */}
+      <RentalCreateForm 
+        isOpen={showModal} 
+        onClose={handleSubmit} 
+      />
 
       {loading ? (
         <p>Loading {status} rentals...</p>
         ) : (
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-1 gap-2 max-w-6xl mx-auto">
             {rentals.map((rental) => (
               <RentalCard
                 key={rental.id}

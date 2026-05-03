@@ -33,7 +33,7 @@ export const RentalService = {
 
     updateRental: async (rentalId: string, data: RentalUpdateDto): Promise<void> => {
         try {
-            console.log(data)
+            // console.log(data)
             await axiosClient.put(`/rentals/${rentalId}`, data);
         }catch (err) {
             console.error("Service layer Error: updateRental failed", err)

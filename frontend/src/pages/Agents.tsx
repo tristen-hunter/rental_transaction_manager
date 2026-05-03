@@ -99,7 +99,6 @@ export default function Agents() {
   return (
     <div>
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-t border-b border-border shadow-sm mb-6 px-4 sm:px-6">
-        {/* FIX: Changed max-w-6xl to max-w-5xl to make it narrower and match the content perfectly */}
         <div className="flex items-center justify-between gap-4 py-2.5 max-w-6xl mx-auto">
           {/* Left side: Heading & Subheading */}
           <div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { Controller, useForm, type SubmitHandler } from 'react-hook-form';
 import { X, Building2, Wallet, Calendar, Percent } from 'lucide-react';
 
 // Shadcn UI Components
@@ -46,7 +46,7 @@ interface Props {
 const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   const [agents, setAgents] = useState<AgentIdNameDto[]>([]);
 
-  const { register, handleSubmit, watch, reset, setValue, formState: { errors } } = useForm<RentalFormInputs>({
+  const { register, handleSubmit, watch, control, reset, setValue, formState: { errors } } = useForm<RentalFormInputs>({
     defaultValues: { autoRenew: true, vatRegistered: true }
   });
 
@@ -65,7 +65,6 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   }, [isOpen])
 
   const watchAutoRenew = watch("autoRenew");
-  const watchVat = watch("vatRegistered");
 
   const onSubmit: SubmitHandler<RentalFormInputs> = async (data) => {
     // 1. Transform percentages to decimals for the backend
@@ -191,12 +190,20 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
               </div>
             </div>
             <div className="flex items-end pb-2 space-x-2">
-                <Checkbox 
-                  id="vatRegistered" 
-                  checked={watchVat} // This ensures the UI matches the 'true' default
-                  onCheckedChange={(checked) => setValue("vatRegistered", !!checked)} 
+              <Controller
+                  name="vatRegistered"
+                  control={control} // Add 'control' from useForm destructuring
+                  render={({ field }) => (
+                    <Checkbox 
+                      id="vatRegistered" 
+                      checked={field.value} 
+                      onCheckedChange={field.onChange} 
+                    />
+                  )}
                 />
-                <Label htmlFor="vatRegistered" className="cursor-pointer">Vat Registered</Label>
+                <Label htmlFor="vatRegistered" className="cursor-pointer">
+                  Vat Registered
+                </Label>
               </div>
           </FormSection>
 

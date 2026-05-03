@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { X, Calendar, Percent, Wallet } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BANKS } from "@/components/common/CommonLists"
+import { Checkbox } from "@/components/ui/checkbox"
 
 type Props = {
   rental: RentalBodyData
@@ -110,9 +111,25 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
       // No need to set false here if the component unmounts on success
     };
 
-    const handleChange = (field: keyof RentalUpdateDto, value: string | number) => {
-        setFormData((prev) => ({...prev, [field]: value}))
-    }
+    const handleChange = (field: keyof RentalUpdateDto, value: string | number | boolean) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    };
+
+    const handleSplitChange = (field: "officeSplit" | "agentSplit", value: number) => {
+        // 1. Value arrives as a decimal (e.g., 0.3 for 30%). 
+        // Keep it bounded between 0.0 (0%) and 1.0 (100%).
+        const boundedValue = Math.min(1, Math.max(0, value));
+        
+        // 2. The other field gets the remaining percentage
+        const remainingValue = parseFloat((1 - boundedValue).toFixed(4)); 
+        const otherField = field === "officeSplit" ? "agentSplit" : "officeSplit";
+
+        setFormData((prev) => ({
+            ...prev,
+            [field]: boundedValue,
+            [otherField]: remainingValue,
+        }));
+    };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -159,9 +176,29 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <CurrencyInput label="Base Rent" field="baseRent" value={formData.baseRent ?? 0} onChange={handleChange} />
                             <PercentInput label="Comm (%)" field="rentalCommissionPercent" value={formData.rentalCommissionPercent} onChange={handleChange} />
-                            <PercentInput label="Office Split (%)" field="officeSplit" value={formData.officeSplit} onChange={handleChange} />
-                            <PercentInput label="Agent Split (%)" field="agentSplit" value={formData.agentSplit} onChange={handleChange} />
+                            <PercentInput 
+                                label="Office Split (%)" 
+                                field="officeSplit" 
+                                value={formData.officeSplit} 
+                                onChange={(_, val) => handleSplitChange("officeSplit", val)} 
+                            />
+                            <PercentInput 
+                                label="Agent Split (%)" 
+                                field="agentSplit" 
+                                value={formData.agentSplit} 
+                                onChange={(_, val) => handleSplitChange("agentSplit", val)} 
+                            />
                             <PercentInput label="Agent PAYE (%)" field="agentPaye" value={formData.agentPaye} onChange={handleChange} />
+                        </div>
+                        <div className="flex items-end pb-2 space-x-2">
+                            <Checkbox 
+                                id="vatRegistered" 
+                                checked={!!formData.vatRegistered} 
+                                onCheckedChange={(checked) => handleChange("vatRegistered", !!checked)} 
+                            />
+                            <Label htmlFor="vatRegistered" className="cursor-pointer select-none">
+                                Vat Registered
+                            </Label>
                         </div>
                     </FormSection>
 

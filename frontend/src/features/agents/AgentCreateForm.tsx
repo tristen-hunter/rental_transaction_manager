@@ -179,7 +179,7 @@ const FormSection = ({ title, subtitle, icon: Icon, children }: any) => (
   <div className="group border rounded-lg bg-card border-border transition-all p-4 hover:border-accent hover:shadow-sm">
     <div className="flex items-center gap-3 mb-4">
       <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-accent/10 transition-colors">
-        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
       </div>
       <div>
         <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>
