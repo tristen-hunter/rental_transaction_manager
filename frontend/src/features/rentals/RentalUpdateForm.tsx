@@ -4,13 +4,14 @@ import type { RentalUpdateDto } from "./RentalUpdateDto"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { X, Calendar, Percent, BadgeDollarSign } from "lucide-react"
+import { X, Calendar, Percent, Wallet } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { BANKS } from "@/components/common/CommonLists"
 
 type Props = {
   rental: RentalBodyData
   onClose: () => void
-  onSuccess: (data: RentalUpdateDto) => Promise<void> | void
+  onSuccess: (rentalId: string, data: RentalUpdateDto) => Promise<void> | void
 }
 
 const STATUS_OPTIONS = ["ACTIVE", "CANCELLED", "COMPLETED"]
@@ -27,21 +28,30 @@ const PercentInput = ({
     field: keyof RentalUpdateDto
     value: number
     onChange: (field: keyof RentalUpdateDto, value: number) => void
-}) => (
-    <div className="space-y-1.5">
-        <Label>{label}</Label>
-        <div className="relative">
-            <Input
-                type="number"
-                value={value}
-                onChange={(e) => onChange(field, Number(e.target.value))}
-                placeholder="0"
-                className="pr-7"
-            />
-            <span className="absolute right-3 top-2.5 text-gray-400 text-sm">%</span>
+}) => {
+    // 1. Convert the stored decimal (e.g., 0.1) to display value (e.g., 10)
+    const displayValue = value * 100;
+
+    return (
+        <div className="space-y-1.5">
+            <Label>{label}</Label>
+            <div className="relative">
+                <Input
+                    type="number"
+                    value={displayValue === 0 ? "" : displayValue}
+                    onChange={(e) => {
+                        const rawValue = e.target.value;
+                        const numericValue = rawValue === "" ? 0 : Number(rawValue) / 100;
+                        onChange(field, numericValue);
+                    }}
+                    placeholder="0"
+                    className="pr-7 no-spinner"
+                />
+                <span className="absolute right-3 top-2.5 text-gray-400 text-sm">%</span>
+            </div>
         </div>
-    </div>
-)
+    );
+};
 
 const CurrencyInput = ({
     label,
@@ -60,7 +70,7 @@ const CurrencyInput = ({
             <span className="absolute left-3 top-2.5 text-gray-400 text-sm">R</span>
             <Input
                 type="number"
-                className="pl-7"
+                className="pl-7 no-spinner"
                 value={value}
                 onChange={(e) => onChange(field, Number(e.target.value))}
                 placeholder="0.00"
@@ -71,7 +81,6 @@ const CurrencyInput = ({
 
 const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
     const [formData, setFormData] = useState<RentalUpdateDto>({
-      id: rental.id,
       agentId: rental.agentId,
       address: rental.address,
       tenantName: rental.tenantName,
@@ -90,9 +99,6 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
       agentSplit: rental.agentSplit,
       agentPaye: rental.agentPaye,
       vatRegistered: rental.vatRegistered,
-      createdBy: rental.createdBy,
-      createdAt: rental.createdAt,
-      updatedAt: rental.updatedAt
     });
 
     const [isSaving, setIsSaving] = useState(false);
@@ -100,7 +106,7 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
     const onSaveClick = async () => {
       // console.log("FORM DATA: ", formData)
       setIsSaving(true);
-      await onSuccess(formData);
+      await onSuccess(rental.id, formData);
       // No need to set false here if the component unmounts on success
     };
 
@@ -110,7 +116,7 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-            <div className="bg-card rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col border border-border">
+            <div className="bg-card rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col border border-border">
                 
                 {/* ── Header ── */}
                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-muted/50">
@@ -148,7 +154,7 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
                         </div>
                     </FormSection>
 
-                    {/* 2. Financial Logic (Percentages & Splits)[cite: 2] */}
+                    {/* 2. Financial Logic (Percentages & Splits) */}
                     <FormSection title="Commission Structure" subtitle="Percentages for office and agent splits" icon={Percent}>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <CurrencyInput label="Base Rent" field="baseRent" value={formData.baseRent ?? 0} onChange={handleChange} />
@@ -159,8 +165,8 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
                         </div>
                     </FormSection>
 
-                    {/* 3. Audit Info (Read-Only Style)[cite: 2] */}
-                    <FormSection title="Audit Trail" subtitle="System tracking" icon={BadgeDollarSign}>
+                    {/* 3. Audit Info (Read-Only Style) */}
+                    {/* <FormSection title="Audit Trail" subtitle="System tracking" icon={BadgeDollarSign}>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <Label className="text-gray-400">Created At</Label>
@@ -173,6 +179,55 @@ const RentalUpdateForm = ({ rental, onClose, onSuccess}: Props) => {
                                 <div className="flex h-10 w-full items-center rounded-md border border-gray-100 bg-muted px-3 text-sm text-gray-400">
                                     {formData.updatedAt ? new Date(formData.updatedAt).toLocaleString() : "—"}
                                 </div>
+                            </div>
+                        </div>
+                    </FormSection> */}
+
+                    {/* 3. Landlord Payout Information (New Edit Section) */}
+                    <FormSection title="Payout Information" subtitle="Landlord banking details" icon={Wallet}>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="col-span-2 space-y-1.5">
+                                <Label>Landlord Full Name</Label>
+                                <Input 
+                                    value={formData.landlordName ?? ""} 
+                                    onChange={(e) => handleChange("landlordName", e.target.value)} 
+                                    placeholder="Landlord Name" 
+                                />
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label>Bank Name</Label>
+                                <Select 
+                                    value={formData.landlordBankName ?? ""} 
+                                    onValueChange={(val) => handleChange("landlordBankName", val)}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a bank" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {BANKS.map(bank => (
+                                            <SelectItem key={bank} value={bank}>{bank}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <Label>Account Number</Label>
+                                <Input 
+                                    value={formData.landlordAccNo ?? ""} 
+                                    onChange={(e) => handleChange("landlordAccNo", e.target.value)} 
+                                    placeholder="Account Number" 
+                                />
+                            </div>
+
+                            <div className="col-span-2 md:col-span-1 space-y-1.5">
+                                <Label>Branch Code</Label>
+                                <Input 
+                                    value={formData.landlordBranch ?? ""} 
+                                    onChange={(e) => handleChange("landlordBranch", e.target.value)} 
+                                    placeholder="Branch Code" 
+                                />
                             </div>
                         </div>
                     </FormSection>
@@ -204,7 +259,7 @@ const FormSection = ({ title, subtitle, icon: Icon, children }: {
   <div className="group border rounded-lg bg-card border-border transition-all overflow-hidden p-4 hover:border-accent">
     <div className="flex items-center gap-3 mb-4">
       <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-accent/10 transition-colors">
-        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>

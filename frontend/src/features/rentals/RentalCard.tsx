@@ -41,10 +41,11 @@ export interface RentalBodyData {
   agentSplit: number;
   agentPaye: number;
   vatRegistered: boolean;
-  // Expanded: logging
+  
   createdBy: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: string; // LocalDateTime (ISO format)
+  lastModifiedBy: string; // LocalDateTime (ISO format)
+  lastModifiedAt: string; // LocalDateTime (ISO format)
 }
 
 function RentalExpanded({ data }: { data: RentalBodyData }) {
@@ -77,9 +78,10 @@ function RentalExpanded({ data }: { data: RentalBodyData }) {
 
       <Section title="Log" />
       <div className="grid grid-cols-3 gap-x-4 gap-y-2">
-        <Field label="Created By" value={data.createdBy} />
-        <Field label="Created"    value={fmt(data.createdAt)} />
-        <Field label="Updated"    value={fmt(data.updatedAt)} />
+        <Field label="Created By"  value={data.createdBy ?? ""} />
+        <Field label="Created"  value={fmt(data.createdAt ?? "")} />
+        <Field label="Last Modified By"  value={data.lastModifiedBy ?? ""} />
+        <Field label="Last Modified At"  value={fmt(data.lastModifiedAt ?? "")} />
       </div>
     </div>
   );

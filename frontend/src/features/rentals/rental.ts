@@ -51,5 +51,6 @@ export interface RentalReturnDto {
   // -------------------------------
   createdBy: string;
   createdAt: string; // LocalDateTime (ISO format)
-  updatedAt: string; // LocalDateTime (ISO format)
+  lastModifiedBy: string; // LocalDateTime (ISO format)
+  lastModifiedAt: string; // LocalDateTime (ISO format)
 }

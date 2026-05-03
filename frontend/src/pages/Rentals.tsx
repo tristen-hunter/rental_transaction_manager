@@ -81,10 +81,10 @@ export default function Rentals() {
     handleClose();
   }
 
-  const handleSaveRental = async (updatedData: RentalUpdateDto) => {
+  const handleSaveRental = async (rentalId: string, updatedData: RentalUpdateDto) => {
     try {
-      // console.log("UPDATED DATA: ", updatedData)
-      await RentalService.updateRental(updatedData);
+      await RentalService.updateRental(rentalId, updatedData);
+
       handleSuccess();
       toast.success
     } catch (err){
@@ -165,7 +165,7 @@ export default function Rentals() {
           <RentalUpdateForm 
             rental={selectedRental}
             onClose={handleClose}
-            onSuccess={handleSaveRental}
+            onSuccess={(rentalId, dto) => handleSaveRental(rentalId, dto)}
           />
         )}
     </div>

@@ -174,20 +174,20 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Label>Base Monthly Rent</Label>
                 <div className="relative">
                   <span className="absolute left-3 top-2.5 text-gray-400 text-sm">R</span>
-                  <Input type="number" className="pl-7" {...register("baseRent", { required: true })} placeholder="0.00" />
+                  <Input type="number" className="pl-7 no-spinner" {...register("baseRent", { required: true })} placeholder="0.00" />
                 </div>
               </div>
               <div className="space-y-1.5">
                 <Label>Commission (%)</Label>
-                <Input type="number" {...register("rentalCommissionPercent")} placeholder="10" />
+                <Input type="number" className="no-spinner" {...register("rentalCommissionPercent")} placeholder="10" />
               </div>
               <div className="space-y-1.5">
                 <Label>Office Split (%)</Label>
-                <Input type="number" {...register("officeSplit")} placeholder="30" />
+                <Input type="number" className="no-spinner" {...register("officeSplit")} placeholder="30" />
               </div>
               <div className="space-y-1.5">
                 <Label>Agent PAYE (%)</Label>
-                <Input type="number" {...register("agentPaye")} placeholder="25" />
+                <Input type="number" className="no-spinner" {...register("agentPaye")} placeholder="25" />
               </div>
             </div>
             <div className="flex items-end pb-2 space-x-2">
