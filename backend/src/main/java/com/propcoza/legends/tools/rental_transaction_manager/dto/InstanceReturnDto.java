@@ -19,12 +19,12 @@ public class InstanceReturnDto {
     private LocalDate actualPaymentDate;
 
     // -------------------------------
-    //     Commission Percentages (Changed to Double to avoid unboxing crashes)
+    //     Commission Percentages (Changed to BigDecimal to avoid unboxing crashes)
     // -------------------------------
-    private Double rentalCommissionPercent;
-    private Double officeSplit;
-    private Double agentSplit;
-    private Double agentPaye;
+    private BigDecimal rentalCommissionPercent;
+    private BigDecimal officeSplit;
+    private BigDecimal agentSplit;
+    private BigDecimal agentPaye;
 
     // -------------------------------
     //     Financial Snapshot

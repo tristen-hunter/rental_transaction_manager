@@ -40,11 +40,8 @@ public class RentalInstance extends Auditable {
      * The specific month and year this payslip/instance represents.
      * Usually the first day of the month (e.g., 2026-05-01).
      */
-
     @Column(name = "billing_period", nullable = false)
     private LocalDate billingPeriod;
-
-
 
     /**
      * The date the actual payment was processed for this specific month.
@@ -60,21 +57,21 @@ public class RentalInstance extends Auditable {
 
     @Min(value = 0, message = "Commission cannot be negative")
     @Max(value = 1, message = "Commission cannot exceed 100%")
-    @Column(name = "rental_commission_percent")
-    private Double rentalCommissionPercent; // for example 10%
+    @Column(name = "rental_commission_percent", precision = 5, scale = 4)
+    private BigDecimal rentalCommissionPercent; // for example 10%
 
-    @Column(name = "office_split")
-    private Double officeSplit; // office portion as a percentage (usually 30%)
+    @Column(name = "office_split", precision = 5, scale = 4)
+    private BigDecimal officeSplit; // office portion as a percentage (usually 30%)
 
-    @Column(name = "agent_split")
-    private Double agentSplit;
+    @Column(name = "agent_split", precision = 5, scale = 4)
+    private BigDecimal agentSplit;
 
-    @Column(name = "agent_paye")
-    private Double agentPaye;
+    @Column(name = "agent_paye", precision = 5, scale = 4)
+    private BigDecimal agentPaye;
 
 
     // -------------------------------
-    //     Monthly Financial Snapshot (Calculated for the user, with manual over ride possible)
+    //     Monthly Financial Snapshot (Calculated for the user, with manual override possible)
     // -------------------------------
 
     /// = baseRent + all adjustments (such as a deposit or lease fee)
@@ -154,20 +151,44 @@ public class RentalInstance extends Auditable {
     //     Logic & Validation
     // -------------------------------
 
-    @AssertTrue(message = "Commission values inconsistent for this instance")
-    public boolean isCommissionValid() {
-        if (agentGrossComm == null || payeAmount == null || agentNettComm == null) {
-            return true;
-        }
-        return agentGrossComm.subtract(payeAmount).compareTo(agentNettComm) == 0;
-    }
-
     @AssertTrue(message = "Lease fee portions must sum to total lease fee")
     public boolean isLeaseFeeValid() {
         if (leaseFee == null || leaseFeeAgentPortion == null || leaseFeeOfficePortion == null) {
             return true;
         }
         return leaseFeeAgentPortion.add(leaseFeeOfficePortion).compareTo(leaseFee) == 0;
+    }
+
+    @AssertTrue(message = "Commission excl. VAT must equal the sum of agent gross commission and company commission")
+    public boolean isCompanyAndAgentCommValid() {
+        if (commExclVat == null || agentGrossComm == null || companyComm == null) {
+            return true;
+        }
+        return commExclVat.compareTo(agentGrossComm.add(companyComm)) == 0;
+    }
+
+    @AssertTrue(message = "Base commission must equal commission excl. VAT plus VAT")
+    public boolean isBaseCommValid() {
+        if (baseComm == null || commExclVat == null || vat == null) {
+            return true;
+        }
+        return baseComm.compareTo(commExclVat.add(vat)) == 0;
+    }
+
+    @AssertTrue(message = "Agent gross commission must equal agent nett commission plus PAYE amount")
+    public boolean isAgentNettCommValid() {
+        if (agentGrossComm == null || agentNettComm == null || payeAmount == null) {
+            return true;
+        }
+        return agentGrossComm.compareTo(agentNettComm.add(payeAmount)) == 0;
+    }
+
+    @AssertTrue(message = "Base rent must equal the landlord payout plus base commission")
+    public boolean isBaseRentValid() {
+        if (baseRent == null || landlordPayAmount == null || baseComm == null) {
+            return true;
+        }
+        return baseRent.compareTo(landlordPayAmount.add(baseComm)) == 0;
     }
 
 

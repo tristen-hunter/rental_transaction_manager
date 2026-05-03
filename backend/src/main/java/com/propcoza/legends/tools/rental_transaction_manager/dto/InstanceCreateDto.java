@@ -33,22 +33,22 @@ public class InstanceCreateDto {
     @NotNull(message = "Rental commission percentage is required")
     @Min(value = 0, message = "Commission cannot be negative")
     @Max(value = 1, message = "Commission cannot exceed 100%")
-    private Double rentalCommissionPercent;
+    private BigDecimal rentalCommissionPercent;
 
     @NotNull(message = "Office split is required")
     @Min(value = 0, message = "Office split cannot be negative")
     @Max(value = 1, message = "Office split cannot exceed 100%")
-    private Double officeSplit;
+    private BigDecimal officeSplit;
 
     @NotNull(message = "Agent split is required")
     @Min(value = 0, message = "Agent split cannot be negative")
     @Max(value = 1, message = "Agent split cannot exceed 100%")
-    private Double agentSplit;
+    private BigDecimal agentSplit;
 
     @NotNull(message = "Agent PAYE rate is required")
     @Min(value = 0, message = "PAYE cannot be negative")
     @Max(value = 1, message = "PAYE cannot exceed 100%")
-    private Double agentPaye;
+    private BigDecimal agentPaye;
 
     // -------------------------------
     //     Financial Snapshot
@@ -127,14 +127,49 @@ public class InstanceCreateDto {
         if (agentSplit == null || officeSplit == null) {
             return true;
         }
-        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
+        return agentSplit.add(officeSplit).compareTo(BigDecimal.ONE) == 0;
     }
 
-    @AssertTrue(message = "Lease fee portions must sum to total lease fee")
+    @AssertTrue(message = "If updating lease fees, all portions must be provided and sum to total lease fee")
     public boolean isLeaseFeeValid() {
-        if (leaseFee == null || leaseFeeAgentPortion == null || leaseFeeOfficePortion == null) {
+        if (leaseFee == null && leaseFeeAgentPortion == null && leaseFeeOfficePortion == null) {
             return true;
         }
+        if (leaseFee == null || leaseFeeAgentPortion == null || leaseFeeOfficePortion == null) {
+            return false; // Fail early if partial updates risk data corruption
+        }
         return leaseFeeAgentPortion.add(leaseFeeOfficePortion).compareTo(leaseFee) == 0;
+    }
+
+    @AssertTrue(message = "Commission excl. VAT must equal the sum of agent gross commission and company commission")
+    public boolean isCompanyAndAgentCommValid() {
+        if (commExclVat == null || agentGrossComm == null || companyComm == null) {
+            return true;
+        }
+        return commExclVat.compareTo(agentGrossComm.add(companyComm)) == 0;
+    }
+
+    @AssertTrue(message = "Base commission must equal commission excl. VAT plus VAT")
+    public boolean isBaseCommValid() {
+        if (baseComm == null || commExclVat == null || vat == null) {
+            return true;
+        }
+        return baseComm.compareTo(commExclVat.add(vat)) == 0;
+    }
+
+    @AssertTrue(message = "Agent gross commission must equal agent nett commission plus PAYE amount")
+    public boolean isAgentNettCommValid() {
+        if (agentGrossComm == null || agentNettComm == null || payeAmount == null) {
+            return true;
+        }
+        return agentGrossComm.compareTo(agentNettComm.add(payeAmount)) == 0;
+    }
+
+    @AssertTrue(message = "Base rent must equal the landlord payout plus base commission")
+    public boolean isBaseRentValid() {
+        if (baseRent == null || landlordPayAmount == null || baseComm == null) {
+            return true;
+        }
+        return baseRent.compareTo(landlordPayAmount.add(baseComm)) == 0;
     }
 }

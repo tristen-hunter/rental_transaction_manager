@@ -39,14 +39,14 @@ public class RentalController {
     /**
      * {/api/v1/rentals}
      */
-    @PutMapping
-    public void updateRental(@Valid @RequestBody RentalUpdateDto dto){
-        rentalService.updateRental(dto);
+    @PutMapping("/{rentalId}")
+    public void updateRental(@Valid @RequestBody RentalUpdateDto dto, @PathVariable UUID rentalId){
+        rentalService.updateRental(dto, rentalId);
     }
 
 
     @DeleteMapping("/{rentalId}")
-    public void deleteRental(@Valid @PathVariable UUID rentalId){
+    public void deleteRental(@PathVariable UUID rentalId){
         rentalService.deleteRental(rentalId);
     }
 

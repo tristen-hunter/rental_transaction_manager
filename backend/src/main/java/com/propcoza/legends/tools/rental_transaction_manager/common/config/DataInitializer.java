@@ -83,8 +83,8 @@
 //    }
 //
 //    private Rental createRental(Agent agent, String address, String tenant, String landlord,
-//                                String lBank, String lAcc, String lBranch, double baseRent,
-//                                double comm, double offSplit, double agSplit, boolean vat) {
+//                                String lBank, String lAcc, String lBranch, bigDecimal baseRent,
+//                                bigDecimal comm, bigDecimal offSplit, bigDecimal agSplit, boolean vat) {
 //        Rental r = new Rental();
 //        // Assuming @GeneratedValue for Rental ID as well
 //        r.setAgent(agent);

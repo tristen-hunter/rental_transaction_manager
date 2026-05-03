@@ -95,17 +95,17 @@ public class Rental extends Auditable {
     @Column(name = "base_rent", precision = 19, scale = 2)
     private BigDecimal baseRent; // used to calculate comm and landlord portion
 
-    @Column(name = "rental_commission_percent")
-    private Double rentalCommissionPercent; // for example 0.1
+    @Column(name = "rental_commission_percent", precision = 5, scale = 4)
+    private BigDecimal rentalCommissionPercent; // for example 0.1
 
-    @Column(name = "office_split")
-    private Double officeSplit; // office portion as a decimal, 0.3 (usually 30%)
+    @Column(name = "office_split", precision = 5, scale = 4)
+    private BigDecimal officeSplit; // office portion as a decimal, 0.3 (usually 30%)
 
-    @Column(name = "agent_split")
-    private Double agentSplit; // 1 - officeSplit
+    @Column(name = "agent_split", precision = 5, scale = 4)
+    private BigDecimal agentSplit; // 1 - officeSplit
 
-    @Column(name = "agent_paye")
-    private Double agentPaye;
+    @Column(name = "agent_paye", precision = 5, scale = 4)
+    private BigDecimal agentPaye;
 
     @Column(name = "vat_registered")
     private Boolean vatRegistered = true;
@@ -117,11 +117,13 @@ public class Rental extends Auditable {
 
 
     /// run when values are entered to ensure they add up to 1 (100%)
-    @AssertTrue(message = "Agent split and office split must add up to 100%")
-    public boolean isSplitValid() {
-        if (agentSplit == null || officeSplit == null) {
-            return true;
+    @AssertTrue(message = "Office Split and Agent split must add up to 100%")
+    public boolean isOfficeSplitValid() {
+        if (officeSplit == null || agentSplit == null) {
+            return true; // let @NotNull handle null validation
         }
-        return Math.abs((agentSplit + officeSplit) - 1.0) < 0.0001;
+
+        BigDecimal total = officeSplit.add(agentSplit);
+        return total.compareTo(BigDecimal.ONE) == 0;
     }
 }

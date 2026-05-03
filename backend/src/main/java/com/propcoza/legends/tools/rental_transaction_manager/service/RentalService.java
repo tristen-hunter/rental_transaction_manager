@@ -17,11 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -52,10 +48,6 @@ public class RentalService {
             throw new RuntimeException("A rental record already exists for this tenant/agent on this date.");
         }
 
-//        BigDecimal agentSplit = BigDecimal.ONE.subtract(BigDecimal.valueOf(dto.officeSplit()))
-//                .setScale(2, RoundingMode.HALF_UP);
-
-
         // 2. Map to Entity
         RentalCreateDto normalizedDto = NormalizationUtils.normalizeRentalCreateDto(dto);
         Rental rental = RentalMapper.toEntity(normalizedDto, agent);
@@ -63,13 +55,7 @@ public class RentalService {
         // 3. Persist to get the UUID and managed state
         Rental savedRental = rentalRepo.save(rental);
 
-        // 4. Generate the initial instance
-        // Since this is @Transactional, just adding to the list is enough
-        LocalDate firstBillingPeriod = savedRental.getPaymentDate().withDayOfMonth(1);
-        /// generateMonthlyInstance(savedRental, firstBillingPeriod);
-
-        // 5. Final save is often unnecessary due to Dirty Checking,
-        // but return the mapped DTO
+        // 4. Final save is often unnecessary due to Dirty Checking,
         return RentalMapper.toReturnDto(savedRental);
     }
 
@@ -98,12 +84,18 @@ public class RentalService {
 
     /// pass ID through the URL params
     @Transactional
-    public void updateRental(@NonNull RentalUpdateDto dto){
-        Rental existingRenal = rentalRepo.findById(dto.getId())
+    public void updateRental(@NonNull RentalUpdateDto dto, UUID  rentalId){
+        Rental existingRental = rentalRepo.findById(rentalId)
                 .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
 
-        Rental UpdatedRental = RentalMapper.updateEntityFromDto(dto, existingRenal);
-        rentalRepo.save(UpdatedRental);
+        // Update agent relationship if the agent ID has changed
+        if (!existingRental.getAgent().getId().equals(dto.getAgentId())) {
+            Agent newAgent = agentRepo.findById(dto.getAgentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Agent not found"));
+            existingRental.setAgent(newAgent);
+        }
+
+        Rental UpdatedRental = RentalMapper.updateEntityFromDto(dto, existingRental);
     }
 
     @Transactional

@@ -25,12 +25,12 @@ public class InstanceController {
     private final RentalService rentalService;
 
     @PostMapping("/{rentalId}")
-    public InstanceReturnDto instanceCreateDto(@PathVariable UUID rentalId) {
+    public InstanceReturnDto createInitialDraft(@PathVariable UUID rentalId) {
         return instanceService.saveInitialDraft(rentalId);
     }
 
     @GetMapping
-    public List<InstanceReturnDto> allDraftInstances(InstanceStatus status) {
+    public List<InstanceReturnDto> allDraftInstances(@RequestParam(name = "status") InstanceStatus status) {
         return instanceService.getAllDraftInstances(status);
     }
 

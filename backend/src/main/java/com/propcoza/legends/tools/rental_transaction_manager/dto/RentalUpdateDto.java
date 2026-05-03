@@ -25,7 +25,7 @@ public class RentalUpdateDto {
     // -------------------------------
 
     @NotBlank(message = "Address is required")
-    @Size(min = 5, max = 100, message = "Address must be between 5 and 100 characters")
+    @Size(min = 5, message = "Address must be greater than 5 characters")
     private String address;
 
     @NotBlank(message = "Tenant name is required")
@@ -33,17 +33,12 @@ public class RentalUpdateDto {
     private String tenantName;
 
     @NotNull(message = "Payment date is required")
-    @FutureOrPresent(message = "Payment date cannot be in the past")
     private LocalDate paymentDate;
 
     // -------------------------------
     //    Recurring Rental Fields
     // -------------------------------
 
-    @NotNull(message = "Start Date is required")
-    private LocalDate startDate;
-
-    @Future(message = "End date must be in the future")
     private LocalDate endDate;
 
     @NotNull(message = "Auto-renew flag is required")
@@ -87,22 +82,22 @@ public class RentalUpdateDto {
     @NotNull(message = "Commission percentage is required")
     @DecimalMin(value = "0.01", message = "Commission percent must be at least 0.01 (1%)")
     @DecimalMax(value = "1.00", message = "Commission percent must be expressed as a decimal (e.g. 0.10 for 10%)")
-    private Double rentalCommissionPercent;
+    private BigDecimal rentalCommissionPercent;
 
     @NotNull(message = "Office split is required")
     @DecimalMin(value = "0.01", message = "Office split must be at least 0.01 (1%)")
     @DecimalMax(value = "1.00", message = "Office split must be expressed as a decimal (e.g. 0.30 for 30%)")
-    private Double officeSplit;
+    private BigDecimal officeSplit;
 
-    @NotNull(message = "Office split is required")
-    @DecimalMin(value = "0.01", message = "Agent split must be at least 0.01 (1%)")
-    @DecimalMax(value = "1.00", message = "Agent split must be expressed as a decimal (e.g. 0.30 for 30%)")
-    private Double agentSplit;
+//    @NotNull(message = "Office split is required")
+//    @DecimalMin(value = "0.01", message = "Agent split must be at least 0.01 (1%)")
+//    @DecimalMax(value = "1.00", message = "Agent split must be expressed as a decimal (e.g. 0.30 for 30%)")
+//    private BigDecimal agentSplit;
 
     @NotNull(message = "Agent PAYE is required")
     @DecimalMin(value = "0.00", inclusive = true, message = "Agent PAYE cannot be negative")
     @DecimalMax(value = "1.00", message = "Agent PAYE must be expressed as a decimal (e.g. 0.25 for 25%)")
-    private Double agentPaye;
+    private BigDecimal agentPaye;
 
     @NotNull(message = "VAT registered flag is required")
     private Boolean vatRegistered;

@@ -59,11 +59,11 @@ public record RentalReturnDto(
         // -------------------------------
 
         BigDecimal baseRent,
-        Double rentalCommissionPercent, // Changed to Double wrapper
-        Double officeSplit,             // Changed to Double wrapper
-        Double agentSplit,              // Changed to Double wrapper
-        Double agentPaye,               // Changed to Double wrapper
-        Boolean vatRegistered,          // Fixed: Changed boolean to Boolean wrapper
+        BigDecimal rentalCommissionPercent,
+        BigDecimal officeSplit,
+        BigDecimal agentSplit,
+        BigDecimal agentPaye,
+        Boolean vatRegistered,
 
         // -------------------------------
         //    Audit

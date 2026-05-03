@@ -34,7 +34,6 @@ public class InstanceService {
 
     @Transactional
     public Rental findRentalById(@NonNull UUID rentalId){
-        System.out.println("RENTAL ID = " + rentalId);
         return rentalRepo.findById(rentalId)
                 .orElseThrow(() -> new RuntimeException("Rental not found"));
     }
@@ -70,7 +69,7 @@ public class InstanceService {
         // 1. Calculate the Total Commission (VAT Inclusive)
         BigDecimal baseComm;
         BigDecimal rawComm = rental.getBaseRent()
-                .multiply(BigDecimal.valueOf(rental.getRentalCommissionPercent()))
+                .multiply(rental.getRentalCommissionPercent())
                 .setScale(2, RoundingMode.HALF_UP);
 
         if (rental.getVatRegistered()) {
@@ -93,14 +92,14 @@ public class InstanceService {
         }
 
         // 3. Split the NET (Excl VAT) amount
-        BigDecimal agentGrossComm = commExclVat.subtract(commExclVat.multiply(BigDecimal.valueOf(rental.getOfficeSplit())))
+        BigDecimal agentGrossComm = commExclVat.subtract(commExclVat.multiply(rental.getOfficeSplit()))
                 .setScale(2, RoundingMode.HALF_UP);
 
         // If officeSplit is 0.3, this gives the 30% portion
         BigDecimal companyComm = commExclVat.subtract(agentGrossComm);
 
         // 4. Tax
-        BigDecimal payeAmount = agentGrossComm.multiply(BigDecimal.valueOf(rental.getAgentPaye()))
+        BigDecimal payeAmount = agentGrossComm.multiply(rental.getAgentPaye())
                 .setScale(2, RoundingMode.HALF_UP);
 
 
@@ -172,8 +171,6 @@ public class InstanceService {
         RentalInstance existingInstance = instanceRepo.findById(dto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("RentalInstance not found with ID: " + dto.getId()));
         RentalInstance updatedInstance = InstanceMapper.updateEntityFromDto(dto, existingInstance);
-
-        instanceRepo.save(updatedInstance);
     }
 
     @Transactional

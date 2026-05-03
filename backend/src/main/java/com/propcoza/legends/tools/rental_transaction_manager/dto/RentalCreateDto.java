@@ -24,15 +24,18 @@ public record RentalCreateDto(
         // -------------------------------
 
         @NotBlank(message = "Address is required")
-        @Size(min = 5, max = 100, message = "Address must be between 5 and 100 characters")
+        @Size(min = 5, message = "Address must be greater than 5 characters")
         String address,
 
         @NotBlank(message = "Tenant name is required")
         @Size(min = 2, max = 100, message = "Tenant name must be between 2 and 100 characters")
         String tenantName,
 
+        /**
+         * paymentDate is mapped to startDate on creation.
+         * startDate refers to the billingPeriod (so the month)
+         */
         @NotNull(message = "Payment date is required")
-        @FutureOrPresent(message = "Payment date cannot be in the past")
         LocalDate paymentDate,
 
         // -------------------------------
@@ -43,7 +46,6 @@ public record RentalCreateDto(
         Boolean autoRenew,
 
         // Optional: only validated if provided
-        @Future(message = "End date must be in the future")
         LocalDate endDate,
 
         // -------------------------------
@@ -78,21 +80,20 @@ public record RentalCreateDto(
         @DecimalMin(value = "0.0", inclusive = false, message = "Base rent must be greater than 0")
         BigDecimal baseRent,
 
-        // Changed primitive double to Double wrapper to make @NotNull work correctly
         @NotNull(message = "Commission percentage is required")
         @DecimalMin(value = "0.01", message = "Commission percent must be at least 0.01 (1%)")
         @DecimalMax(value = "1.00", message = "Commission percent must be expressed as a decimal (e.g. 0.10 for 10%)")
-        Double rentalCommissionPercent,
+        BigDecimal rentalCommissionPercent,
 
         @NotNull(message = "Office split is required")
         @DecimalMin(value = "0.01", message = "Office split must be at least 0.01 (1%)")
         @DecimalMax(value = "1.00", message = "Office split must be expressed as a decimal (e.g. 0.30 for 30%)")
-        Double officeSplit,
+        BigDecimal officeSplit,
 
         @NotNull(message = "Agent PAYE is required")
         @DecimalMin(value = "0.00", inclusive = true, message = "Agent PAYE cannot be negative")
         @DecimalMax(value = "1.00", message = "Agent PAYE must be expressed as a decimal (e.g. 0.25 for 25%)")
-        Double agentPaye,
+        BigDecimal agentPaye,
 
         // -------------------------------
         //    VAT

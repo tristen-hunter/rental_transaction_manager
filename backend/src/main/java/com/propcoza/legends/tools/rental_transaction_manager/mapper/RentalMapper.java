@@ -9,6 +9,8 @@ import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class RentalMapper {
         rental.setPaymentDate(dto.paymentDate());
 
         // Recurring rental fields
-        rental.setStartDate(dto.paymentDate()); // first payment date doubles as contract start
+        rental.setStartDate(dto.paymentDate()); // first payment date bigDecimals as contract start
         rental.setEndDate(dto.endDate());       // null if open-ended / auto-renew
         rental.setAutoRenew(dto.autoRenew());
         rental.setStatus(RentalStatus.ACTIVE);  // always ACTIVE on creation
@@ -66,7 +68,7 @@ public class RentalMapper {
         rental.setBaseRent(dto.baseRent());
         rental.setRentalCommissionPercent(dto.rentalCommissionPercent());
         rental.setOfficeSplit(dto.officeSplit());
-        rental.setAgentSplit(1.0 - dto.officeSplit());
+        rental.setAgentSplit(BigDecimal.ONE.subtract(dto.officeSplit()));
         rental.setAgentPaye(dto.agentPaye());
         rental.setVatRegistered(dto.vatRegistered());
 
@@ -149,6 +151,7 @@ public class RentalMapper {
         existingRental.setPaymentDate(dto.getPaymentDate());
 
         // Recurring rental fields
+        existingRental.setStartDate(dto.getPaymentDate());
         existingRental.setEndDate(dto.getEndDate());
         existingRental.setAutoRenew(dto.getAutoRenew());
         existingRental.setStatus(dto.getStatus());
@@ -164,7 +167,7 @@ public class RentalMapper {
         existingRental.setBaseRent(dto.getBaseRent());
         existingRental.setRentalCommissionPercent(dto.getRentalCommissionPercent());
         existingRental.setOfficeSplit(dto.getOfficeSplit());
-        existingRental.setAgentSplit(1.0 - dto.getOfficeSplit());
+        existingRental.setAgentSplit(BigDecimal.valueOf(1.0).subtract(dto.getOfficeSplit()).setScale(4, RoundingMode.HALF_UP));
 
         existingRental.setAgentPaye(dto.getAgentPaye());
         existingRental.setVatRegistered(dto.getVatRegistered());
