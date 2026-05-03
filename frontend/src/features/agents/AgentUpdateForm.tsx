@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button"
 import { X, User, Building2, ToggleLeft, ToggleRight } from "lucide-react"
 import type { AgentBodyData } from "./AgentCard"
 import type { AgentUpdateDto } from "./AgentUpdateDto"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { BANKS } from "@/components/common/CommonLists"
 
 type Props = {
   agent: AgentBodyData
   onClose: () => void
-  onSuccess: (data: AgentUpdateDto) => Promise<void> | void
+  onSuccess: (id: string, data: AgentUpdateDto) => Promise<void> | void
 }
 
 const AgentUpdateForm = ({ agent, onClose, onSuccess }: Props) => {
@@ -17,13 +19,19 @@ const AgentUpdateForm = ({ agent, onClose, onSuccess }: Props) => {
         ...agent
     })
 
+
     const [isSaving, setIsSaving] = useState(false);
 
     const onSaveClick = async () => {
-        setIsSaving(true);
-
-        await onSuccess(formData)
+        try {
+            setIsSaving(true);
+            await onSuccess(agent.id, formData);
+        } catch (err) {
+            // Safe-guard to let the user try again on failure
+            setIsSaving(false); 
+        }
     }
+
 
     const handleChange = (field: keyof AgentUpdateDto, value: string | boolean) => {
         setFormData((prev) => ({...prev, [field]: value}))
@@ -98,11 +106,24 @@ const AgentUpdateForm = ({ agent, onClose, onSuccess }: Props) => {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5 col-span-2 sm:col-span-1">
                       <Label>Bank Name</Label>
-                      <Input
+                      {/* <Input
                           value={formData.bankName ?? ""}
                           onChange={(e) => handleChange("bankName", e.target.value)}
                           placeholder="e.g. FNB"
-                      />
+                      /> */}
+                        <Select 
+                            value={formData.bankName ?? ""}
+                            onValueChange={(val) => handleChange("bankName", val)}
+                        >
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select a bank" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {BANKS.map(bank => (
+                            <SelectItem key={bank} value={bank}>{bank}</SelectItem>
+                            ))}
+                        </SelectContent>
+                        </Select>
                     </div>
                     <div className="space-y-1.5 col-span-2 sm:col-span-1">
                       <Label>Branch Code</Label>
@@ -150,7 +171,7 @@ const FormSection = ({ title, subtitle, icon: Icon, children }: {
   <div className="group border rounded-lg bg-card border-border transition-all overflow-hidden p-4 hover:border-accent">
     <div className="flex items-center gap-3 mb-4">
       <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-accent/10 transition-colors">
-        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>

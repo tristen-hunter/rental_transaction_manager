@@ -13,7 +13,7 @@ export default function App() {
   return (
     <BrowserRouter>
       {/* Container wraps the entire screen */}
-      <div className="flex h-screen w-full bg-gray-100 overflow-hidden">
+      <div className="flex h-screen w-full bg-gray-300 overflow-hidden">
         
         {/* 1. Sidebar - Fixed width, full height */}
         <Sidebar />
@@ -36,7 +36,7 @@ export default function App() {
           />
 
           {/* 4. Main Content Area - Scrollable Rectangle */}
-          <main className="flex-1 overflow-y-auto p-8">
+          <main className="flex-1 overflow-y-auto">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/agents" element={<Agents />} />

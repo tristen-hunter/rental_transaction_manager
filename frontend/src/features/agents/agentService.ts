@@ -36,7 +36,7 @@ export const AgentService = {
         return data;
     },
 
-    updateAgent: async (dto: AgentUpdateDto): Promise<void> => {
-        await axiosClient.put("/agents", dto)
+    updateAgent: async (agentId: string, dto: AgentUpdateDto): Promise<void> => {
+        await axiosClient.put(`/agents/${agentId}`, dto)
     }
 }

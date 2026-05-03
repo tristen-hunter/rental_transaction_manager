@@ -1,12 +1,14 @@
 export interface AgentReturnDto {
-  id: string; // UUIDs are handled as strings in TS
+  id: string
   fullName: string;
   email: string;
   bankName: string;
   accountNumber: string;
   branchCode: string;
   isActive: boolean;
+  createdBy: string;
   createdAt: string; // ISO 8601 strings are standard for LocalDateTime
-  updatedAt: string;
+  lastModifiedBy: string;
+  lastModifiedAt: string;
   totalRentals: number;
 }

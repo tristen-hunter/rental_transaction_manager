@@ -54,9 +54,13 @@ export function Section({ title }: { title: string }) {
 }
 
 export function fmt(iso: string) {
-  // Formats ISO dates/datetimes to a readable string
-  return new Date(iso).toLocaleDateString("en-ZA", {
-    day: "2-digit", month: "short", year: "numeric",
+  // Formats ISO dates/datetimes to a readable date and time string
+  return new Date(iso).toLocaleString("en-ZA", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
@@ -99,7 +103,7 @@ return (
       ${open ? "border-primary shadow-sm" : "border-border hover:border-accent hover:shadow-sm"}`}
     >
       <div
-        className="flex items-center gap-3 px-3 py-2 cursor-pointer select-none"
+        className="flex items-center gap-3 px-3 py-3 cursor-pointer select-none"
         onClick={() => setOpen((o) => !o)}
       >
         <div className={`shrink-0 p-1.5 rounded-md transition-colors

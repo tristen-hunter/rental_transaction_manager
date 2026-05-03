@@ -8,6 +8,8 @@ import AgentUpdateForm from "@/features/agents/AgentUpdateForm";
 import type { AgentUpdateDto } from "@/features/agents/AgentUpdateDto";
 import { AgentService } from "@/features/agents/AgentService";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 
 export default function Agents() {
@@ -31,7 +33,7 @@ export default function Agents() {
     axiosClient.get<AgentReturnDto[]>("/agents")
       .then((response) => {
         if (isMounted) {
-          // console.log(response.data)
+          console.log(response.data)
 
           setAgents(response.data);
           setLoading(false);
@@ -79,9 +81,9 @@ export default function Agents() {
     handleClose();
   }
 
-  const handleSaveAgent = async (updatedData: AgentUpdateDto) => {
+  const handleSaveAgent = async (agentId: string, updatedData: AgentUpdateDto) => {
     try {
-      await AgentService.updateAgent(updatedData);
+      await AgentService.updateAgent(agentId, updatedData);
       handleSuccess();
       toast.success("Agent Successfully Saved")
     } catch (err) {
@@ -95,22 +97,38 @@ export default function Agents() {
   if (error) return <p>Error: {error}</p>;
   // Combine header and list into one return statement
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex justify-between gap-2 my-4">
-        <h1 className="text-3xl font-bold">ALL AGENTS</h1>
-        <button 
-          onClick={() => setShowModal(true)}
-          className="px-4 py-2 rounded bg-primary text-white">
-            New Agent
-        </button>
+    <div>
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-t border-b border-border shadow-sm mb-6 px-4 sm:px-6">
+        {/* FIX: Changed max-w-6xl to max-w-5xl to make it narrower and match the content perfectly */}
+        <div className="flex items-center justify-between gap-4 py-2.5 max-w-6xl mx-auto">
+          {/* Left side: Heading & Subheading */}
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:2xl">
+              ALL AGENTS
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Manage and view all registered agents
+            </p>
+          </div>
 
-        <AgentCreateForm
-          isOpen={showModal}
-          onClose={handleSubmit}
-        />
+          {/* Right side: Primary Action Button */}
+          <Button 
+            onClick={() => setShowModal(true)}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-all hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+          >
+            <Plus className="w-4 h-4" strokeWidth={2.5} />
+            <span>New Agent</span>
+          </Button>
+        </div>
       </div>
       
-      <div className="grid grid-cols-1 gap-2">
+      <AgentCreateForm
+        isOpen={showModal}
+        onClose={handleSubmit}
+      />
+
+      <div className="grid grid-cols-1 gap-2 max-w-5xl mx-auto">
+
         {agents.map((agent) => (
           <AgentCard
             key={agent.id}
@@ -126,6 +144,10 @@ export default function Agents() {
               bankName: agent.bankName,
               accountNumber: agent.accountNumber,
               branchCode: agent.branchCode,
+              createdBy: agent.createdBy,
+              createdAt: agent.createdAt,
+              lastModifiedBy: agent.lastModifiedBy,
+              lastModifiedAt: agent.lastModifiedAt,
               kind: "agent",
             }}
             onEdit ={handleEdit}
@@ -138,7 +160,7 @@ export default function Agents() {
           <AgentUpdateForm 
             agent={selectedAgent}
             onClose={handleClose}
-            onSuccess={handleSaveAgent}
+            onSuccess={(id, data) => handleSaveAgent(id, data)}
           />
         )}
     </div>

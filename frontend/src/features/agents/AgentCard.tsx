@@ -30,8 +30,10 @@ export interface AgentBodyData {
   branchCode: string;
 
   // Expanded: logging
+  createdBy?: string;
   createdAt?: string;
-  updatedAt?: string;
+  lastModifiedBy?: string;
+  lastModifiedAt?: string;
 }
 
 function AgentExpanded({ data }: { data: AgentBodyData }) {
@@ -46,8 +48,10 @@ function AgentExpanded({ data }: { data: AgentBodyData }) {
 
       <Section title="Log" />
       <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+        <Field label="Created By"  value={data.createdBy ?? ""} />
         <Field label="Created"  value={fmt(data.createdAt ?? "")} />
-        <Field label="Updated"  value={fmt(data.updatedAt ?? "")} />
+        <Field label="Last Modified By"  value={data.lastModifiedBy ?? ""} />
+        <Field label="Last Modified At"  value={fmt(data.lastModifiedAt ?? "")} />
       </div>
     </div>
   );

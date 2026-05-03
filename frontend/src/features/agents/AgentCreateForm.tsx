@@ -16,6 +16,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { AgentService } from './AgentService';
+import { BANKS } from '@/components/common/CommonLists';
 
 interface AgentFormInputs {
   fullName: string;
@@ -67,10 +68,10 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-      <div className="bg-card rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-border">
+      <div className="bg-card rounded-xl shadow-2xl w-full max-w-lg max-h-[calc(100vh-4rem)] overflow-hidden flex flex-col border border-border">
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-muted/50">
+        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-muted/50 shrink-0">
           <div>
             <h2 className="text-xl font-bold text-gray-900">Register New Agent</h2>
             <p className="text-sm text-muted-foreground">Create a profile for a new rental agent.</p>
@@ -81,7 +82,7 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6 overflow-y-auto flex-1">
           
           {/* Section 1: Identity */}
           <FormSection title="Agent Identity" subtitle="Basic profile information" icon={UserPlus}>
@@ -125,7 +126,7 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
                     <SelectValue placeholder="Select a bank" />
                   </SelectTrigger>
                   <SelectContent>
-                    {["Absa", "Capitec", "FNB", "Nedbank", "Standard Bank", "TymeBank", "Discovery Bank", "Investec", "Other"].map(bank => (
+                    {BANKS.map(bank => (
                       <SelectItem key={bank} value={bank}>{bank}</SelectItem>
                     ))}
                   </SelectContent>
@@ -162,7 +163,7 @@ const AgentCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
         </form>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-muted border-t border-gray-100 flex justify-end gap-3">
+        <div className="px-6 py-4 bg-muted border-t border-gray-100 flex justify-end gap-3 shrink-0">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button onClick={handleSubmit(onSubmit)} className="bg-primary hover:bg-blue-700 shadow-md">
             Create Agent
