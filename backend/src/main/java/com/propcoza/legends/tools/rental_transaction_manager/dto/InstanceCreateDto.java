@@ -59,7 +59,7 @@ public class InstanceCreateDto {
     private BigDecimal totalAmountPaid;
 
     @NotNull(message = "Base rent is required")
-    @Positive(message = "Base rent must be greater than zero")
+    @PositiveOrZero(message = "Base rent cannot be negative")
     private BigDecimal baseRent;
 
     @NotNull(message = "Landlord payout amount is required")

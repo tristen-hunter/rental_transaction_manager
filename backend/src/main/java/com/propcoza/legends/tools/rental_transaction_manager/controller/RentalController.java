@@ -40,7 +40,7 @@ public class RentalController {
      * {/api/v1/rentals}
      */
     @PutMapping("/{rentalId}")
-    public void updateRental(@Valid @PathVariable UUID rentalId, @RequestBody RentalUpdateDto dto){
+    public void updateRental(@Valid @PathVariable UUID rentalId, @Valid @RequestBody RentalUpdateDto dto){
         rentalService.updateRental(rentalId, dto);
     }
 

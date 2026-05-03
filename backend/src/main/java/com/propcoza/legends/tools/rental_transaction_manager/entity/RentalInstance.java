@@ -58,6 +58,7 @@ public class RentalInstance extends Auditable {
     @Min(value = 0, message = "Commission cannot be negative")
     @Max(value = 1, message = "Commission cannot exceed 100%")
     @Column(name = "rental_commission_percent", precision = 5, scale = 4)
+    @NotNull(message = "Rental commission percentage is required")
     private BigDecimal rentalCommissionPercent; // for example 10%
 
     @Column(name = "office_split", precision = 5, scale = 4)
@@ -146,51 +147,6 @@ public class RentalInstance extends Auditable {
 
     @OneToMany(mappedBy = "rentalInstance", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Note> notes = new ArrayList<>();
-
-    // -------------------------------
-    //     Logic & Validation
-    // -------------------------------
-
-    @AssertTrue(message = "Lease fee portions must sum to total lease fee")
-    public boolean isLeaseFeeValid() {
-        if (leaseFee == null || leaseFeeAgentPortion == null || leaseFeeOfficePortion == null) {
-            return true;
-        }
-        return leaseFeeAgentPortion.add(leaseFeeOfficePortion).compareTo(leaseFee) == 0;
-    }
-
-    @AssertTrue(message = "Commission excl. VAT must equal the sum of agent gross commission and company commission")
-    public boolean isCompanyAndAgentCommValid() {
-        if (commExclVat == null || agentGrossComm == null || companyComm == null) {
-            return true;
-        }
-        return commExclVat.compareTo(agentGrossComm.add(companyComm)) == 0;
-    }
-
-    @AssertTrue(message = "Base commission must equal commission excl. VAT plus VAT")
-    public boolean isBaseCommValid() {
-        if (baseComm == null || commExclVat == null || vat == null) {
-            return true;
-        }
-        return baseComm.compareTo(commExclVat.add(vat)) == 0;
-    }
-
-    @AssertTrue(message = "Agent gross commission must equal agent nett commission plus PAYE amount")
-    public boolean isAgentNettCommValid() {
-        if (agentGrossComm == null || agentNettComm == null || payeAmount == null) {
-            return true;
-        }
-        return agentGrossComm.compareTo(agentNettComm.add(payeAmount)) == 0;
-    }
-
-    @AssertTrue(message = "Base rent must equal the landlord payout plus base commission")
-    public boolean isBaseRentValid() {
-        if (baseRent == null || landlordPayAmount == null || baseComm == null) {
-            return true;
-        }
-        return baseRent.compareTo(landlordPayAmount.add(baseComm)) == 0;
-    }
-
 
     // Helper methods
     public void addAdjustment(Adjustment adj) {

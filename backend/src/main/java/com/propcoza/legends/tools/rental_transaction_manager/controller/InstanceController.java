@@ -9,6 +9,7 @@ import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalInstan
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
 import com.propcoza.legends.tools.rental_transaction_manager.service.InstanceService;
 import com.propcoza.legends.tools.rental_transaction_manager.service.RentalService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +35,12 @@ public class InstanceController {
         return instanceService.getAllDraftInstances(status);
     }
 
-    @PutMapping
-    public void updateInstance(@RequestBody InstanceUpdateDto dto) {
-        instanceService.updateInstance(dto);
+    @PutMapping("/{instanceId}/update")
+    public void updateInstance(
+            @PathVariable UUID instanceId,
+            @Valid @RequestBody InstanceUpdateDto dto
+    ) {
+        instanceService.updateInstance(instanceId, dto);
     }
 
     @DeleteMapping("/{instanceId}")

@@ -13,9 +13,6 @@ import java.util.UUID;
 @Setter
 public class InstanceUpdateDto {
 
-    @NotNull(message = "Instance ID is required for updates")
-    private UUID id;
-
     private UUID rentalId;
 
     private LocalDate billingPeriod;
@@ -49,7 +46,7 @@ public class InstanceUpdateDto {
     @PositiveOrZero(message = "Total amount paid cannot be negative")
     private BigDecimal totalAmountPaid;
 
-    @Positive(message = "Base rent must be greater than zero")
+    @PositiveOrZero(message = "Base rent must be greater than zero")
     private BigDecimal baseRent;
 
     @PositiveOrZero(message = "Landlord payout cannot be negative")

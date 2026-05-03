@@ -75,9 +75,9 @@ export default function Instances() {
   }
 
   /** Handles API Call */
-  const handleSaveInstance = async (updatedData: InstanceUpdateDto) => {
+  const handleSaveInstance = async (instanceId: string, updatedData: InstanceUpdateDto) => {
     try {
-      await InstanceService.updateInstance(updatedData);
+      await InstanceService.updateInstance(instanceId, updatedData);
       handleSuccess();
 
       toast.success("Instance Successfully Updated!")
@@ -145,7 +145,7 @@ export default function Instances() {
           instance={selectedInstance}
           rental={rentalMap.get(selectedInstance.rentalId)}
           onClose={handleClose}
-          onSuccess={handleSaveInstance}
+          onSuccess={(id, dto) => handleSaveInstance(id, dto)}
         />
       )}
     </div>

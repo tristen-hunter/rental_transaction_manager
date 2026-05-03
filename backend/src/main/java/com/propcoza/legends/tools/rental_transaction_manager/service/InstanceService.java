@@ -167,10 +167,10 @@ public class InstanceService {
 
     /// Save an edited DTO
     @Transactional
-    public void updateInstance(@NonNull InstanceUpdateDto dto){
-        RentalInstance existingInstance = instanceRepo.findById(dto.getId())
-                .orElseThrow(() -> new EntityNotFoundException("RentalInstance not found with ID: " + dto.getId()));
-        RentalInstance updatedInstance = InstanceMapper.updateEntityFromDto(dto, existingInstance);
+    public void updateInstance(@NonNull UUID instanceId,  InstanceUpdateDto dto){
+        RentalInstance existingInstance = instanceRepo.findById(instanceId)
+                .orElseThrow(() -> new EntityNotFoundException("RentalInstance not found with ID: " + instanceId));
+        InstanceMapper.updateEntityFromDto(dto, existingInstance);
     }
 
     @Transactional

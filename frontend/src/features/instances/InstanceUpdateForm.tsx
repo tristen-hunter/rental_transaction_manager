@@ -19,7 +19,7 @@ type Props = {
     instance: InstanceBodyData
     rental?: RentalReturnDto
     onClose: () => void
-    onSuccess: (data: InstanceUpdateDto) => Promise<void> | void
+    onSuccess: (instanceId: string, data: InstanceUpdateDto) => Promise<void> | void
 }
 
 const STATUS_OPTIONS = ["DRAFT", "APPROVED", "CANCELLED"]
@@ -117,7 +117,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
 
     const onSaveClick = async () => {
         setIsSaving(true);
-        await onSuccess(formData);
+        await onSuccess(instance.id, formData);
         // No need to set false here if the component unmounts on success
     };
 
@@ -248,10 +248,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
         <div className="px-6 py-4 bg-muted border-t border-gray-100 flex justify-end gap-3">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
           <Button 
-            onClick={() => {
-                      onSaveClick();
-                      onSuccess(formData);
-                    }} 
+            onClick={onSaveClick} 
             className="bg-primary hover:bg-blue-700"
           >
             {isSaving ? "Saving..." : "Save Changes"}
