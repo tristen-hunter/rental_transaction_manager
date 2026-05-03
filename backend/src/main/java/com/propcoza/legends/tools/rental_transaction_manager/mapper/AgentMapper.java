@@ -17,6 +17,7 @@ public class AgentMapper {
         }
 
         return AgentReturnDto.builder()
+                .id(agent.getId())
                 .fullName(agent.getFullName())
                 .email(agent.getEmail())
                 .bankName(agent.getBankName())

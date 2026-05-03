@@ -48,10 +48,6 @@ public class AgentService {
         // Trimming removes accidental trailing spaces from copy-pasting
         String normalizedName = capitalizeName(dto.getFullName().trim());
 
-        // Bank Name: Uppercase or Title Case
-        // Since you'll have "FNB" or "Absa", Title Case is usually safer
-        String normalizedBank = capitalizeName(dto.getBankName().trim());
-
         // Account & Branch: Strictly digits (Remove spaces if the user typed "123 456")
         String cleanAccount = dto.getAccountNumber().replaceAll("\\s+", "");
         String cleanBranch = dto.getBranchCode().replaceAll("\\s+", "");
@@ -60,7 +56,7 @@ public class AgentService {
 
         newAgent.setFullName(normalizedName);
         newAgent.setEmail(normalizedEmail);
-        newAgent.setBankName(normalizedBank);
+        newAgent.setBankName(dto.getBankName().trim());
         newAgent.setAccountNumber(cleanAccount);
         newAgent.setBranchCode(cleanBranch);
 

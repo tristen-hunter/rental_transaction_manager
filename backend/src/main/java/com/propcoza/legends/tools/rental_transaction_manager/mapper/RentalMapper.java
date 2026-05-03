@@ -167,7 +167,7 @@ public class RentalMapper {
         existingRental.setBaseRent(dto.getBaseRent());
         existingRental.setRentalCommissionPercent(dto.getRentalCommissionPercent());
         existingRental.setOfficeSplit(dto.getOfficeSplit());
-        existingRental.setAgentSplit(BigDecimal.valueOf(1.0).subtract(dto.getOfficeSplit()).setScale(4, RoundingMode.HALF_UP));
+        existingRental.setAgentSplit(dto.getAgentSplit());
 
         existingRental.setAgentPaye(dto.getAgentPaye());
         existingRental.setVatRegistered(dto.getVatRegistered());

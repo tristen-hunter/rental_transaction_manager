@@ -89,10 +89,10 @@ public class RentalUpdateDto {
     @DecimalMax(value = "1.00", message = "Office split must be expressed as a decimal (e.g. 0.30 for 30%)")
     private BigDecimal officeSplit;
 
-//    @NotNull(message = "Office split is required")
-//    @DecimalMin(value = "0.01", message = "Agent split must be at least 0.01 (1%)")
-//    @DecimalMax(value = "1.00", message = "Agent split must be expressed as a decimal (e.g. 0.30 for 30%)")
-//    private BigDecimal agentSplit;
+    @NotNull(message = "Office split is required")
+    @DecimalMin(value = "0.01", message = "Agent split must be at least 0.01 (1%)")
+    @DecimalMax(value = "1.00", message = "Agent split must be expressed as a decimal (e.g. 0.30 for 30%)")
+    private BigDecimal agentSplit;
 
     @NotNull(message = "Agent PAYE is required")
     @DecimalMin(value = "0.00", inclusive = true, message = "Agent PAYE cannot be negative")

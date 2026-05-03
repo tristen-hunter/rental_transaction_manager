@@ -84,7 +84,7 @@ public class RentalService {
 
     /// pass ID through the URL params
     @Transactional
-    public void updateRental(@NonNull RentalUpdateDto dto, UUID  rentalId){
+    public void updateRental(@NonNull UUID  rentalId, RentalUpdateDto dto){
         Rental existingRental = rentalRepo.findById(rentalId)
                 .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
 

@@ -13,6 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AgentReturnDto {
+    private UUID id;
+
     private String fullName;
 
     private String email;
