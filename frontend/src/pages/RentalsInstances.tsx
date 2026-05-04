@@ -120,22 +120,40 @@ export default function RentalsInstances() {
   if (loading) return <div>Instances Loading...</div>
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex items-center gap-4 mb-4">
-        <button 
-          onClick={() => navigate(-1)} 
-          className="text-primary hover:cursor-pointer flex items-center"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        
-        <Breadcrumbs />
+    <div>
+      {/* 1. Sticky Header Section */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-t border-b border-border shadow-sm mb-6 px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4 py-3 max-w-6xl mx-auto">
+          
+          {/* Left side: Navigation & Breadcrumbs */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate(-1)} 
+              className="flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Go back"
+            >
+              <ArrowLeft size={18} strokeWidth={2.5} />
+            </button>
+            
+            <Breadcrumbs />
+          </div>
+
+          {/* Right side: Action / Title */}
+          <div className="text-right">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl uppercase">
+              {rentalAddress}
+            </h1>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
+              Instances
+            </p>
+          </div>
+
+        </div>
       </div>
-      <div className="text-xl font-bold mb-4 uppercase">{rentalAddress} - INSTANCES</div>
       {rentalsInstances.length === 0 ? (
           <p>No instances belong to this rental</p>
       ): (
-        <div className="grid grid-cols-1 gap-4 p-4 bg-muted rounded-lg border border-border">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 gap-4 p-4 bg-muted rounded-lg border border-border">
           {rentalsInstances.map((instance) => {
             const rental = rentalMap.get(instance.rentalId);
             return (

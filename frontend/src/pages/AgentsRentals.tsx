@@ -60,14 +60,12 @@ export default function AgentsRentals() {
 
   const handleCreateInstance = async (rental: RentalBodyData) => {
     try {
-      const res = await RentalService.createInstance(rental.id);
+      await RentalService.createInstance(rental.id);
+      toast.success("Instance Successfully Created!");
 
-      console.log(res)
-
-      toast.success("Instance Successfully Created!")
     } catch (err) {
       console.error("Error creating instance: ", err);
-      toast.error("Instance Could Not Be Created.")
+      toast.error("Instance Could Not Be Created.");
     }
   }
 
@@ -83,26 +81,29 @@ export default function AgentsRentals() {
   const handleDelete = async (rentalId: string) => {
     try {
       await RentalService.deleteRental(rentalId);
+      toast.success("Rental Successfully Deleted")
+      setRefresh(r => r + 1);
     } catch (err) {
       console.error("Couldn't delete Rental", err)
+      toast.error("Rental Couldn't be deleted")
       throw err;
     }
-    
   }
 
   const [selectedRental, setSelectedRental] = useState<RentalBodyData | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  const handleSaveRental = async (updatedData: RentalUpdateDto) => {
+  const handleSaveRental = async (rentalId: string, updatedData: RentalUpdateDto) => {
     try {
       // console.log("UPDATED DATA: ", updatedData)
-      await RentalService.updateRental(updatedData);
+      await RentalService.updateRental(rentalId, updatedData);
+
       handleSuccess();
-      toast.success("Instance Was Successfully Updated.")
+      toast.success("Rental Was Successfully Updated.")
       
     } catch (err){
       console.error("Failed to update rental:", err);
-      toast.error("Instance Could Not Be Updated.")
+      toast.error("Rental Could Not Be Updated.")
     }
   }
 
@@ -125,22 +126,40 @@ export default function AgentsRentals() {
   if (loading) return <div>Loading rentals...</div>;
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="flex items-center gap-4 mb-4">
-        <button 
-          onClick={() => navigate(-1)} 
-          className="text-primary hover:cursor-pointer flex items-center"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        
-        <Breadcrumbs />
+    <div>
+      {/* 1. Sticky Header Section */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-t border-b border-border shadow-sm px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4 py-3 max-w-6xl mx-auto">
+          
+          {/* Left side: Navigation & Breadcrumbs */}
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate(-1)} 
+              className="flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Go back"
+            >
+              <ArrowLeft size={18} strokeWidth={2.5} />
+            </button>
+            
+            <Breadcrumbs />
+          </div>
+
+          {/* Right side: Action / Title */}
+          <div className="text-right">
+            <h1 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl uppercase">
+              {agentName}
+            </h1>
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider mt-0.5">
+              Rentals
+            </p>
+          </div>
+
+        </div>
       </div>
-      <div className="text-xl font-bold mb-4 uppercase">{agentName} - RENTALS</div>
       {agentRentals.length === 0 ? (
         <p>No rentals assigned to this agent.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 p-4 bg-muted rounded-lg border border-border">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 gap-4 p-4 bg-muted border border-border">
           {agentRentals.map((rental) => (
             <RentalCard
               key={rental.id}
@@ -161,7 +180,7 @@ export default function AgentsRentals() {
         <RentalUpdateForm 
           rental={selectedRental}
           onClose={handleClose}
-          onSuccess={handleSaveRental}
+          onSuccess={(rentalId, dto) => handleSaveRental(rentalId, dto)}
         />
       )}
     </div>

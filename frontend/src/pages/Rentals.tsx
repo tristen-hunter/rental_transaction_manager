@@ -46,11 +46,11 @@ export default function Rentals() {
   const handleCreateInstance = async (rental: RentalBodyData) => {
     try {
       await RentalService.createInstance(rental.id);
+      toast.success("Instance Successfully Created!");
 
-      toast.success("Instance Successfully Created!")
     } catch (err) {
       console.error("Error creating instance: ", err);
-      toast.error("Instance Could Not Be Created.")
+      toast.error("Instance Could Not Be Created.");
     }
   }
 
@@ -87,7 +87,7 @@ export default function Rentals() {
       await RentalService.updateRental(rentalId, updatedData);
 
       handleSuccess();
-      toast.success
+      toast.success("Instance Was Successfully Updated.")
     } catch (err){
       console.error("Failed to update rental:", err);
     }
@@ -102,12 +102,15 @@ export default function Rentals() {
   const handleDelete = async (rentalId: string) => {
     try {
       await RentalService.deleteRental(rentalId);
+      toast.success("Rental Successfully Deleted")
+      setRefresh(r => r + 1);
     } catch (err) {
       console.error("Couldn't delete Rental", err)
+      toast.error("Rental Couldn't be deleted")
       throw err;
     }
-    
   }
+
 
 
   return (
