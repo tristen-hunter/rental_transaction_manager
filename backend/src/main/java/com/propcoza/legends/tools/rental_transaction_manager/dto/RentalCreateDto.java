@@ -59,8 +59,8 @@ public record RentalCreateDto(
         @NotBlank(message = "Landlord Bank Name is required")
         @Size(max = 100)
         @Pattern(
-                regexp = "^(?i)(Absa|Capitec|FNB|First National Bank|Nedbank|Standard Bank|TymeBank|Discovery Bank|Investec|Other)$",
-                message = "Please select a valid South African bank from the list"
+                regexp = "^(Absa|African Bank|Bank Zero|Bidvest Bank|Capitec|Discovery Bank|FNB|Investec|Nedbank|Old Mutual Bank|Sasfin|Standard Bank|TymeBank|Other)$",
+                message = "Invalid bank name provided"
         )
         String landlordBankName,
 

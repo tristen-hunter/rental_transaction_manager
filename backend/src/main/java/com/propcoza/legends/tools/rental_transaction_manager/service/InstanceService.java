@@ -60,6 +60,7 @@ public class InstanceService {
         newDto.setOfficeSplit(rental.getOfficeSplit());
         newDto.setAgentSplit(rental.getAgentSplit());
         newDto.setAgentPaye(rental.getAgentPaye());
+        newDto.setVatRegistered(rental.getVatRegistered());
         newDto.setBaseRent(rental.getBaseRent());
 
         ///  Here I need to map the variables that are not constant

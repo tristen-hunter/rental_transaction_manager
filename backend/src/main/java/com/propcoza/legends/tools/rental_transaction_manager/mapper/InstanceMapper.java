@@ -33,6 +33,7 @@ public class InstanceMapper {
         instance.setOfficeSplit(dto.getOfficeSplit());
         instance.setAgentSplit(dto.getAgentSplit());
         instance.setAgentPaye(dto.getAgentPaye());
+        instance.setVatRegistered(dto.getVatRegistered());
 
         instance.setBaseRent(dto.getBaseRent());
         instance.setTotalAmountPaid(dto.getTotalAmountPaid());
@@ -79,6 +80,7 @@ public class InstanceMapper {
         instance.setOfficeSplit(dto.getOfficeSplit());
         instance.setAgentSplit(dto.getAgentSplit());
         instance.setAgentPaye(dto.getAgentPaye());
+        instance.setVatRegistered(dto.getVatRegistered());
 
         // --- Monthly Financial Snapshot (Inputs & Calculations) ---
         instance.setTotalAmountPaid(dto.getTotalAmountPaid());
@@ -113,6 +115,7 @@ public class InstanceMapper {
         dto.setOfficeSplit(instance.getOfficeSplit());
         dto.setAgentSplit(instance.getAgentSplit());
         dto.setAgentPaye(instance.getAgentPaye());
+        dto.setVatRegistered(instance.getVatRegistered());
 
         dto.setBaseRent(instance.getBaseRent());
         dto.setTotalAmountPaid(instance.getTotalAmountPaid());

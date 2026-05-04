@@ -70,6 +70,9 @@ public class RentalInstance extends Auditable {
     @Column(name = "agent_paye", precision = 5, scale = 4)
     private BigDecimal agentPaye;
 
+    @Column(name = "vat_registered")
+    private Boolean vatRegistered;
+
 
     // -------------------------------
     //     Monthly Financial Snapshot (Calculated for the user, with manual override possible)

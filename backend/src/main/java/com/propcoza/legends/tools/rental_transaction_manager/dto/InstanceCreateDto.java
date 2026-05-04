@@ -50,6 +50,8 @@ public class InstanceCreateDto {
     @Max(value = 1, message = "PAYE cannot exceed 100%")
     private BigDecimal agentPaye;
 
+    private Boolean vatRegistered;
+
     // -------------------------------
     //     Financial Snapshot
     // -------------------------------

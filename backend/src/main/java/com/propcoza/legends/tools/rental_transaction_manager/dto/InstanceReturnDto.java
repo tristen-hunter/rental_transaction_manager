@@ -25,7 +25,7 @@ public class InstanceReturnDto {
     private BigDecimal officeSplit;
     private BigDecimal agentSplit;
     private BigDecimal agentPaye;
-
+    private Boolean vatRegistered;
     // -------------------------------
     //     Financial Snapshot
     // -------------------------------
