@@ -40,8 +40,11 @@ export interface InstanceBodyData {
   leaseFeeOfficePortion: number;
 
   // Expanded: logging
-  createdAt: string;
-  updatedAt: string;
+  status: string;
+  createdBy: string;
+  createdAt: string; // LocalDateTime (ISO format)
+  lastModifiedBy: string; // LocalDateTime (ISO format)
+  lastModifiedAt: string; // LocalDateTime (ISO format)
 }
 
 function InstanceExpanded({ data }: { data: InstanceBodyData }) {
@@ -94,8 +97,10 @@ function InstanceExpanded({ data }: { data: InstanceBodyData }) {
 
       <Section title="LOG" />
       <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+        <Field label="Created" value={data.createdBy} />
         <Field label="Created" value={fmt(data.createdAt)} />
-        <Field label="Updated" value={fmt(data.updatedAt)} />
+        <Field label="Updated" value={data.lastModifiedBy} />
+        <Field label="Updated" value={fmt(data.lastModifiedAt)} />
       </div>
     </div>
   );

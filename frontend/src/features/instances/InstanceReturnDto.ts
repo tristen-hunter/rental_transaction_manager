@@ -50,6 +50,8 @@ export interface InstanceReturnDto {
   // -------------------------------
 
   status: string;
-  createdAt: string;
-  updatedAt: string;
+  createdBy: string;
+  createdAt: string; // LocalDateTime (ISO format)
+  lastModifiedBy: string; // LocalDateTime (ISO format)
+  lastModifiedAt: string; // LocalDateTime (ISO format)
 }

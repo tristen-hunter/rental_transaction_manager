@@ -33,7 +33,7 @@ export default function Agents() {
     axiosClient.get<AgentReturnDto[]>("/agents")
       .then((response) => {
         if (isMounted) {
-          console.log(response.data)
+          // console.log(response.data)
 
           setAgents(response.data);
           setLoading(false);

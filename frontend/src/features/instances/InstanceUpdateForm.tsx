@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { X, Calendar, Percent, Calculator, Landmark, BadgeDollarSign } from "lucide-react"
+import { X, Calendar, Percent, Calculator, Landmark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -107,9 +107,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
         leaseFeeAgentPortion: instance.leaseFeeAgentPortion,
         leaseFeeOfficePortion: instance.leaseFeeOfficePortion,
         deposit: instance.deposit,
-        status: "DRAFT",
-        createdAt: instance.createdAt,
-        updatedAt: instance.updatedAt
+        status: instance.status
     });
 
     // Add a local loading state
@@ -223,8 +221,8 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
                 <CurrencyInput label="Lease Fee — Office Portion" field="leaseFeeOfficePortion" value={formData.leaseFeeOfficePortion} onChange={handleChange} />
               </div>
             </FormSection>
-
-            {/* 5. Audit Trail (read-only) */}
+{/* 
+            5. Audit Trail (read-only)
             <FormSection title="Audit Info" subtitle="System timestamps" icon={BadgeDollarSign}>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
@@ -240,7 +238,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
                   </div>
                 </div>
               </div>
-            </FormSection>
+            </FormSection> */}
 
         </div>
 

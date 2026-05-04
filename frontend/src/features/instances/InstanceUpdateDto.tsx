@@ -31,6 +31,4 @@ export interface InstanceUpdateDto {
 
     /// Logging & sorting
     status: string;
-    createdAt: string;
-    updatedAt: string;
 }
