@@ -12,6 +12,7 @@ export interface InstanceUpdateDto {
     agentPaye: number;
     totalAmountPaid: number;
     baseRent: number;
+    vatRegistered: boolean;
 
     /// Calculated totals
     landlordPayAmount: number;

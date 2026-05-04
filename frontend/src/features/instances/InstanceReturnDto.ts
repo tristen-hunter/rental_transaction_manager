@@ -15,6 +15,7 @@ export interface InstanceReturnDto {
   officeSplit: number;
   agentSplit: number;
   agentPaye: number;
+  vatRegistered: boolean;
 
   // -------------------------------
   //     Financial Snapshot

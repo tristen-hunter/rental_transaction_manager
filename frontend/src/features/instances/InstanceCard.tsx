@@ -23,6 +23,7 @@ export interface InstanceBodyData {
   officeSplit: number;
   agentSplit: number;
   agentPaye: number;
+  vatRegistered: boolean;
   // Expanded: financials
   totalAmountPaid: number;
   landlordPayAmount: number;
@@ -66,6 +67,7 @@ function InstanceExpanded({ data }: { data: InstanceBodyData }) {
         <Field label="Office Split" value={`${data.officeSplit * 100}%`} />
         <Field label="Agent Split" value={`${data.agentSplit * 100}%`} />
         <Field label="Agent PAYE" value={`${data.agentPaye * 100}%`} />
+        <Field label="VAT Registered"  value={data.vatRegistered ? "Yes" : "No"} />
       </div>
 
       <Section title="FINANCIALS" />

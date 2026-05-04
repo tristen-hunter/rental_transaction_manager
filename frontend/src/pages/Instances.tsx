@@ -24,7 +24,7 @@ export default function Instances() {
     })
     .then((res) => {
       setInstances(res.data);
-      // console.log(res.data);  // FOR CHECKING THE RETURN DATA FROM THE DB
+      console.log(res.data);  // FOR CHECKING THE RETURN DATA FROM THE DB
       
       setLoading(false);
     })
@@ -77,6 +77,7 @@ export default function Instances() {
   /** Handles API Call */
   const handleSaveInstance = async (instanceId: string, updatedData: InstanceUpdateDto) => {
     try {
+      console.log(updatedData)
       await InstanceService.updateInstance(instanceId, updatedData);
       handleSuccess();
 

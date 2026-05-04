@@ -14,6 +14,7 @@ import {
 import type { RentalReturnDto } from "../rentals/rental"
 import type { InstanceBodyData } from "./InstanceCard"
 import type { InstanceUpdateDto } from "./InstanceUpdateDto"
+import { BILLING_PERIODS, STATUS_OPTIONS } from "@/components/common/CommonLists"
 
 type Props = {
     instance: InstanceBodyData
@@ -21,8 +22,6 @@ type Props = {
     onClose: () => void
     onSuccess: (instanceId: string, data: InstanceUpdateDto) => Promise<void> | void
 }
-
-const STATUS_OPTIONS = ["DRAFT", "APPROVED", "CANCELLED"]
 
 /** <------------- HELPER FUNCTIONS -------------------------------------------------- */
 
@@ -36,21 +35,29 @@ const PercentInput = ({
     field: keyof InstanceUpdateDto
     value: number
     onChange: (field: keyof InstanceUpdateDto, value: number) => void
-}) => (
+}) => {
+  const displayValue = value * 100;
+
+  return (
     <div className="space-y-1.5">
         <Label>{label}</Label>
         <div className="relative">
             <Input
                 type="number"
-                value={value}
-                onChange={(e) => onChange(field, Number(e.target.value))}
+                value={displayValue === 0 ? "" : displayValue}
+                onChange={(e) => {
+                  const rawValue = e.target.value;
+                  const numericValue = rawValue === "" ? 0 : Number(rawValue) / 100;
+                  onChange(field, numericValue)
+                }}
                 placeholder="0"
-                className="pr-7"
+                className="pr-7 no-spinner"
             />
             <span className="absolute right-3 top-2.5 text-gray-400 text-sm">%</span>
         </div>
     </div>
-)
+  )
+}
 
 const CurrencyInput = ({
     label,
@@ -69,7 +76,7 @@ const CurrencyInput = ({
             <span className="absolute left-3 top-2.5 text-gray-400 text-sm">R</span>
             <Input
                 type="number"
-                className="pl-7"
+                className="pl-7 no-spinner"
                 value={value}
                 onChange={(e) => onChange(field, Number(e.target.value))}
                 placeholder="0.00"
@@ -78,6 +85,89 @@ const CurrencyInput = ({
     </div>
 )
 
+const ReadOnlyCurrencyDisplay = ({
+    label,
+    value,
+}: {
+    label: string;
+    value: number;
+}) => (
+    <div className="space-y-1.5 opacity-85">
+      <Label className="text-muted-foreground">{label}</Label>
+      <div className="relative">
+        <span className="absolute left-3 top-2.5 text-gray-400 text-sm">R</span>
+        <Input
+          type="text"
+          className="pl-7 bg-muted border-gray-100 text-foreground font-medium cursor-not-allowed select-none"
+          value={value.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          disabled
+          readOnly
+        />
+      </div>
+    </div>
+);
+
+/**
+ * Safely converts a decimal currency amount to cents.
+ */
+// const toCents = (amount: number): number => Math.round(amount * 100);
+
+/**
+ * Safely converts cents back to a standard decimal number.
+ */
+const toDecimals = (cents: number): number => cents / 100;
+
+export function calculateFinancialTotals(inputs: {
+  baseRent: number;
+  totalAmountPaid: number;
+  rentalCommissionPercent: number; // e.g., 0.085 for 8.5%
+  officeSplit: number;              // e.g., 0.30 for 30%
+  agentPaye: number;                // e.g., 0.25 for 25%
+  vatRegistered: boolean;
+}) {
+  const { 
+    baseRent, 
+    rentalCommissionPercent, 
+    officeSplit, 
+    agentPaye, 
+    vatRegistered,
+  } = inputs;
+
+  // --- STEP 1: Convert base values to cents or direct multipliers ---
+  const baseRentCents = Math.round(baseRent * 100);
+  const rawCommCents = Math.round(baseRentCents * rentalCommissionPercent);
+
+  // Math perfectly aligns with the backend without needing UI toggles
+  const baseCommCents = vatRegistered ? Math.round(rawCommCents * 1.15) : rawCommCents;
+  const commExclVatCents = vatRegistered ? rawCommCents : baseCommCents;
+  const vatCents = baseCommCents - commExclVatCents;
+
+  // --- STEP 3: Split the Net (Excl VAT) Amount ---
+  // Java: agentGrossComm = commExclVat - (commExclVat * officeSplit)
+  const officePortionCents = Math.round(commExclVatCents * officeSplit);
+  const agentGrossCommCents = commExclVatCents - officePortionCents;
+  const companyCommCents = commExclVatCents - agentGrossCommCents;
+
+  // --- STEP 4: Calculate Tax and Net Agent Commission ---
+  const payeAmountCents = Math.round(agentGrossCommCents * agentPaye);
+  const agentNettCommCents = agentGrossCommCents - payeAmountCents;
+
+  // --- STEP 5: Landlord Pay Amount ---
+  // Java: landlordPayAmount = baseRent - baseComm
+  const landlordPayAmountCents = baseRentCents - baseCommCents;
+
+  // --- STEP 6: Return the values as safe decimal numbers ---
+  return {
+    landlordPayAmount: toDecimals(landlordPayAmountCents),
+    baseComm: toDecimals(baseCommCents),
+    vat: toDecimals(vatCents),
+    commExclVat: toDecimals(commExclVatCents),
+    companyComm: toDecimals(companyCommCents),
+    agentGrossComm: toDecimals(agentGrossCommCents),
+    payeAmount: toDecimals(payeAmountCents),
+    agentNettComm: toDecimals(agentNettCommCents),
+  };
+}
 
 /**
  * the Instance Prop is define as the InstanceBodyData of my cards, however it is restructured and sent as an Update DTO.
@@ -95,6 +185,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
         agentPaye: instance.agentPaye,
         totalAmountPaid: instance.totalAmountPaid,
         baseRent: instance.baseRent,
+        vatRegistered: instance.vatRegistered,
         landlordPayAmount: instance.landlordPayAmount,
         baseComm: instance.baseComm,
         vat: instance.vat,
@@ -113,9 +204,31 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
     // Add a local loading state
     const [isSaving, setIsSaving] = useState(false);
 
+    const computedTotals = calculateFinancialTotals({
+      baseRent: Number(formData.baseRent || 0),
+      totalAmountPaid: Number(formData.totalAmountPaid || 0),
+      rentalCommissionPercent: Number(formData.rentalCommissionPercent || 0),
+      officeSplit: Number(formData.officeSplit || 0),
+      agentPaye: Number(formData.agentPaye || 0),
+      vatRegistered: Boolean(formData.vatRegistered)
+    });
+
     const onSaveClick = async () => {
         setIsSaving(true);
-        await onSuccess(instance.id, formData);
+        // Merge the latest calculated totals directly into the submitted data
+        const finalData: InstanceUpdateDto = {
+          ...formData,
+          landlordPayAmount: computedTotals.landlordPayAmount,
+          baseComm: computedTotals.baseComm,
+          vat: computedTotals.vat,
+          commExclVat: computedTotals.commExclVat,
+          companyComm: computedTotals.companyComm,
+          agentGrossComm: computedTotals.agentGrossComm,
+          payeAmount: computedTotals.payeAmount,
+          agentNettComm: computedTotals.agentNettComm,
+        };
+        
+        await onSuccess(instance.id, finalData);
         // No need to set false here if the component unmounts on success
     };
 
@@ -124,6 +237,38 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
         setFormData((prev) => ({...prev, [field]: value}))
     }
 
+    const handleSplitChange = (field: "officeSplit" | "agentSplit", value: number) => {
+      // 1. Value arrives as a decimal (e.g., 0.3 for 30%). 
+      // Keep it bounded between 0.0 (0%) and 1.0 (100%).
+      const boundedValue = Math.min(1, Math.max(0, value));
+      
+      // 2. The other field gets the remaining percentage
+      const remainingValue = parseFloat((1 - boundedValue).toFixed(4)); 
+      const otherField = field === "officeSplit" ? "agentSplit" : "officeSplit";
+
+      setFormData((prev) => ({
+          ...prev,
+          [field]: boundedValue,
+          [otherField]: remainingValue,
+      }));
+    };
+
+    /// Helper components for billing period
+    // 1. Extract the current year from the existing billingPeriod, fallback to current year
+    const currentYear = formData.billingPeriod 
+      ? formData.billingPeriod.split("-")[0] 
+      : new Date().getFullYear().toString();
+
+    // 2. Extract the current month value to set as the dropdown's active selection
+    const currentMonthValue = formData.billingPeriod
+      ? formData.billingPeriod.split("-")[1]
+      : String(new Date().getMonth() + 1).padStart(2, "0");
+
+    // 3. Handle changing the month while keeping the year intact
+    const handleMonthChange = (monthValue: string) => {
+      const formattedDate = `${currentYear}-${monthValue}-01`;
+      handleChange("billingPeriod", formattedDate);
+    };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -152,12 +297,22 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
           <FormSection title="Billing Metadata" subtitle="Period and payment tracking" icon={Calendar}>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label>Billing Period</Label>
-                <Input
-                    value={formData.billingPeriod}
-                    onChange={(e) => handleChange("billingPeriod", e.target.value)}
-                    placeholder="e.g. 2025-07"
-                />
+                <Label>Billing Month</Label>
+                <Select
+                  value={currentMonthValue}
+                  onValueChange={(val) => handleMonthChange(val)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select month" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BILLING_PERIODS.map((m) => (
+                      <SelectItem key={m.value} value={m.value}>
+                        {m.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-1.5">
                 <Label>Actual Payment Date</Label>
@@ -192,23 +347,51 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
                 <CurrencyInput label="Base Rent" field="baseRent" value={formData.baseRent} onChange={handleChange} />
                 <CurrencyInput label="Total Amount Paid" field="totalAmountPaid" value={formData.totalAmountPaid} onChange={handleChange} />
                 <PercentInput label="Commission (%)" field="rentalCommissionPercent" value={formData.rentalCommissionPercent} onChange={handleChange} />
-                <PercentInput label="Office Split (%)" field="officeSplit" value={formData.officeSplit} onChange={handleChange} />
-                <PercentInput label="Agent Split (%)" field="agentSplit" value={formData.agentSplit} onChange={handleChange} />
+                <PercentInput label="Office Split (%)" field="officeSplit" value={formData.officeSplit} onChange={(_, val) => handleSplitChange("officeSplit", val)} />
+                <PercentInput label="Agent Split (%)" field="agentSplit" value={formData.agentSplit} onChange={(_, val) => handleSplitChange("agentSplit", val)} />
                 <PercentInput label="Agent PAYE (%)" field="agentPaye" value={formData.agentPaye} onChange={handleChange} />
               </div>
             </FormSection>
 
             {/* 3. Calculated Totals (read-only) */}
-            <FormSection title="Calculated Totals" subtitle="Derived figures — MUST BE MANUALLY UPDATED" icon={Calculator}>
+            <FormSection 
+              title="Calculated Totals (read-only)" 
+              subtitle="Derived figures — Automatically updated" 
+              icon={Calculator}
+            >
               <div className="grid grid-cols-2 gap-4">
-                <CurrencyInput label="Landlord Pay Amount" field="landlordPayAmount" value={formData.landlordPayAmount} onChange={handleChange} />
-                <CurrencyInput label="Base Commission" field="baseComm" value={formData.baseComm} onChange={handleChange} />
-                <CurrencyInput label="VAT" field="vat" value={formData.vat} onChange={handleChange} />
-                <CurrencyInput label="Commission Excl. VAT" field="commExclVat" value={formData.commExclVat} onChange={handleChange} />
-                <CurrencyInput label="Company Commission" field="companyComm" value={formData.companyComm} onChange={handleChange} />
-                <CurrencyInput label="Agent Gross Commission" field="agentGrossComm" value={formData.agentGrossComm} onChange={handleChange} />
-                <CurrencyInput label="PAYE Amount" field="payeAmount" value={formData.payeAmount} onChange={handleChange} />
-                <CurrencyInput label="Agent Nett Commission" field="agentNettComm" value={formData.agentNettComm} onChange={handleChange} />
+                <ReadOnlyCurrencyDisplay 
+                  label="Landlord Pay Amount" 
+                  value={computedTotals.landlordPayAmount} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="Base Commission" 
+                  value={computedTotals.baseComm} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="VAT" 
+                  value={computedTotals.vat} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="Commission Excl. VAT" 
+                  value={computedTotals.commExclVat} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="Company Commission" 
+                  value={computedTotals.companyComm} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="Agent Gross Commission" 
+                  value={computedTotals.agentGrossComm} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="PAYE Amount" 
+                  value={computedTotals.payeAmount} 
+                />
+                <ReadOnlyCurrencyDisplay 
+                  label="Agent Nett Commission" 
+                  value={computedTotals.agentNettComm} 
+                />
               </div>
             </FormSection>
 
@@ -268,7 +451,7 @@ const FormSection = ({ title, subtitle, icon: Icon, children }: {
   <div className="group border rounded-lg bg-card border-border transition-all overflow-hidden p-4 hover:border-accent">
     <div className="flex items-center gap-3 mb-4">
       <div className="shrink-0 p-1.5 rounded-md bg-gray-100 group-hover:bg-accent/10 transition-colors">
-        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground leading-tight">{title}</p>
