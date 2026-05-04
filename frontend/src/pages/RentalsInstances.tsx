@@ -93,16 +93,16 @@ export default function RentalsInstances() {
     }
 
     /** Handles API Call */
-  const handleSaveInstance = async (updatedData: InstanceUpdateDto) => {
+  const handleSaveInstance = async (instanceId: string, updatedData: InstanceUpdateDto) => {
     try {
-        await InstanceService.updateInstance(updatedData);
-        handleSuccess();
+      // console.log(updatedData)
+      await InstanceService.updateInstance(instanceId, updatedData);
 
-        toast.success("Instance Successfully Updated!")
+      handleSuccess();
+      toast.success("Instance Successfully Updated!")
     } catch (err) {
-        toast.error("Instance Could Not Be Updated.")
-        
-        console.error("Failed to update instance:", err);
+      console.error("Failed to update instance:", err);
+      toast.error("Instance Could Not Be Updated.")
     }
   }
 
@@ -178,7 +178,7 @@ export default function RentalsInstances() {
           instance={selectedInstance}
           rental={rentalMap.get(selectedInstance.rentalId)}
           onClose={handleClose}
-          onSuccess={handleSaveInstance}
+          onSuccess={(id, dto) => handleSaveInstance(id, dto)}
         />
       )}
 

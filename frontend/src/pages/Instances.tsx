@@ -79,12 +79,11 @@ export default function Instances() {
     try {
       console.log(updatedData)
       await InstanceService.updateInstance(instanceId, updatedData);
-      handleSuccess();
 
+      handleSuccess();
       toast.success("Instance Successfully Updated!")
     } catch (err) {
       console.error("Failed to update instance:", err);
-
       toast.error("Instance Could Not Be Updated.")
     }
   }
@@ -100,6 +99,7 @@ export default function Instances() {
     }
   }
 
+  if (loading) return <div>Instances Loading...</div>
 
   return (
     <div className="mx-auto">
