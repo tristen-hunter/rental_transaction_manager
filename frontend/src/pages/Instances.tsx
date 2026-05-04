@@ -102,26 +102,48 @@ export default function Instances() {
 
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold">PENDING APPROVAL</h1>
+    <div className="mx-auto">
+      {/* 1. Sticky Header Section */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-t border-b border-border shadow-sm mb-6 px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4 py-3 max-w-6xl mx-auto">
+          
+          {/* Left side: Heading & Subheading */}
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl uppercase">
+              Instances - {status.toLowerCase()}
+            </h1>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Manage, filter, and track instance statuses
+            </p>
+          </div>
 
-      {/* Filter Buttons */}
-      <div className="flex gap-2 my-4">
-        {(["APPROVED", "DRAFT", "CANCELLED"] as InstanceStatus[]).map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatus(s)}
-            className={`px-4 py-2 rounded ${status === s ? "bg-primary text-white" : "bg-gray-200"}`}
-          >
-            {s}
-          </button>
-        ))}
+          {/* Right side: Empty or reserved space since there's no action button */}
+        </div>
+      </div>
+
+      {/* 2. Filter Buttons Section */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-6">
+        <div className="flex flex-wrap gap-2">
+          {(["APPROVED", "DRAFT", "CANCELLED"] as InstanceStatus[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatus(s)}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                status === s 
+                  ? 'bg-primary text-primary-foreground shadow-sm' 
+                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
       </div>
 
       {loading ? (
         <p>Loading {status} instances...</p>
       ) : (
-        <div className="grid grid-cols-1 gap-2">
+        <div className="max-w-5xl grid grid-cols-1 gap-2 mx-auto">
           {instances.map((instance) => {
             const rental = rentalMap.get(instance.rentalId);
             return (

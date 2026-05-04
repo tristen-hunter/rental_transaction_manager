@@ -138,7 +138,7 @@ export default function Rentals() {
       </div>
 
       {/* 2. Filter Tabs Section (Max-width aligns with the header above) */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-6">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 mb-6">
         <div className="flex flex-wrap gap-2">
           {(["ACTIVE", "CANCELLED", "COMPLETED"] as RentalStatus[]).map((s) => (
             <button
@@ -165,7 +165,7 @@ export default function Rentals() {
       {loading ? (
         <p>Loading {status} rentals...</p>
         ) : (
-          <div className="grid grid-cols-1 gap-2 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 gap-2 max-w-5xl mx-auto">
             {rentals.map((rental) => (
               <RentalCard
                 key={rental.id}
