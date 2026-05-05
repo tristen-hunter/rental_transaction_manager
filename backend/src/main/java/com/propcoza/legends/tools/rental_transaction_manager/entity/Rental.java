@@ -3,6 +3,7 @@ package com.propcoza.legends.tools.rental_transaction_manager.entity;
 import com.propcoza.legends.tools.rental_transaction_manager.common.config.Auditable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,18 +48,8 @@ public class Rental extends Auditable {
     //    Recurring Rental Fields
     // -------------------------------
 
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate; // This is set to the initial payment data
-
-    @Column(name = "end_date")
-    private LocalDate endDate; // This is set to the last RentalInstance payment date
-
-    /**
-     * This bool is to determine which instances must be created by the cron job
-     * Can only be manually deactivated
-     */
-    @Column(name = "auto_renew", nullable = false)
-    private Boolean autoRenew = true;
+    @NotNull(message = "Lease Period is required")
+    private int leasePeriod;
 
     /**
      * Here we can visually represent the MASTER templates use case

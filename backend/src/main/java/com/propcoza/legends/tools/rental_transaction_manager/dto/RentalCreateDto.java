@@ -38,15 +38,8 @@ public record RentalCreateDto(
         @NotNull(message = "Payment date is required")
         LocalDate paymentDate,
 
-        // -------------------------------
-        //    Recurring Rental Fields
-        // -------------------------------
-
-        @NotNull(message = "Auto-renew flag is required")
-        Boolean autoRenew,
-
-        // Optional: only validated if provided
-        LocalDate endDate,
+        @NotNull(message = "Lease Period is required")
+        int leasePeriod,
 
         // -------------------------------
         //    Landlord Info
@@ -102,16 +95,4 @@ public record RentalCreateDto(
         @NotNull(message = "VAT registered flag is required")
         Boolean vatRegistered
 
-) {
-        // -------------------------------
-        //    Cross-Field Validation
-        // -------------------------------
-
-        @AssertTrue(message = "End date must be after the start/payment date")
-        public boolean isEndDateValid() {
-                if (endDate == null || paymentDate == null) {
-                        return true; // Valid if not provided
-                }
-                return endDate.isAfter(paymentDate);
-        }
-}
+){}

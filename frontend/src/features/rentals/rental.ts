@@ -22,9 +22,7 @@ export interface RentalReturnDto {
   // -------------------------------
   // Recurring Rental Fields
   // -------------------------------
-  startDate: string; // LocalDate
-  endDate: string; // LocalDate
-  autoRenew: boolean;
+  leasePeriod: number;
   status: RentalStatus;
 
   // -------------------------------

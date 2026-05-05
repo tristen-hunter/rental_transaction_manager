@@ -23,11 +23,9 @@ export interface RentalBodyData {
   address: string;
   paymentDate: string;
   // Collapsed preview
-  startDate: string;
+  leasePeriod: number;
   // Expanded: tenant
   tenantName: string;
-  endDate: string;
-  autoRenew: boolean;
   status: RentalStatus;
   // Expanded: landlord
   landlordName: string;
@@ -54,8 +52,8 @@ function RentalExpanded({ data }: { data: RentalBodyData }) {
       <Section title="TENANT INFO" />
       <div className="grid grid-cols-3 gap-x-4 gap-y-2">
         <Field label="name"       value={data.tenantName} />
-        <Field label="Start Date" value={fmt(data.startDate)} />
-        <Field label="End Date"   value={fmt(data.endDate)} />
+        <Field label="Payment Date" value={data.paymentDate} />
+        <Field label="Lease Period" value={data.leasePeriod} />
       </div>
 
       <Section title="Landlord" />
@@ -169,7 +167,7 @@ export function RentalCard({
         label: currentStatus.label,
         colorClassName: currentStatus.color
       }}
-      infoLabel={rental.startDate ? fmt(rental.startDate) : "No Date"}
+      infoLabel={rental.paymentDate ? fmt(rental.paymentDate) : "No Date"}
       actions={actions}
     >
       <RentalExpanded data={rental} />

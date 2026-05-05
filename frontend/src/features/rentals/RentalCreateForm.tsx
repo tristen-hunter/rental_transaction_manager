@@ -25,12 +25,13 @@ interface RentalFormInputs {
   address: string;
   tenantName: string;
   paymentDate: string;
-  autoRenew: boolean;
-  endDate?: string;
+  leasePeriod: number;
+
   landlordName: string;
   landlordBankName: string;
   landlordAccNo: string;
   landlordBranch: string;
+
   baseRent: number;
   rentalCommissionPercent: number;
   officeSplit: number;
@@ -46,8 +47,8 @@ interface Props {
 const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   const [agents, setAgents] = useState<AgentIdNameDto[]>([]);
 
-  const { register, handleSubmit, watch, control, reset, setValue, formState: { errors } } = useForm<RentalFormInputs>({
-    defaultValues: { autoRenew: true, vatRegistered: true }
+  const { register, handleSubmit, control, reset, setValue, formState: { errors } } = useForm<RentalFormInputs>({
+    defaultValues: { vatRegistered: true }
   });
 
   useEffect(() => {
@@ -64,13 +65,10 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   }, [isOpen])
 
-  const watchAutoRenew = watch("autoRenew");
-
   const onSubmit: SubmitHandler<RentalFormInputs> = async (data) => {
     // 1. Transform percentages to decimals for the backend
     const dto: RentalCreateDto = {
       ...data,
-      endDate: data.autoRenew ? null : data.endDate,
       rentalCommissionPercent: Number(data.rentalCommissionPercent) / 100,
       officeSplit: Number(data.officeSplit) / 100,
       agentPaye: Number(data.agentPaye) / 100,
@@ -149,20 +147,35 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Label>Payment Date</Label>
                 <Input type="date" {...register("paymentDate", { required: true })} />
               </div>
-              <div className="flex items-end pb-2 space-x-2">
-                <Checkbox 
-                  id="autoRenew" 
-                  checked={watchAutoRenew}
-                  onCheckedChange={(checked) => setValue("autoRenew", checked as boolean)} 
+              
+              <div className="space-y-1.5">
+                <Label htmlFor="leasePeriod">Lease Period (Months)</Label>
+                <Controller
+                  name="leasePeriod"
+                  control={control}
+                  rules={{ required: "Please select a lease period" }}
+                  render={({ field }) => (
+                    <Select 
+                      onValueChange={(val) => field.onChange(Number(val))} 
+                      value={field.value?.toString()}
+                    >
+                      <SelectTrigger id="leasePeriod" className={errors.leasePeriod ? "border-red-500" : ""}>
+                        <SelectValue placeholder="Select months..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 24 }, (_, i) => i + 1).map((month) => (
+                          <SelectItem key={month} value={month.toString()}>
+                            {month} {month === 1 ? 'Month' : 'Months'}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 />
-                <Label htmlFor="autoRenew" className="cursor-pointer">Auto-Renew Contract</Label>
+                {errors.leasePeriod && (
+                  <p className="text-xs text-red-500">{errors.leasePeriod.message}</p>
+                )}
               </div>
-              {!watchAutoRenew && (
-                <div className="space-y-1.5 animate-in fade-in slide-in-from-top-1">
-                  <Label>End Date</Label>
-                  <Input type="date" {...register("endDate")} />
-                </div>
-              )}
             </div>
           </FormSection>
 

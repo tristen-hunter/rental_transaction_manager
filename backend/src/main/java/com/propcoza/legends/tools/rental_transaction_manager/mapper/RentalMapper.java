@@ -53,9 +53,7 @@ public class RentalMapper {
         rental.setPaymentDate(dto.paymentDate());
 
         // Recurring rental fields
-        rental.setStartDate(dto.paymentDate()); // first payment date bigDecimals as contract start
-        rental.setEndDate(dto.endDate());       // null if open-ended / auto-renew
-        rental.setAutoRenew(dto.autoRenew());
+        rental.setLeasePeriod(dto.leasePeriod());
         rental.setStatus(RentalStatus.ACTIVE);  // always ACTIVE on creation
 
         // Landlord info
@@ -106,9 +104,7 @@ public class RentalMapper {
                 rental.getPaymentDate(),
 
                 // Recurring rental fields
-                rental.getStartDate(),
-                rental.getEndDate(),
-                rental.getAutoRenew(),
+                rental.getLeasePeriod(),
                 rental.getStatus(),
 
                 // Landlord info
@@ -151,9 +147,7 @@ public class RentalMapper {
         existingRental.setPaymentDate(dto.getPaymentDate());
 
         // Recurring rental fields
-        existingRental.setStartDate(dto.getPaymentDate());
-        existingRental.setEndDate(dto.getEndDate());
-        existingRental.setAutoRenew(dto.getAutoRenew());
+        existingRental.setLeasePeriod(dto.getLeasePeriod());
         existingRental.setStatus(dto.getStatus());
 
         // Landlord info

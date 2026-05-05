@@ -41,7 +41,7 @@ public class RentalService {
         Agent agent = agentRepo.findById(dto.agentId())
                 .orElseThrow(() -> new EntityNotFoundException("Agent not found"));
 
-        if (rentalRepo.existsByAgentAndTenantNameAndStartDate(
+        if (rentalRepo.existsByAgentAndTenantNameAndPaymentDate(
                 agent,
                 dto.tenantName(),
                 dto.paymentDate())) {

@@ -15,10 +15,10 @@ import java.util.UUID;
 @Repository
 public interface RentalRepo extends JpaRepository<Rental, UUID> {
 
-    boolean existsByAgentAndTenantNameAndStartDate(
+    boolean existsByAgentAndTenantNameAndPaymentDate(
             Agent agent,
             String tenantName,
-            LocalDate startDate
+            LocalDate paymentDate
     );
 
     // Find rentals for a specific agent within a date range (for payslips)

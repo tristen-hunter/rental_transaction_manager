@@ -3,8 +3,7 @@ export interface RentalCreateDto {
     address: string;
     tenantName: string;
     paymentDate: string; // yyyy-MM-dd
-    autoRenew: boolean;
-    endDate?: string | null;
+    leasePeriod: number;
 
     landlordName: string;
     landlordBankName: string;

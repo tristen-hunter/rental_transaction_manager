@@ -39,9 +39,7 @@ public record RentalReturnDto(
         //    Recurring Rental Fields
         // -------------------------------
 
-        LocalDate startDate,
-        LocalDate endDate,
-        Boolean autoRenew,
+        int leasePeriod,
         RentalStatus status,
 
         // -------------------------------

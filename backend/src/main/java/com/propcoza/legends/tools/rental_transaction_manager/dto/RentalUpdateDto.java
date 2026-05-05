@@ -39,13 +39,11 @@ public class RentalUpdateDto {
     //    Recurring Rental Fields
     // -------------------------------
 
-    private LocalDate endDate;
-
-    @NotNull(message = "Auto-renew flag is required")
-    private Boolean autoRenew;
+    @NotNull(message = "Lease Period is required")
+    private int leasePeriod;
 
     @NotNull(message = "Rental status is required")
-    private RentalStatus status; // No default value! Removed @Enumerated
+    private RentalStatus status;
 
     // -------------------------------
     //     Landlord Info
@@ -102,15 +100,4 @@ public class RentalUpdateDto {
     @NotNull(message = "VAT registered flag is required")
     private Boolean vatRegistered;
 
-    // -------------------------------
-    //    Cross-Field Validation
-    // -------------------------------
-
-    @AssertTrue(message = "End date must be after the start/payment date")
-    public boolean isEndDateValid() {
-        if (endDate == null || paymentDate == null) {
-            return true;
-        }
-        return endDate.isAfter(paymentDate);
-    }
 }

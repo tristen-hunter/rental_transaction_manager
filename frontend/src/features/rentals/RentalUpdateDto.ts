@@ -11,10 +11,7 @@ export interface RentalUpdateDto {
   tenantName?: string;
   paymentDate?: string;
 
-  startDate?: string;
-  endDate?: string | null;
-
-  autoRenew: boolean;
+  leasePeriod: number;
   status: string;
 
   landlordName?: string;
