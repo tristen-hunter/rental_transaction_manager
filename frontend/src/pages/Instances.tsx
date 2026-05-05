@@ -5,7 +5,7 @@ import { InstanceService } from "@/features/instances/InstanceService";
 import type { InstanceUpdateDto } from "@/features/instances/InstanceUpdateDto";
 import InstanceUpdateForm from "@/features/instances/InstanceUpdateForm";
 import { type RentalReturnDto } from "@/features/rentals/rental";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Instances() {
@@ -99,6 +99,32 @@ export default function Instances() {
     }
   }
 
+
+  const groupedInstances = useMemo(() => {
+    // 1. First, enrich instances with data from the rentalMap
+    const enrichedInstances = instances.map(instance => {
+      const rental = rentalMap.get(instance.rentalId);
+      return {
+        ...instance,
+        // Use fallback strings so the grouping doesn't break if a rental isn't found
+        address: rental?.address ?? "Unknown Address",
+        agentName: rental?.agentName ?? "Unassigned Agent"
+      };
+    });
+    // 2. Now run the reduce logic on the enriched data
+    return enrichedInstances.reduce((acc, instance) => {
+      const date = new Date(instance.billingPeriod);
+      const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+      if (!acc[monthKey]) acc[monthKey] = {};
+      if (!acc[monthKey][instance.agentName]) acc[monthKey][instance.agentName] = [];
+
+      acc[monthKey][instance.agentName].push(instance);
+      
+      return acc;
+    }, {} as Record<string, Record<string, any[]>>);
+  }, [instances, activeRentals]);
+
   if (loading) return <div>Instances Loading...</div>
 
   return (
@@ -143,23 +169,50 @@ export default function Instances() {
       {loading ? (
         <p>Loading {status} instances...</p>
       ) : (
-        <div className="max-w-5xl grid grid-cols-1 gap-2 mx-auto">
-          {instances.map((instance) => {
-            const rental = rentalMap.get(instance.rentalId);
-            return (
-              <InstanceCard
-                key={instance.id}
-                instance={instance}
-                address={rental?.address ?? "No Address Found"} // Add rental data here
-                agentName={rental?.agentName ?? "No Agent Found"} // Add rental data here
-                status={instance.status}
+        <div className="max-w-5xl mx-auto space-y-12">
+          {/* 1. Sort the months chronologically (Newest Month at the top) */}
+          {Object.keys(groupedInstances)
+            .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+            .map((month) => {
+              const agents = groupedInstances[month];
 
-                onEdit={() => handleEdit(instance)}
-                onSetStatus={(data: InstanceBodyData) => console.log("Set Status", data.id)}
-                onDelete={() => handleDelete(instance.id)}
-              />
-            );
-          })}
+              return (
+                <div key={month} className="space-y-6">
+                  {/* Level 1: Month Heading (Billing Period) */}
+                  <h2 className="text-lg font-bold border-b pb-2 text-foreground uppercase tracking-widest">
+                    {month}
+                  </h2>
+
+                  {/* Level 2: Group by Agent Name within that Month */}
+                  {Object.entries(agents).map(([agentName, agentInstances]) => (
+                    <div key={agentName} className="pl-4 border-l-2 border-accent/20 space-y-3">
+                      <h3 className="text-sm font-semibold text-primary/80 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-primary" />
+                        Agent: {agentName}
+                      </h3>
+
+                      {/* Level 3: The Instance Cards */}
+                      <div className="grid grid-cols-1 gap-3">
+                        {agentInstances.map((instance) => (
+                          <InstanceCard
+                            key={instance.id}
+                            instance={instance}
+                            // These fields come from the 'enriched' data in your useMemo
+                            address={instance.address ?? "No Address Found"} 
+                            agentName={instance.agentName ?? "No Agent Found"}
+                            status={instance.status}
+                            
+                            onEdit={() => handleEdit(instance)}
+                            onSetStatus={(data) => console.log("Set Status", data.id)}
+                            onDelete={() => handleDelete(instance.id)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
         </div>
       )}
 

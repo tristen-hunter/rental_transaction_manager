@@ -48,3 +48,7 @@ export const BILLING_PERIODS = [
 
 /// For instances
 export const STATUS_OPTIONS = ["DRAFT", "APPROVED", "CANCELLED"]
+
+
+
+/// Bank universal branch codes

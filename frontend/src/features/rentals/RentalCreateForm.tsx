@@ -66,19 +66,23 @@ const RentalCreateForm: React.FC<Props> = ({ isOpen, onClose }) => {
   }, [isOpen])
 
   const onSubmit: SubmitHandler<RentalFormInputs> = async (data) => {
+    const toDecimal = (val: any) => {
+      const num = Number(val);
+      return isNaN(num) ? 0 : num / 100;
+    };
+
     // 1. Transform percentages to decimals for the backend
     const dto: RentalCreateDto = {
       ...data,
-      rentalCommissionPercent: Number(data.rentalCommissionPercent) / 100,
-      officeSplit: Number(data.officeSplit) / 100,
-      agentPaye: Number(data.agentPaye) / 100,
+      rentalCommissionPercent: toDecimal(data.rentalCommissionPercent),
+      officeSplit: toDecimal(data.officeSplit),
+      agentPaye: toDecimal(data.agentPaye),
     };
 
     // 2. Call the end point, log result, close modal
     try {
       await RentalService.create(dto);
       toast.success("Rental Created Successfully")
-      
       reset();
       onClose();
     } catch (error){

@@ -62,7 +62,6 @@ export default function Agents() {
     setRefresh(r => r+1)
   }
 
-
   const [selectedAgent, setSelectedAgent] = useState<AgentBodyData | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -102,7 +101,7 @@ export default function Agents() {
         <div className="flex items-center justify-between gap-4 py-2.5 max-w-6xl mx-auto">
           {/* Left side: Heading & Subheading */}
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-foreground sm:2xl">
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:2xl">
               ALL AGENTS
             </h1>
             <p className="text-sm text-muted-foreground mt-0.5">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axiosClient from "../context/axiosClient";
 import type { RentalReturnDto, RentalStatus } from "../features/rentals/rental";
 import RentalCreateForm from "@/features/rentals/RentalCreateForm";
@@ -112,6 +112,23 @@ export default function Rentals() {
   }
 
 
+  const groupedRentals = useMemo(() => {
+    return rentals.reduce((acc, rental) => {
+      // 1. Create the Month Heading (e.g., "January 2025")
+      const date = new Date(rental.paymentDate);
+      const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+      // 2. Initialize the Month and Agent groups
+      if (!acc[monthKey]) acc[monthKey] = {};
+      if (!acc[monthKey][rental.agentName]) acc[monthKey][rental.agentName] = [];
+
+      // 3. Push the rental into its specific "Stack"
+      acc[monthKey][rental.agentName].push(rental);
+      
+      return acc;
+    }, {} as Record<string, Record<string, RentalReturnDto[]>>);
+  }, [rentals, status]);
+
 
   return (
     <div className="mx-auto">
@@ -168,21 +185,43 @@ export default function Rentals() {
       {loading ? (
         <p>Loading {status} rentals...</p>
         ) : (
-          <div className="grid grid-cols-1 gap-2 max-w-5xl mx-auto">
-            {rentals.map((rental) => (
-              <RentalCard
-                key={rental.id}
-                rental={rental}               // Pass the whole object for the expanded view
-                address={rental.address}       // Title
-                agentName={rental.agentName}   // Subtitle
-                status={rental.status}         // Wrapper will map this to the colored badge
-                onTitleClick={() => handleNav(rental)}
-                // Connect the specific actions
-                onEdit={() => handleEdit(rental)}
-                onDelete={() => handleDelete(rental.id)}
-                onSetStatus={(data) => console.log("Update Status", data.tenantName)}
-                onCreateInstance={handleCreateInstance}
-              />
+          <div className="max-w-5xl mx-auto space-y-12">
+            {Object.entries(groupedRentals).map(([month, agents]) => (
+              <div key={month} className="space-y-6">
+                {/* Level 1: Month Heading */}
+                <h2 className="text-l font-bold border-b pb-2 text-foreground uppercase tracking-widest">
+                  {month}
+                </h2>
+
+                {Object.entries(agents).map(([agentName, agentRentals]) => (
+                  <div key={agentName} className="pl-4 border-l-2 border-accent/20 space-y-3">
+                    {/* Level 2: Agent Sub-heading */}
+                    <h3 className="text-sm font-semibold text-primary/80 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-primary" />
+                      Agent: {agentName}
+                    </h3>
+
+                    {/* Level 3: The Rental Cards */}
+                    <div className="grid grid-cols-1 gap-3">
+                      {agentRentals.map((rental) => (
+                        <RentalCard
+                          key={rental.id}
+                          rental={rental}               // Pass the whole object for the expanded view
+                          address={rental.address}       // Title
+                          agentName={rental.agentName}   // Subtitle
+                          status={rental.status}         // Wrapper will map this to the colored badge
+                          onTitleClick={() => handleNav(rental)}
+                          // Connect the specific actions
+                          onEdit={() => handleEdit(rental)}
+                          onDelete={() => handleDelete(rental.id)}
+                          onSetStatus={(data) => console.log("Update Status", data.tenantName)}
+                          onCreateInstance={handleCreateInstance}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
             ))}
           </div>
         )}
