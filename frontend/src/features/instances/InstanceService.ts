@@ -6,6 +6,7 @@ export const InstanceService = {
     updateInstance: async (instanceId: string, data: InstanceUpdateDto): Promise<void> => {
         try {
         // .put() for updating an existing resource
+        // console.log(data)
         await axiosClient.put(`/instances/${instanceId}/update`, data);
 
         } catch (error) {

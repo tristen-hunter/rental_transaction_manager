@@ -124,6 +124,8 @@ export function calculateFinancialTotals(inputs: {
   officeSplit: number;              // e.g., 0.30 for 30%
   agentPaye: number;                // e.g., 0.25 for 25%
   vatRegistered: boolean;
+  leaseFee: number;
+  deposit: number
 }) {
   const { 
     baseRent, 
@@ -131,6 +133,8 @@ export function calculateFinancialTotals(inputs: {
     officeSplit, 
     agentPaye, 
     vatRegistered,
+    leaseFee,
+    deposit
   } = inputs;
 
   // --- STEP 1: Convert base values to cents or direct multipliers ---
@@ -156,6 +160,9 @@ export function calculateFinancialTotals(inputs: {
   // Java: landlordPayAmount = baseRent - baseComm
   const landlordPayAmountCents = baseRentCents - baseCommCents;
 
+  // --- STEP 6: Extras ---
+  const totalExtras = Math.round(leaseFee * 100) + Math.round(deposit * 100) + baseRentCents;
+
   // --- STEP 6: Return the values as safe decimal numbers ---
   return {
     landlordPayAmount: toDecimals(landlordPayAmountCents),
@@ -166,6 +173,7 @@ export function calculateFinancialTotals(inputs: {
     agentGrossComm: toDecimals(agentGrossCommCents),
     payeAmount: toDecimals(payeAmountCents),
     agentNettComm: toDecimals(agentNettCommCents),
+    totalExtras: toDecimals(totalExtras)
   };
 }
 
@@ -210,7 +218,9 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
       rentalCommissionPercent: Number(formData.rentalCommissionPercent || 0),
       officeSplit: Number(formData.officeSplit || 0),
       agentPaye: Number(formData.agentPaye || 0),
-      vatRegistered: Boolean(formData.vatRegistered)
+      vatRegistered: Boolean(formData.vatRegistered),
+      leaseFee: Number(formData.leaseFee || 0),
+      deposit: Number(formData.deposit || 0)
     });
 
     const onSaveClick = async () => {
@@ -226,6 +236,7 @@ const InstanceUpdateForm = ({ instance, rental, onClose, onSuccess }: Props) => 
           agentGrossComm: computedTotals.agentGrossComm,
           payeAmount: computedTotals.payeAmount,
           agentNettComm: computedTotals.agentNettComm,
+          totalAmountPaid: computedTotals.totalExtras
         };
         
         await onSuccess(instance.id, finalData);
