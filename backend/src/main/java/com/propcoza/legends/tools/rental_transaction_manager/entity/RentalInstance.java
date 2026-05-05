@@ -49,6 +49,8 @@ public class RentalInstance extends Auditable {
     @Column(name = "actual_payment_date")
     private LocalDate actualPaymentDate;
 
+
+
     // -------------------------------
     //     Commission ratio Percentages
     // -------------------------------

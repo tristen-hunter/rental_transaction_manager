@@ -1,5 +1,7 @@
 import axiosClient from "@/context/axiosClient";
 import type { InstanceUpdateDto } from "./InstanceUpdateDto";
+import type { InstanceReturnDto } from "./InstanceReturnDto";
+import { toast } from "react-toastify";
 
 export const InstanceService = {
 
@@ -21,6 +23,16 @@ export const InstanceService = {
             await axiosClient.delete(`/instances/${instanceId}`);
         } catch (err) {
             console.error("Couldn't delete Instance. ID: ", instanceId);
+            throw err;
+        }
+    },
+
+    bulkGenerateForActiveRentals: async() => {
+        try {
+            const res = await axiosClient.post<InstanceReturnDto[]>("/instances/bulk-create");
+            toast.success(`Generated ${res.data.length} instances`);
+        } catch (err) {
+            console.error("Couldn't bulk generate Instances: ");
             throw err;
         }
     }

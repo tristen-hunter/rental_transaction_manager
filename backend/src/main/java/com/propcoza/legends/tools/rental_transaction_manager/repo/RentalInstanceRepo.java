@@ -23,6 +23,12 @@ public interface RentalInstanceRepo extends JpaRepository<RentalInstance, UUID> 
     @Query("SELECT r FROM RentalInstance r LEFT JOIN FETCH r.adjustments LEFT JOIN FETCH r.notes WHERE r.id = :id")
     Optional<RentalInstance> findByIdWithDetails(@Param("id") UUID id);
 
+    Optional<RentalInstance> findTopByRental_IdOrderByBillingPeriodDesc(UUID rentalId);
+
+    boolean existsByRental_IdAndBillingPeriod(UUID rentalId, LocalDate billingPeriod);
+
+    int countByRental_Id(UUID rentalId);
+
 
     // Find if an instance already exists
     // NOTE: billing period set to the first day in service layer (createRental)

@@ -18,6 +18,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -55,7 +56,11 @@ public class RentalService {
         // 3. Persist to get the UUID and managed state
         Rental savedRental = rentalRepo.save(rental);
 
+        Optional<RentalInstance> last = instanceRepo
+                .findTopByRental_IdOrderByBillingPeriodDesc(rental.getId());
+
         // 4. Final save is often unnecessary due to Dirty Checking,
+
         return RentalMapper.toReturnDto(savedRental);
     }
 

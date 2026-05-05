@@ -151,6 +151,76 @@ public class InstanceService {
         return InstanceMapper.toReturnDto(savedInstance);
     }
 
+
+    @Transactional
+    public InstanceReturnDto saveNextInstance(@NonNull UUID rentalId) {
+        /// 1. Get existing data
+        Rental rental = rentalRepo.findById(rentalId)
+                .orElseThrow(() -> new RuntimeException("Rental not found"));
+
+        Optional<RentalInstance> lastInstance = instanceRepo
+                .findTopByRental_IdOrderByBillingPeriodDesc(rentalId);
+
+        /// 2. Find the NEXT billingPeriod
+        LocalDate nextBillingPeriod;
+        nextBillingPeriod = lastInstance
+                .map(rentalInstance -> rentalInstance.getBillingPeriod().plusMonths(1))
+                .orElseGet(() -> rental.getPaymentDate().withDayOfMonth(1));
+
+        /// 3. Guard against 13th month exception
+        LocalDate leaseStart = rental.getPaymentDate().withDayOfMonth(1);
+        LocalDate leaseEnd = rental.getPaymentDate().plusMonths(rental.getPaymentDate().getMonthValue());
+
+        if (!nextBillingPeriod.isBefore(leaseEnd)) {
+            throw new IllegalStateException(
+                    "Lease period expired. Cannot generate instance beyond " + leaseEnd
+            );
+        }
+
+        /// 4. Guard against duplicate billing
+        boolean alreadyExists = instanceRepo
+                .existsByRental_IdAndBillingPeriod(rentalId, nextBillingPeriod);
+        if (!alreadyExists) {
+            throw new IllegalStateException(
+                    "Instance already exists for " + nextBillingPeriod
+            );
+        }
+
+        /// 5. Use existing logic (assign new periods)
+        InstanceCreateDto newDtoDraft = createInstanceDto(rental);
+        newDtoDraft.setBillingPeriod(nextBillingPeriod);
+        newDtoDraft.setActualPaymentDate(nextBillingPeriod.withDayOfMonth(rental.getPaymentDate().getDayOfMonth()));
+
+        RentalInstance instance = instanceMapper.toEntity(newDtoDraft);
+        instance.setRental(rental);
+        instance.setStatus(InstanceStatus.DRAFT);
+
+        RentalInstance savedInstance = instanceRepo.save(instance);
+        return InstanceMapper.toReturnDto(savedInstance);
+    }
+
+    @Transactional
+    public List<InstanceReturnDto> bulkGenerateForActiveRentals(){
+        List<Rental> activeRentals = rentalRepo.findByStatus(RentalStatus.ACTIVE);
+        List<InstanceReturnDto> dtos = new ArrayList<>();
+        List<String> skippedRentals = new ArrayList<>();
+
+        for (Rental rental : activeRentals) {
+            try {
+                InstanceReturnDto newDtoDraft = saveNextInstance(rental.getId());
+                dtos.add(newDtoDraft);
+            } catch (IllegalStateException e) {
+                skippedRentals.add(rental.getId() + ": " + e.getMessage());
+            }
+        }
+
+        if (!skippedRentals.isEmpty()) {
+            skippedRentals.forEach(s -> System.out.println("SKIPPED: " + s));
+        }
+
+        return dtos;
+    }
+
     /**
      * Gets ALL current ACTIVE rentals
      * @return A List item

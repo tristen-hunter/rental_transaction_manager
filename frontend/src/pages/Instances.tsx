@@ -99,6 +99,15 @@ export default function Instances() {
     }
   }
 
+  const handleBulkGenerate = async () => {
+    try {
+        await InstanceService.bulkGenerateForActiveRentals();
+        setRefresh(r => r + 1);
+    } catch (err) {
+        toast.error("Bulk generation failed");
+    }
+  };
+
 
   const groupedInstances = useMemo(() => {
     // 1. First, enrich instances with data from the rentalMap
@@ -163,6 +172,7 @@ export default function Instances() {
               {s}
             </button>
           ))}
+          <button onClick={handleBulkGenerate}>Bulk generate Instances</button>
         </div>
       </div>
 

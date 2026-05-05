@@ -1,6 +1,7 @@
 package com.propcoza.legends.tools.rental_transaction_manager.dto;
 
 import com.propcoza.legends.tools.rental_transaction_manager.entity.RentalStatus;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

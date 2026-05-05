@@ -12,7 +12,6 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -69,7 +68,7 @@ public class InstanceMapper {
         return instance;
     }
 
-    public static RentalInstance updateEntityFromDto(@NonNull InstanceUpdateDto dto, @UnknownNullability RentalInstance instance) {
+    public static void updateEntityFromDto(@NonNull InstanceUpdateDto dto, @UnknownNullability RentalInstance instance) {
         // --- Metadata & Dates ---
         instance.setBillingPeriod(dto.getBillingPeriod());
         instance.setActualPaymentDate(dto.getActualPaymentDate());
@@ -100,7 +99,6 @@ public class InstanceMapper {
         instance.setLeaseFeeOfficePortion(dto.getLeaseFeeOfficePortion());
         instance.setDeposit(dto.getDeposit());
 
-        return instance;
     }
 
     public static @NonNull InstanceReturnDto toReturnDto(@NonNull RentalInstance instance) {

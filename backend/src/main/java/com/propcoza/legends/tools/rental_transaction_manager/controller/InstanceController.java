@@ -48,13 +48,10 @@ public class InstanceController {
         instanceService.deleteInstance(instanceId);
     }
 
-    /**
-     * This function mass creates Instances of ALL current rentals (deprecated)
-     */
-//    @PostMapping("/pending")
-//    public List<InstanceReturnDto> createAllPendingInstances(){
-//        List<Rental> rentals = instanceService.getAllActiveRentals();
-//
-//        return instanceService.saveAllInitialDrafts(rentals);
-//    }
+
+    @PostMapping("/bulk-create")
+    public ResponseEntity<List<InstanceReturnDto>> bulkGenerateForActiveRentals(){
+        List<InstanceReturnDto> dtos = instanceService.bulkGenerateForActiveRentals();
+        return ResponseEntity.ok(dtos);
+    }
 }

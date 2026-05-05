@@ -25,6 +25,9 @@ export interface RentalReturnDto {
   leasePeriod: number;
   status: RentalStatus;
 
+  lastBilledPeriod?: string; // "2026-04-01" - populate from backend
+  instanceCount?: number;
+
   // -------------------------------
   // Landlord Info
   // -------------------------------
