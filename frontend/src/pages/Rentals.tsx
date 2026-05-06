@@ -10,6 +10,7 @@ import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
 import { toast } from "react-toastify";
 import { Plus } from "lucide-react";
 import { InstanceService } from "@/features/instances/InstanceService";
+import { GroupedList } from "@/components/global/GroupedList";
 
 
 export default function Rentals() {
@@ -124,21 +125,32 @@ export default function Rentals() {
 
 
   const groupedRentals = useMemo(() => {
-    return rentals.reduce((acc, rental) => {
-      // 1. Create the Month Heading (e.g., "January 2025")
+    // 1. Group into { "YYYY-MM": { agentName: rental[] } }
+    const grouped = rentals.reduce((acc, rental) => {
       const date = new Date(rental.paymentDate);
-      const monthKey = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 
-      // 2. Initialize the Month and Agent groups
       if (!acc[monthKey]) acc[monthKey] = {};
       if (!acc[monthKey][rental.agentName]) acc[monthKey][rental.agentName] = [];
 
-      // 3. Push the rental into its specific "Stack"
       acc[monthKey][rental.agentName].push(rental);
       return acc;
     }, {} as Record<string, Record<string, RentalReturnDto[]>>);
-  }, [rentals, status]);
 
+    // 2. Sort months (newest first) and agents (alphabetically) once here
+    return Object.keys(grouped)
+      .sort((a, b) => b.localeCompare(a))
+      .map(monthKey => {
+        const [year, month] = monthKey.split('-');
+        const displayMonth = new Date(Number(year), Number(month) - 1)
+          .toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        const sortedAgents = Object.entries(grouped[monthKey])
+          .sort(([a], [b]) => a.localeCompare(b));
+
+        return { monthKey, displayMonth, agents: sortedAgents };
+      });
+  }, [rentals, status]);
 
   return (
     <div className="mx-auto">
@@ -156,14 +168,26 @@ export default function Rentals() {
             </p>
           </div>
 
-          {/* Right side: Action Button */}
-          <button 
-            onClick={() => setShowModal(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-all hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
-          >
-            <Plus className="w-4 h-4" strokeWidth={2.5} />
-            <span>New Rental</span>
-          </button>
+          {/* Right side: Action Buttons Container */}
+          <div className="flex items-center gap-3">
+            {/* Primary Action Button */}
+            <button 
+              onClick={() => setShowModal(true)}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm transition-all hover:bg-primary/90 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+            >
+              <Plus className="w-4 h-4" strokeWidth={2.5} />
+              <span>New Rental</span>
+            </button>
+
+            {/* Secondary Action Button (Styled as requested) */}
+            <button 
+              onClick={handleBulkGenerate}
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-primary/40 border border-primary text-foreground font-semibold text-sm transition-all hover:bg-primary/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]"
+            >
+              <span>Bulk Generate Instances</span>
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -185,7 +209,6 @@ export default function Rentals() {
           ))}
         </div>
       </div>
-      <button onClick={handleBulkGenerate}>Bulk generate Instances</button>
 
       {/* 3. Modal Form (Kept out of layout flow) */}
       <RentalCreateForm 
@@ -196,45 +219,22 @@ export default function Rentals() {
       {loading ? (
         <p>Loading {status} rentals...</p>
         ) : (
-          <div className="max-w-5xl mx-auto space-y-12">
-            {Object.entries(groupedRentals).map(([month, agents]) => (
-              <div key={month} >
-                {/* Level 1: Month Heading */}
-                <h2 className="text-l font-bold border-b pb-2 text-foreground uppercase tracking-widest">
-                  {month}
-                </h2>
-
-                {Object.entries(agents).map(([agentName, agentRentals]) => (
-                  <div key={agentName} className="pl-4 border-l-2 border-accent/20 space-y-3">
-                    {/* Level 2: Agent Sub-heading */}
-                    <h3 className="text-sm font-semibold mt-2 text-primary/80 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-primary" />
-                      Agent: {agentName}
-                    </h3>
-
-                    {/* Level 3: The Rental Cards */}
-                    <div className="grid grid-cols-1">
-                      {agentRentals.map((rental) => (
-                        <RentalCard
-                          key={rental.id}
-                          rental={rental}               // Pass the whole object for the expanded view
-                          address={rental.address}       // Title
-                          agentName={rental.agentName}   // Subtitle
-                          status={rental.status}         // Wrapper will map this to the colored badge
-                          onTitleClick={() => handleNav(rental)}
-                          // Connect the specific actions
-                          onEdit={() => handleEdit(rental)}
-                          onDelete={() => handleDelete(rental.id)}
-                          onSetStatus={(data) => console.log("Update Status", data.tenantName)}
-                          onCreateInstance={handleCreateInstance}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
+          <GroupedList
+            groupedData={groupedRentals}
+            renderCard={(rental) => (
+              <RentalCard
+                rental={rental}
+                address={rental.address}
+                agentName={rental.agentName}
+                status={rental.status}
+                onTitleClick={() => handleNav(rental)}
+                onEdit={() => handleEdit(rental)}
+                onDelete={() => handleDelete(rental.id)}
+                onSetStatus={(data) => console.log("Update Status", data.tenantName)}
+                onCreateInstance={handleCreateInstance}
+              />
+            )}
+          />
         )}
         {isEditOpen && selectedRental && (
           <RentalUpdateForm 

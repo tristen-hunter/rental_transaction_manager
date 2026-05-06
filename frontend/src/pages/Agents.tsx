@@ -92,7 +92,7 @@ export default function Agents() {
   }
 
 
-  if (loading) return <p>Loading Agents...</p>;
+  if (loading) 
   if (error) return <p>Error: {error}</p>;
   // Combine header and list into one return statement
   return (
@@ -125,8 +125,10 @@ export default function Agents() {
         onClose={handleSubmit}
       />
 
-      <div className="grid grid-cols-1 gap-2 max-w-5xl mx-auto">
-
+      {loading ? (
+        <p>Loading Agents...</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-2 max-w-5xl mx-auto">
         {agents.map((agent) => (
           <AgentCard
             key={agent.id}
@@ -153,7 +155,10 @@ export default function Agents() {
             onTitleClick={() => handleNav(agent)}
           />
         ))}
-        </div>
+      </div>
+      )}
+      
+
         {isEditOpen && selectedAgent && (
           <AgentUpdateForm 
             agent={selectedAgent}
