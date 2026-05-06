@@ -9,6 +9,7 @@ import type { RentalUpdateDto } from "@/features/rentals/RentalUpdateDto";
 import RentalUpdateForm from "@/features/rentals/RentalUpdateForm";
 import { toast } from "react-toastify";
 import { Plus } from "lucide-react";
+import { InstanceService } from "@/features/instances/InstanceService";
 
 
 export default function Rentals() {
@@ -112,6 +113,16 @@ export default function Rentals() {
   }
 
 
+  const handleBulkGenerate = async () => {
+    try {
+        await InstanceService.bulkGenerateForActiveRentals();
+        setRefresh(r => r + 1);
+    } catch (err) {
+        toast.error("Bulk generation failed");
+    }
+  };
+
+
   const groupedRentals = useMemo(() => {
     return rentals.reduce((acc, rental) => {
       // 1. Create the Month Heading (e.g., "January 2025")
@@ -124,7 +135,6 @@ export default function Rentals() {
 
       // 3. Push the rental into its specific "Stack"
       acc[monthKey][rental.agentName].push(rental);
-      
       return acc;
     }, {} as Record<string, Record<string, RentalReturnDto[]>>);
   }, [rentals, status]);
@@ -175,6 +185,7 @@ export default function Rentals() {
           ))}
         </div>
       </div>
+      <button onClick={handleBulkGenerate}>Bulk generate Instances</button>
 
       {/* 3. Modal Form (Kept out of layout flow) */}
       <RentalCreateForm 
@@ -187,7 +198,7 @@ export default function Rentals() {
         ) : (
           <div className="max-w-5xl mx-auto space-y-12">
             {Object.entries(groupedRentals).map(([month, agents]) => (
-              <div key={month} className="space-y-6">
+              <div key={month} >
                 {/* Level 1: Month Heading */}
                 <h2 className="text-l font-bold border-b pb-2 text-foreground uppercase tracking-widest">
                   {month}
@@ -196,13 +207,13 @@ export default function Rentals() {
                 {Object.entries(agents).map(([agentName, agentRentals]) => (
                   <div key={agentName} className="pl-4 border-l-2 border-accent/20 space-y-3">
                     {/* Level 2: Agent Sub-heading */}
-                    <h3 className="text-sm font-semibold text-primary/80 flex items-center gap-2">
+                    <h3 className="text-sm font-semibold mt-2 text-primary/80 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-primary" />
                       Agent: {agentName}
                     </h3>
 
                     {/* Level 3: The Rental Cards */}
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="grid grid-cols-1">
                       {agentRentals.map((rental) => (
                         <RentalCard
                           key={rental.id}

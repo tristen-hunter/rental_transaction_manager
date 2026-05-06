@@ -30,6 +30,7 @@ export const InstanceService = {
     bulkGenerateForActiveRentals: async() => {
         try {
             const res = await axiosClient.post<InstanceReturnDto[]>("/instances/bulk-create");
+            console.log(res.data)
             toast.success(`Generated ${res.data.length} instances`);
         } catch (err) {
             console.error("Couldn't bulk generate Instances: ");

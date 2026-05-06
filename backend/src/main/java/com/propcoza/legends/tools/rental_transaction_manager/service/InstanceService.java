@@ -169,7 +169,7 @@ public class InstanceService {
 
         /// 3. Guard against 13th month exception
         LocalDate leaseStart = rental.getPaymentDate().withDayOfMonth(1);
-        LocalDate leaseEnd = rental.getPaymentDate().plusMonths(rental.getPaymentDate().getMonthValue());
+        LocalDate leaseEnd = rental.getPaymentDate().plusMonths(rental.getLeasePeriod());
 
         if (!nextBillingPeriod.isBefore(leaseEnd)) {
             throw new IllegalStateException(
@@ -180,7 +180,7 @@ public class InstanceService {
         /// 4. Guard against duplicate billing
         boolean alreadyExists = instanceRepo
                 .existsByRental_IdAndBillingPeriod(rentalId, nextBillingPeriod);
-        if (!alreadyExists) {
+        if (alreadyExists) {
             throw new IllegalStateException(
                     "Instance already exists for " + nextBillingPeriod
             );
@@ -202,6 +202,7 @@ public class InstanceService {
     @Transactional
     public List<InstanceReturnDto> bulkGenerateForActiveRentals(){
         List<Rental> activeRentals = rentalRepo.findByStatus(RentalStatus.ACTIVE);
+        System.out.println(activeRentals);
         List<InstanceReturnDto> dtos = new ArrayList<>();
         List<String> skippedRentals = new ArrayList<>();
 
